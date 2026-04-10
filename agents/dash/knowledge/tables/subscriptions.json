@@ -1,0 +1,29 @@
+{
+  "table_name": "subscriptions",
+  "table_description": "Subscription records — plan, MRR, seats, and lifecycle. A customer can have multiple subscriptions over time (e.g., upgrade creates a new row).",
+  "use_cases": [
+    "Calculate current MRR (sum of mrr WHERE status = 'active')",
+    "Track plan distribution and revenue mix",
+    "Identify churned subscriptions and cancellation reasons",
+    "Analyze billing cycle preferences (monthly vs annual)"
+  ],
+  "data_quality_notes": [
+    "ended_at is NULL for active subscriptions — filter with ended_at IS NULL or status = 'active'",
+    "A customer can have multiple subscription rows (upgrade/downgrade creates new + closes old)",
+    "status values: 'active', 'cancelled', 'upgraded', 'downgraded'",
+    "cancellation_reason is NULL unless status is 'cancelled'",
+    "mrr includes per-seat pricing variance — not always exact plan base price"
+  ],
+  "table_columns": [
+    {"name": "id", "type": "SERIAL", "description": "Primary key"},
+    {"name": "customer_id", "type": "INTEGER", "description": "FK to customers.id"},
+    {"name": "plan", "type": "TEXT", "description": "Plan tier: starter, professional, business, enterprise"},
+    {"name": "mrr", "type": "NUMERIC(10,2)", "description": "Monthly recurring revenue in USD"},
+    {"name": "seats", "type": "INTEGER", "description": "Number of licensed seats"},
+    {"name": "billing_cycle", "type": "TEXT", "description": "Billing frequency: monthly, annual"},
+    {"name": "started_at", "type": "TIMESTAMP", "description": "Subscription start timestamp"},
+    {"name": "ended_at", "type": "TIMESTAMP", "description": "Subscription end timestamp — NULL if active"},
+    {"name": "status", "type": "TEXT", "description": "Lifecycle status: active, cancelled, upgraded, downgraded"},
+    {"name": "cancellation_reason", "type": "TEXT", "description": "Reason for cancellation — NULL unless cancelled"}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "table_name": "support_tickets",
+  "table_description": "Customer support tickets — priority, category, resolution time, and satisfaction.",
+  "use_cases": [
+    "Measure support quality (resolution time, satisfaction scores)",
+    "Identify customers with high ticket volume (churn risk signal)",
+    "Analyze ticket categories to prioritize product improvements",
+    "Track support load over time"
+  ],
+  "data_quality_notes": [
+    "resolved_at is NULL for open and in_progress tickets",
+    "satisfaction_score is 1-5 but NULL if the customer didn't rate (about 30% unrated)",
+    "status values: 'open', 'in_progress', 'resolved', 'closed' — closed means resolved and confirmed by customer",
+    "Resolution time = resolved_at - created_at (for both resolved and closed tickets)"
+  ],
+  "table_columns": [
+    {"name": "id", "type": "SERIAL", "description": "Primary key"},
+    {"name": "customer_id", "type": "INTEGER", "description": "FK to customers.id"},
+    {"name": "priority", "type": "TEXT", "description": "Priority level: low, medium, high, critical"},
+    {"name": "category", "type": "TEXT", "description": "Ticket type: billing, technical, feature_request, onboarding"},
+    {"name": "status", "type": "TEXT", "description": "Current status: open, in_progress, resolved, closed"},
+    {"name": "created_at", "type": "TIMESTAMP", "description": "When the ticket was created"},
+    {"name": "resolved_at", "type": "TIMESTAMP", "description": "When the ticket was resolved — NULL if open"},
+    {"name": "satisfaction_score", "type": "INTEGER", "description": "Customer satisfaction 1-5 — NULL if not rated"}
+  ]
+}

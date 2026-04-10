@@ -1,0 +1,363 @@
+# CLAUDE.md
+
+This file provides context for Claude Code when working with this repository.
+
+## Project Overview
+
+AgentOS - A multi-agent demo system built by Agno showcasing 45+ Agno framework features (10 agents, 11 teams, 4 workflows).
+
+## Architecture
+
+```
+AgentOS (app/main.py)
+├── Agents (10)
+│   ├── Knowledge (agents/knowledge/)                            # RAG-based Q&A
+│   ├── MCP (agents/mcp/)                                        # External tools via MCP
+│   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
+│   ├── Feedback (agents/feedback/)                              # User feedback + control flow
+│   ├── Approvals (agents/approvals/)                            # Approval flows + audit trail
+│   ├── Reasoner (agents/reasoner/)                              # Reasoning + multi-model + fallback
+│   ├── Reporter (agents/reporter/)                              # Structured output + file generation
+│   ├── Contacts (agents/contacts/)                              # Entity memory + relationships
+│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL)
+│   └── Scheduler (agents/scheduler/)                            # Schedule management (SchedulerTools)
+├── Teams (11)
+│   ├── Pal (agents/pal/)                                        # Personal knowledge agent (team)
+│   ├── Dash (agents/dash/)                                      # Data analyst (team)
+│   ├── Coda (agents/coda/)                                      # Coding agent (team)
+│   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
+│   ├── Research Route (teams/research/)                         # Team route mode
+│   ├── Research Broadcast (teams/research/)                     # Team broadcast mode
+│   ├── Research Tasks (teams/research/)                         # Team tasks mode
+│   ├── Investment Coordinate (teams/investment/)                # Investment team coordinate
+│   ├── Investment Route (teams/investment/)                     # Investment team route
+│   ├── Investment Broadcast (teams/investment/)                 # Investment team broadcast
+│   └── Investment Tasks (teams/investment/)                     # Investment team tasks
+└── Workflows (4)
+    ├── Morning Brief (workflows/morning_brief/)                 # Daily parallel briefing
+    ├── AI Research (workflows/ai_research/)                     # Daily parallel AI research
+    ├── Content Pipeline (workflows/content_pipeline/)           # Router + loop + condition
+    └── Repo Walkthrough (workflows/repo_walkthrough/)           # Code → script → narrated audio
+```
+
+All agents share:
+- PostgreSQL database (pgvector) for persistence
+- OpenAI GPT-5.4 model (configured in `app/settings.py`)
+- Chat history and context management
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `app/main.py` | AgentOS entry point, registers all agents, teams, workflows |
+| `app/config.yaml` | Quick prompts for each agent |
+| `app/settings.py` | Shared MODEL, agent_db, and environment flags |
+| `app/registry.py` | Shared tools, models, and database connections |
+| `agents/knowledge/agent.py` | Knowledge - RAG-based Q&A using Agno documentation |
+| `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
+| `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (PII, injection) |
+| `agents/feedback/agent.py` | Feedback - user feedback + control flow tools |
+| `agents/approvals/agent.py` | Approvals - approval flows + audit trail |
+| `agents/reasoner/agent.py` | Reasoner - reasoning + multi-model + fallback |
+| `agents/reporter/agent.py` | Reporter - structured output + file generation |
+| `agents/contacts/agent.py` | Contacts - entity memory + relationships |
+| `agents/studio/agent.py` | Studio - multimodal media generation |
+| `agents/scheduler/agent.py` | Scheduler - schedule management (create, list, enable/disable, delete) |
+| `agents/pal/team.py` | Pal team (Navigator, Researcher, Compiler, Linter, Syncer) |
+| `agents/dash/team.py` | Dash team (Analyst, Engineer) |
+| `agents/coda/team.py` | Coda team (Coder, Explorer, Planner, Researcher, Triager) |
+| `teams/research/team.py` | Research Team (4 modes: coordinate, route, broadcast, tasks) |
+| `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |
+| `workflows/morning_brief/workflow.py` | Morning Brief (parallel gather → synthesize) |
+| `workflows/ai_research/workflow.py` | AI Research (4 parallel researchers → synthesize) |
+| `workflows/content_pipeline/workflow.py` | Content Pipeline (router, parallel, loop, HITL) |
+| `workflows/repo_walkthrough/workflow.py` | Repo Walkthrough (analyze → script → narrate) |
+| `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
+| `db/url.py` | Builds database URL from environment |
+| `compose.yaml` | Local development with Docker |
+
+## Development Setup
+
+### Virtual Environment
+
+Use the venv setup script to create the development environment:
+
+```bash
+./scripts/venv_setup.sh
+source .venv/bin/activate
+```
+
+### Format & Validation
+
+Always run format and lint checks using the venv Python interpreter:
+
+```bash
+source .venv/bin/activate && ./scripts/format.sh
+source .venv/bin/activate && ./scripts/validate.sh
+```
+
+## Conventions
+
+### Agent Pattern
+
+All standalone agents follow this structure:
+
+```python
+from agno.agent import Agent
+
+from agents.my_agent.instructions import INSTRUCTIONS
+from app.settings import MODEL, agent_db
+
+my_agent = Agent(
+    id="my-agent",
+    name="My Agent",
+    model=MODEL,
+    db=agent_db,
+    instructions=INSTRUCTIONS,
+    add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
+    markdown=True,
+    enable_agentic_memory=True,
+)
+```
+
+### Team Pattern (Pal, Dash, Coda)
+
+Team-based agents have their own settings.py with specialized knowledge bases and DB engines:
+
+```python
+from agno.team import Team, TeamMode
+
+team = Team(
+    id="my-team",
+    name="My Team",
+    mode=TeamMode.coordinate,
+    model=MODEL,
+    members=[agent1, agent2],
+    db=agent_db,
+    instructions=LEADER_INSTRUCTIONS,
+    enable_agentic_memory=True,
+    share_member_interactions=True,
+    markdown=True,
+)
+```
+
+### Database
+
+- Use `get_postgres_db()` from `db` module
+- **Important**: The `contents_table` parameter is only needed when the database is provided to a Knowledge base as a `contents_db`.
+
+```python
+# Agent WITH a Knowledge base
+from db import create_knowledge
+knowledge = create_knowledge("My Knowledge", "my_vectors")
+
+# Agent WITHOUT a Knowledge base
+agent_db = get_postgres_db()
+```
+
+- Knowledge bases use PgVector with `SearchType.hybrid`
+- Embeddings use `text-embedding-3-small`
+
+### Imports
+
+```python
+# Database
+from db import db_url, get_postgres_db, create_knowledge
+
+# Agents
+from agents.knowledge import knowledge_agent
+from agents.mcp import mcp_agent
+from agents.helpdesk import helpdesk
+from agents.feedback import feedback
+from agents.approvals import approvals
+from agents.reasoner import reasoner
+from agents.reporter import reporter
+from agents.contacts import contacts
+from agents.studio import studio
+from agents.scheduler import scheduler
+
+# Teams
+from agents.pal import pal
+from agents.dash import dash
+from agents.coda import coda
+from teams.research import research_coordinate, research_route, research_broadcast, research_tasks
+from teams.investment import investment_coordinate, investment_route, investment_broadcast, investment_tasks
+
+# Workflows
+from workflows.morning_brief import morning_brief
+from workflows.ai_research import ai_research
+from workflows.content_pipeline import content_pipeline
+from workflows.repo_walkthrough import repo_walkthrough
+```
+
+## Adding a New Agent
+
+1. Create `agents/new_agent/` directory following the agent pattern above (with `agent.py`, `instructions.py`, `__init__.py`, `__main__.py`)
+2. Register in `app/main.py`:
+   ```python
+   from agents.new_agent import new_agent
+
+   agent_os = AgentOS(
+       agents=[..., new_agent],
+       ...
+   )
+   ```
+3. Add quick prompts to `app/config.yaml` using the agent's `id`
+
+## Commands
+
+```bash
+# Setup virtual environment
+./scripts/venv_setup.sh
+source .venv/bin/activate
+
+# Local development with Docker
+docker compose up -d --build
+
+# Load documents into knowledge agent
+python -m agents.knowledge.scripts.load_knowledge
+
+# Load knowledge for Dash
+python -m agents.dash.scripts.load_knowledge
+
+# Format & validation (run from activated venv)
+./scripts/format.sh
+./scripts/validate.sh
+
+# Run evals
+python -m evals
+python -m evals --category security
+python -m evals --verbose
+```
+
+## Environment Variables
+
+Required:
+- `OPENAI_API_KEY`
+
+Optional:
+- `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter, Contacts
+- `PARALLEL_API_KEY` - Parallel web search (Pal Researcher, Coda Researcher)
+- `ELEVENLABS_API_KEY` - TTS for Studio, Repo Walkthrough
+- `FAL_KEY` - Image-to-image for Studio
+- `GITHUB_TOKEN` - GitHub integration for Coda
+- `ANTHROPIC_API_KEY` - Fallback model for Reasoner
+- `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
+- `PORT` - API server port (default: `8000`)
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
+- `RUNTIME_ENV` - Set to `dev` for auto-reload, `prd` for RBAC auth
+- `AGENTOS_URL` - Scheduler callback URL (default: `http://127.0.0.1:8000`)
+- `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface
+- `REPOS_DIR` - Coda repos directory (default: `/repos`, container volume)
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_PROJECT_ID` - Pal Gmail/Calendar
+- `GITHUB_ACCESS_TOKEN`, `PAL_REPO_URL` - Pal Git sync
+
+## Deployment
+
+```bash
+# Build Docker image
+./scripts/build_image.sh
+
+# Deploy to Railway (first time)
+./scripts/railway_up.sh
+
+# Redeploy to Railway
+./scripts/railway_redeploy.sh
+
+# Sync env vars to Railway
+./scripts/railway_env.sh
+```
+
+## Ports
+
+- API: 8000
+- Database: 5432
+
+## Feature Coverage
+
+| Feature | Where |
+|---------|-------|
+| RAG / hybrid search | Knowledge, Pal, Dash, Investment |
+| MCP tools | MCP, Pal, Dash, AI Research, Investment |
+| HITL — confirmation | Helpdesk, Approvals |
+| HITL — user input | Helpdesk, Feedback |
+| HITL — external execution | Helpdesk |
+| Guardrails (PII, injection) | Helpdesk |
+| Pre/post hooks | Helpdesk |
+| Approval — blocking | Approvals |
+| Approval — audit trail | Approvals |
+| User feedback (ask_user) | Feedback |
+| User control flow | Feedback |
+| Reasoning tools | Reasoner |
+| Native reasoning mode | Reasoner |
+| Model fallback | Reasoner |
+| Structured output (Pydantic) | Reporter |
+| File generation (CSV/JSON/PDF) | Reporter |
+| Entity memory | Contacts |
+| User profile | Contacts |
+| Session context + planning | Contacts |
+| Learning (LearningMachine) | Pal, Dash, Coda, Contacts, Investment |
+| SQL tools | Dash, Pal |
+| Coding tools | Coda, Repo Walkthrough |
+| GitHub tools | Coda |
+| Image generation (DALL-E) | Studio |
+| Image-to-image (FAL) | Studio |
+| Text-to-speech (ElevenLabs) | Studio, Repo Walkthrough |
+| Sound effects | Studio |
+| YFinance tools | Investment |
+| File tools (memos) | Investment |
+| Team — coordinate | Pal, Dash, Coda, Research, Investment |
+| Team — route | Research, Investment |
+| Team — broadcast | Research, Investment |
+| Team — tasks | Research, Investment |
+| Workflow — parallel | Morning Brief, AI Research, Content Pipeline |
+| Workflow — loop | Content Pipeline |
+| Scheduling (cron) | Morning Brief, AI Research, Scheduler |
+| SchedulerTools (CRUD) | Scheduler |
+| Parallel execution | Morning Brief, AI Research, Content Pipeline |
+| Cross-modal chaining | Repo Walkthrough |
+
+---
+
+## Agno Framework Reference
+
+### Model Providers
+
+```python
+from agno.models.openai import OpenAIResponses
+model = OpenAIResponses(id="gpt-5.4")
+
+from agno.models.anthropic import Claude
+model = Claude(id="claude-sonnet-4-5")
+
+from agno.models.google import Gemini
+model = Gemini(id="gemini-3-flash-preview")
+```
+
+### Knowledge & RAG
+
+```python
+from agno.knowledge import Knowledge
+from agno.knowledge.embedder.openai import OpenAIEmbedder
+from agno.vectordb.pgvector import PgVector, SearchType
+
+knowledge = Knowledge(
+    name="My Knowledge Base",
+    vector_db=PgVector(
+        db_url=db_url,
+        table_name="my_vectors",
+        search_type=SearchType.hybrid,
+        embedder=OpenAIEmbedder(id="text-embedding-3-small"),
+    ),
+    contents_db=get_postgres_db(contents_table="my_contents"),
+)
+```
+
+### Documentation Links
+
+- https://docs.agno.com/llms.txt
+- https://docs.agno.com/llms-full.txt
+- [Agno Docs](https://docs.agno.com)

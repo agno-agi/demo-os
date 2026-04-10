@@ -1,0 +1,27 @@
+{
+  "table_name": "plan_changes",
+  "table_description": "Log of plan upgrades, downgrades, and cancellations with MRR impact.",
+  "use_cases": [
+    "Calculate net revenue retention (expansion - contraction - churn)",
+    "Track upgrade/downgrade patterns by plan",
+    "Analyze MRR movement (new, expansion, contraction, churn)",
+    "Identify common upgrade paths"
+  ],
+  "data_quality_notes": [
+    "new_plan is NULL for cancellations",
+    "new_mrr is 0 for cancellations",
+    "change_type values: 'upgrade', 'downgrade', 'cancellation'",
+    "MRR delta = new_mrr - previous_mrr (negative for downgrades and cancellations)",
+    "Cancellation reasons are NOT in this table — use subscriptions.cancellation_reason instead"
+  ],
+  "table_columns": [
+    {"name": "id", "type": "SERIAL", "description": "Primary key"},
+    {"name": "customer_id", "type": "INTEGER", "description": "FK to customers.id"},
+    {"name": "previous_plan", "type": "TEXT", "description": "Plan before change"},
+    {"name": "new_plan", "type": "TEXT", "description": "Plan after change — NULL for cancellations"},
+    {"name": "previous_mrr", "type": "NUMERIC(10,2)", "description": "MRR before change"},
+    {"name": "new_mrr", "type": "NUMERIC(10,2)", "description": "MRR after change — 0 for cancellations"},
+    {"name": "change_type", "type": "TEXT", "description": "Type: upgrade, downgrade, cancellation"},
+    {"name": "changed_at", "type": "TIMESTAMP", "description": "When the change occurred"}
+  ]
+}

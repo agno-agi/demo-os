@@ -1,0 +1,87 @@
+{
+  "metrics": [
+    {
+      "name": "Monthly Recurring Revenue (MRR)",
+      "definition": "Sum of monthly recurring revenue from all active subscriptions",
+      "table": "subscriptions",
+      "calculation": "SUM(mrr) FROM subscriptions WHERE status = 'active'"
+    },
+    {
+      "name": "Churn Rate",
+      "definition": "Percentage of subscriptions cancelled in a period relative to total subscriptions",
+      "table": "subscriptions",
+      "calculation": "COUNT(cancelled) / COUNT(total) per month, grouped by plan"
+    },
+    {
+      "name": "Net Revenue Retention (NRR)",
+      "definition": "Revenue retained from existing customers including expansion and contraction",
+      "table": "plan_changes",
+      "calculation": "(starting_mrr + expansion - contraction - churn) / starting_mrr * 100"
+    },
+    {
+      "name": "Customer Lifetime Value (CLV)",
+      "definition": "Average revenue per customer over their entire lifecycle",
+      "table": "subscriptions, invoices",
+      "calculation": "SUM(invoices.amount WHERE status='paid') grouped by customer"
+    },
+    {
+      "name": "Average Revenue Per Account (ARPA)",
+      "definition": "Average MRR across all active subscriptions",
+      "table": "subscriptions",
+      "calculation": "AVG(mrr) FROM subscriptions WHERE status = 'active'"
+    },
+    {
+      "name": "Customer Acquisition Cost Efficiency",
+      "definition": "Revenue contribution segmented by acquisition source",
+      "table": "customers, subscriptions",
+      "calculation": "SUM(mrr) grouped by customers.source"
+    },
+    {
+      "name": "Support Satisfaction (CSAT)",
+      "definition": "Average customer satisfaction score from resolved support tickets",
+      "table": "support_tickets",
+      "calculation": "AVG(satisfaction_score) WHERE resolved_at IS NOT NULL AND satisfaction_score IS NOT NULL"
+    },
+    {
+      "name": "Usage Health Score",
+      "definition": "Composite score based on API calls, active users, and storage relative to plan capacity",
+      "table": "usage_metrics",
+      "calculation": "Weighted average of normalized usage metrics per customer"
+    }
+  ],
+  "business_rules": [
+    "MRR should only count subscriptions with status = 'active' (not 'cancelled', 'upgraded', or 'downgraded')",
+    "Annual billing customers get a 10% discount — their invoice amount is mrr * 12 * 0.9",
+    "A customer can have multiple subscription records — upgrades/downgrades close the old and create a new one",
+    "Churn rate should be calculated monthly for meaningful comparison across plans",
+    "Net Revenue Retention above 100% means expansion revenue exceeds lost revenue",
+    "Usage metrics are sampled (3-5 data points per month per customer) — use averages for analysis"
+  ],
+  "common_gotchas": [
+    {
+      "issue": "Active subscription detection",
+      "tables_affected": ["subscriptions"],
+      "solution": "Use status = 'active' OR ended_at IS NULL — both work. Do NOT count 'upgraded'/'downgraded' as active since new subscription row exists."
+    },
+    {
+      "issue": "NULL ended_at for active subscriptions",
+      "tables_affected": ["subscriptions"],
+      "solution": "ended_at IS NULL means the subscription is still active. Use COALESCE or IS NULL checks in date range filters."
+    },
+    {
+      "issue": "NULL satisfaction_score",
+      "tables_affected": ["support_tickets"],
+      "solution": "About 30% of resolved tickets have no rating. Use AVG(satisfaction_score) which ignores NULLs, but note the sample bias."
+    },
+    {
+      "issue": "Multiple subscriptions per customer",
+      "tables_affected": ["subscriptions", "plan_changes"],
+      "solution": "When calculating current MRR per customer, use the subscription with status = 'active'. For historical analysis, use started_at/ended_at ranges."
+    },
+    {
+      "issue": "Usage data is sampled, not daily",
+      "tables_affected": ["usage_metrics"],
+      "solution": "3-5 data points per customer per month. Use AVG() for per-day estimates or SUM() for monthly totals, but note they're approximate."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "table_name": "customers",
+  "table_description": "B2B SaaS customer accounts — company info, acquisition source, and lifecycle status.",
+  "use_cases": [
+    "Customer segmentation by industry, size, or source",
+    "Cohort analysis by signup month",
+    "Customer acquisition trends over time",
+    "Geographic distribution of customer base"
+  ],
+  "data_quality_notes": [
+    "status is 'active', 'churned', or 'trial' — always check against subscriptions for ground truth",
+    "company_size values: 'startup', 'smb', 'mid_market', 'enterprise'",
+    "signup_date is DATE (not TIMESTAMP) — no time component"
+  ],
+  "table_columns": [
+    {"name": "id", "type": "SERIAL", "description": "Primary key"},
+    {"name": "company_name", "type": "TEXT", "description": "Company name"},
+    {"name": "industry", "type": "TEXT", "description": "Industry vertical: technology, healthcare, finance, retail, education"},
+    {"name": "company_size", "type": "TEXT", "description": "Segment: startup, smb, mid_market, enterprise"},
+    {"name": "country", "type": "TEXT", "description": "Two-letter country code (US, UK, DE, etc.)"},
+    {"name": "signup_date", "type": "DATE", "description": "Account creation date"},
+    {"name": "source", "type": "TEXT", "description": "Acquisition channel: organic, referral, paid, partner"},
+    {"name": "status", "type": "TEXT", "description": "Current status: active, churned, trial"}
+  ]
+}

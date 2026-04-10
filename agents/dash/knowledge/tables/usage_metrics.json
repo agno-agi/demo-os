@@ -1,0 +1,26 @@
+{
+  "table_name": "usage_metrics",
+  "table_description": "Daily product usage metrics per customer — API calls, active users, storage, reports.",
+  "use_cases": [
+    "Correlate usage with churn risk (low usage → high churn probability)",
+    "Identify power users vs dormant accounts",
+    "Track product adoption trends over time",
+    "Build customer health scores combining usage signals"
+  ],
+  "data_quality_notes": [
+    "Not every day has a row — data is sampled 3-5 days per month per customer",
+    "Use AVG or SUM with GROUP BY to get monthly aggregates",
+    "active_users can exceed seats (minimum is 1, not 0)",
+    "storage_mb is cumulative (not daily delta)"
+  ],
+  "table_columns": [
+    {"name": "id", "type": "SERIAL", "description": "Primary key"},
+    {"name": "customer_id", "type": "INTEGER", "description": "FK to customers.id"},
+    {"name": "metric_date", "type": "DATE", "description": "Date of measurement"},
+    {"name": "api_calls", "type": "INTEGER", "description": "Number of API calls that day"},
+    {"name": "active_users", "type": "INTEGER", "description": "Users who logged in that day"},
+    {"name": "storage_mb", "type": "NUMERIC(10,2)", "description": "Total storage used in MB"},
+    {"name": "reports_generated", "type": "INTEGER", "description": "Reports created that day"},
+    {"name": "integrations_active", "type": "INTEGER", "description": "Number of active integrations"}
+  ]
+}

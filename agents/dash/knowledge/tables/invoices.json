@@ -1,0 +1,29 @@
+{
+  "table_name": "invoices",
+  "table_description": "Billing records — invoice amounts, payment status, and billing periods.",
+  "use_cases": [
+    "Calculate collected revenue vs billed revenue",
+    "Identify failed payments and payment failure rate",
+    "Track revenue by period (period_start/period_end)",
+    "Analyze payment timing (days between issued_at and paid_at)"
+  ],
+  "data_quality_notes": [
+    "paid_at is NULL for pending and failed invoices",
+    "status values: 'paid', 'pending', 'failed', 'refunded'",
+    "Annual billing invoices have amount = mrr * 12 * 0.9 (10% annual discount)",
+    "period_start and period_end are DATE (not TIMESTAMP)",
+    "amount is in USD — currency column exists but all values are 'USD'"
+  ],
+  "table_columns": [
+    {"name": "id", "type": "SERIAL", "description": "Primary key"},
+    {"name": "customer_id", "type": "INTEGER", "description": "FK to customers.id"},
+    {"name": "subscription_id", "type": "INTEGER", "description": "FK to subscriptions.id"},
+    {"name": "amount", "type": "NUMERIC(10,2)", "description": "Invoice amount in USD"},
+    {"name": "currency", "type": "TEXT", "description": "Currency code (always 'USD')"},
+    {"name": "status", "type": "TEXT", "description": "Payment status: paid, pending, failed, refunded"},
+    {"name": "issued_at", "type": "TIMESTAMP", "description": "When the invoice was issued"},
+    {"name": "paid_at", "type": "TIMESTAMP", "description": "When payment was received — NULL if not paid"},
+    {"name": "period_start", "type": "DATE", "description": "Billing period start date"},
+    {"name": "period_end", "type": "DATE", "description": "Billing period end date"}
+  ]
+}

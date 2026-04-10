@@ -1,0 +1,72 @@
+services:
+  agno-demo-db:
+    image: agnohq/pgvector:18
+    container_name: agno-demo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-ai}
+      POSTGRES_PASSWORD: ${DB_PASS:-ai}
+      POSTGRES_DB: ${DB_DATABASE:-ai}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - agno-demo
+
+  agno-demo-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${IMAGE_NAME:-agno-demo}:${IMAGE_TAG:-latest}
+    container_name: agno-demo-api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Hot-reload: mount source code
+      - .:/app
+      # Coda repos
+      - repos:/repos
+      # Pal context
+      - ./agents/pal/context:/app/agents/pal/context
+    environment:
+      - RUNTIME_ENV=dev
+      - AGNO_DEBUG=True
+      - PYTHONPATH=/app
+      - AGENTOS_URL=http://127.0.0.1:8000
+      # Database
+      - DB_HOST=agno-demo-db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-ai}
+      - DB_PASS=${DB_PASS:-ai}
+      - DB_DATABASE=${DB_DATABASE:-ai}
+      - WAIT_FOR_DB=True
+      - PRINT_ENV_ON_LOAD=${PRINT_ENV_ON_LOAD:-False}
+      # API keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - EXA_API_KEY=${EXA_API_KEY:-}
+      - PARALLEL_API_KEY=${PARALLEL_API_KEY:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
+      - FAL_KEY=${FAL_KEY:-}
+      # Coda
+      - REPOS_DIR=/repos
+      # Slack (optional)
+      - SLACK_TOKEN=${SLACK_TOKEN:-}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}
+    depends_on:
+      - agno-demo-db
+    networks:
+      - agno-demo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  agno-demo:
+
+volumes:
+  pgdata:
+  repos:
