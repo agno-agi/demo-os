@@ -1,4 +1,4 @@
-"""Investment Team — 7 agents across 4 team modes using Gemini models."""
+"""Investment Team — 7 agents across 4 team modes."""
 
 from __future__ import annotations
 
@@ -8,12 +8,11 @@ from typing import Any
 
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
-from agno.models.google import Gemini
 from agno.team import Team, TeamMode
 from agno.tools.file import FileTools
 from agno.tools.yfinance import YFinanceTools
 
-from app.settings import agent_db
+from app.settings import MODEL, agent_db
 from db import create_knowledge
 from teams.investment.instructions import (
     BROADCAST_INSTRUCTIONS,
@@ -29,12 +28,6 @@ from teams.investment.instructions import (
     TECHNICAL_ANALYST_INSTRUCTIONS,
 )
 from utils.exa import get_exa_mcp_tools
-
-# ---------------------------------------------------------------------------
-# Models — multi-model demo with Gemini
-# ---------------------------------------------------------------------------
-ANALYST_MODEL = Gemini(id="gemini-3-flash-preview")
-LEADER_MODEL = Gemini(id="gemini-3.1-pro-preview")
 
 # ---------------------------------------------------------------------------
 # Shared settings
@@ -72,7 +65,7 @@ financial_analyst = Agent(
     id="investment-financial-analyst",
     name="Financial Analyst",
     role="Fundamental valuation, balance sheet, and earnings analysis",
-    model=ANALYST_MODEL,
+    model=MODEL,
     instructions=FINANCIAL_ANALYST_INSTRUCTIONS,
     tools=[YFinanceTools()],
     **_common,
@@ -88,7 +81,7 @@ market_analyst = Agent(
     id="investment-market-analyst",
     name="Market Analyst",
     role="Macro environment, sector trends, and breaking news",
-    model=ANALYST_MODEL,
+    model=MODEL,
     instructions=MARKET_ANALYST_INSTRUCTIONS,
     tools=market_analyst_tools,
     **_common,
@@ -98,7 +91,7 @@ technical_analyst = Agent(
     id="investment-technical-analyst",
     name="Technical Analyst",
     role="Price action, momentum indicators, and entry/exit timing",
-    model=ANALYST_MODEL,
+    model=MODEL,
     instructions=TECHNICAL_ANALYST_INSTRUCTIONS,
     tools=[YFinanceTools()],
     **_common,
@@ -108,7 +101,7 @@ risk_officer = Agent(
     id="investment-risk-officer",
     name="Risk Officer",
     role="Downside scenarios, position sizing, and mandate compliance",
-    model=ANALYST_MODEL,
+    model=MODEL,
     instructions=RISK_OFFICER_INSTRUCTIONS,
     tools=[YFinanceTools()],
     **_common,
@@ -118,7 +111,7 @@ knowledge_agent = Agent(
     id="investment-knowledge-agent",
     name="Knowledge Agent",
     role="Team librarian — research RAG and memo archive navigation",
-    model=ANALYST_MODEL,
+    model=MODEL,
     instructions=KNOWLEDGE_AGENT_INSTRUCTIONS,
     tools=[
         FileTools(
@@ -137,7 +130,7 @@ memo_writer = Agent(
     id="investment-memo-writer",
     name="Memo Writer",
     role="Synthesize analyst inputs into formal investment memos",
-    model=ANALYST_MODEL,
+    model=MODEL,
     db=agent_db,
     instructions=MEMO_WRITER_INSTRUCTIONS,
     tools=[
@@ -161,7 +154,7 @@ committee_chair = Agent(
     id="investment-committee-chair",
     name="Committee Chair",
     role="Final decision-maker and capital allocator",
-    model=LEADER_MODEL,
+    model=MODEL,
     instructions=COMMITTEE_CHAIR_INSTRUCTIONS,
     **_common,
 )
@@ -176,7 +169,7 @@ investment_coordinate = Team(
     id="investment-coordinate",
     name="Investment Team (Coordinate)",
     mode=TeamMode.coordinate,
-    model=LEADER_MODEL,
+    model=MODEL,
     members=_full_members,
     db=agent_db,
     instructions=COORDINATE_INSTRUCTIONS,
@@ -191,7 +184,7 @@ investment_route = Team(
     id="investment-route",
     name="Investment Team (Route)",
     mode=TeamMode.route,
-    model=LEADER_MODEL,
+    model=MODEL,
     members=[*_full_members, committee_chair],
     db=agent_db,
     instructions=ROUTE_INSTRUCTIONS,
@@ -204,7 +197,7 @@ investment_broadcast = Team(
     id="investment-broadcast",
     name="Investment Team (Broadcast)",
     mode=TeamMode.broadcast,
-    model=LEADER_MODEL,
+    model=MODEL,
     members=_core_members,
     db=agent_db,
     instructions=BROADCAST_INSTRUCTIONS,
@@ -219,7 +212,7 @@ investment_tasks = Team(
     id="investment-tasks",
     name="Investment Team (Tasks)",
     mode=TeamMode.tasks,
-    model=LEADER_MODEL,
+    model=MODEL,
     members=_full_members,
     db=agent_db,
     instructions=TASKS_INSTRUCTIONS,
