@@ -9,10 +9,9 @@ repositories. Read-only — never writes, edits, or deletes files.
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
 from agno.tools.coding import CodingTools
-from agno.tools.github import GithubTools
 from agno.tools.reasoning import ReasoningTools
 
-from agents.coda.settings import MODEL, REPOS_DIR, agent_db, coda_learnings
+from agents.coda.settings import MODEL, REPOS_DIR, agent_db, coda_learnings, get_github_tools
 from agents.coda.tools.git import GitTools
 
 # ---------------------------------------------------------------------------
@@ -99,25 +98,23 @@ explorer = Agent(
             enable_run_shell=False,
         ),
         GitTools(base_dir=str(REPOS_DIR), read_only=True),
-        GithubTools(
-            include_tools=[
-                # PR review
-                "get_pull_request",
-                "get_pull_requests",
-                "get_pull_request_changes",
-                "get_pull_request_comments",
-                "get_pull_request_with_details",
-                "create_pull_request_comment",
-                # Issues
-                "get_issue",
-                "list_issues",
-                "list_issue_comments",
-                "comment_on_issue",
-                # Branches & search
-                "list_branches",
-                "search_code",
-            ],
-        ),
+        *get_github_tools([
+            # PR review
+            "get_pull_request",
+            "get_pull_requests",
+            "get_pull_request_changes",
+            "get_pull_request_comments",
+            "get_pull_request_with_details",
+            "create_pull_request_comment",
+            # Issues
+            "get_issue",
+            "list_issues",
+            "list_issue_comments",
+            "comment_on_issue",
+            # Branches & search
+            "list_branches",
+            "search_code",
+        ]),
         ReasoningTools(),
     ],
     add_datetime_to_context=True,

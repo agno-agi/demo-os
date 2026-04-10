@@ -9,10 +9,9 @@ Reads code for context. Takes action: label, comment, close.
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
 from agno.tools.coding import CodingTools
-from agno.tools.github import GithubTools
 from agno.tools.reasoning import ReasoningTools
 
-from agents.coda.settings import MODEL, REPOS_DIR, agent_db, coda_learnings
+from agents.coda.settings import MODEL, REPOS_DIR, agent_db, coda_learnings, get_github_tools
 from agents.coda.tools.git import GitTools
 
 # ---------------------------------------------------------------------------
@@ -127,28 +126,26 @@ triager = Agent(
             enable_run_shell=False,
         ),
         GitTools(base_dir=str(REPOS_DIR), read_only=True),
-        GithubTools(
-            include_tools=[
-                # Issue management (full)
-                "list_issues",
-                "get_issue",
-                "create_issue",
-                "comment_on_issue",
-                "close_issue",
-                "reopen_issue",
-                "assign_issue",
-                "label_issue",
-                "edit_issue",
-                "list_issue_comments",
-                "search_issues_and_prs",
-                # PR reading (cross-reference)
-                "get_pull_request",
-                "get_pull_requests",
-                "get_pull_request_with_details",
-                # Code search
-                "search_code",
-            ],
-        ),
+        *get_github_tools([
+            # Issue management (full)
+            "list_issues",
+            "get_issue",
+            "create_issue",
+            "comment_on_issue",
+            "close_issue",
+            "reopen_issue",
+            "assign_issue",
+            "label_issue",
+            "edit_issue",
+            "list_issue_comments",
+            "search_issues_and_prs",
+            # PR reading (cross-reference)
+            "get_pull_request",
+            "get_pull_requests",
+            "get_pull_request_with_details",
+            # Code search
+            "search_code",
+        ]),
         ReasoningTools(),
     ],
     add_datetime_to_context=True,

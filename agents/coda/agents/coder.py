@@ -8,10 +8,9 @@ Writes, tests, and ships code in isolated git worktrees.
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
 from agno.tools.coding import CodingTools
-from agno.tools.github import GithubTools
 from agno.tools.reasoning import ReasoningTools
 
-from agents.coda.settings import MODEL, REPOS_DIR, agent_db, coda_learnings
+from agents.coda.settings import MODEL, REPOS_DIR, agent_db, coda_learnings, get_github_tools
 from agents.coda.tools.git import GitTools
 
 # ---------------------------------------------------------------------------
@@ -76,19 +75,17 @@ coder = Agent(
     tools=[
         CodingTools(base_dir=REPOS_DIR, all=True, shell_timeout=120),
         GitTools(base_dir=str(REPOS_DIR)),
-        GithubTools(
-            include_tools=[
-                "get_pull_request",
-                "get_pull_requests",
-                "get_pull_request_changes",
-                "get_pull_request_comments",
-                "create_pull_request",
-                "get_issue",
-                "list_issues",
-                "create_issue",
-                "comment_on_issue",
-            ],
-        ),
+        *get_github_tools([
+            "get_pull_request",
+            "get_pull_requests",
+            "get_pull_request_changes",
+            "get_pull_request_comments",
+            "create_pull_request",
+            "get_issue",
+            "list_issues",
+            "create_issue",
+            "comment_on_issue",
+        ]),
         ReasoningTools(),
     ],
     add_datetime_to_context=True,
