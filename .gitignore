@@ -29,15 +29,24 @@ htmlcov/
 .cache
 
 # =========================
-# Virtual envs + secrets
+# Virtual envs
 # =========================
 .venv/
 venv/
 env/
 ENV/
+
+# =========================
+# Secrets — NEVER commit these
+# =========================
 .env
-.env.production
+.env.*
+!.env.example
 .envrc
+*.pem
+*.key
+credentials.json
+secrets.yaml
 
 # =========================
 # Jupyter / notebooks
