@@ -13,6 +13,7 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import os
 import time
 from dataclasses import dataclass
@@ -91,19 +92,36 @@ class AgentOSClient:
         try:
             r = self.client.post(
                 url,
-                json=payload,
+                data=payload,
                 timeout=timeout or self.timeout,
             )
             duration = round(time.time() - start, 2)
-            raw = r.json() if r.status_code == 200 else {}
-            content = raw.get("content", "") if isinstance(raw, dict) else str(raw)
-            error = None if r.status_code == 200 else f"HTTP {r.status_code}: {r.text[:200]}"
+            if r.status_code != 200:
+                return RunResult(
+                    status_code=r.status_code,
+                    content="",
+                    raw_json={},
+                    duration=duration,
+                    error=f"HTTP {r.status_code}: {r.text[:200]}",
+                )
+            # Parse SSE stream — extract content from RunCompleted event
+            raw = {}
+            content = ""
+            for line in r.text.split("\n"):
+                if line.startswith("data:"):
+                    try:
+                        data = json.loads(line[5:].strip())
+                        if data.get("event") == "RunCompleted":
+                            raw = data
+                            content = data.get("content", "")
+                            break
+                    except json.JSONDecodeError:
+                        continue
             return RunResult(
                 status_code=r.status_code,
                 content=content,
                 raw_json=raw,
                 duration=duration,
-                error=error,
             )
         except httpx.TimeoutException:
             return RunResult(
