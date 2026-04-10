@@ -11,7 +11,7 @@ reporter = Agent(
     name="Reporter",
     model=MODEL,
     db=agent_db,
-    tools=[FileGenerationTools(enable_pdf_generation=False), CalculatorTools(), *get_exa_mcp_tools()],
+    tools=[FileGenerationTools(), CalculatorTools(), *get_exa_mcp_tools()],
     instructions=INSTRUCTIONS,
     enable_agentic_memory=True,
     add_datetime_to_context=True,

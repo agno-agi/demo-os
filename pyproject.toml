@@ -23,6 +23,7 @@ dependencies = [
   "psycopg[binary]",
   "PyGithub",
   "pypdf",
+  "reportlab",
   "slack-sdk",
   "sqlalchemy",
   "yfinance",

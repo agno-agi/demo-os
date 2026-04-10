@@ -112,10 +112,11 @@ pypika==0.51.1
 pyproject-hooks==1.2.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
-python-multipart==0.0.24
+python-multipart==0.0.25
 pytz==2026.1.post1
 pyyaml==6.0.3
 referencing==0.37.0
+reportlab==4.4.10
 requests==2.33.1
 requests-oauthlib==2.0.0
 rich==14.3.3
