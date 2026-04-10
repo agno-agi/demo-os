@@ -1,7 +1,7 @@
 services:
-  agno-demo-db:
+  demo-os-db:
     image: agnohq/pgvector:18
-    container_name: agno-demo-db
+    container_name: demo-os-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-ai}
@@ -12,14 +12,14 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - agno-demo
+      - demo-os
 
-  agno-demo-api:
+  demo-os-api:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ${IMAGE_NAME:-agno-demo}:${IMAGE_TAG:-latest}
-    container_name: agno-demo-api
+    image: ${IMAGE_NAME:-demo-os}:${IMAGE_TAG:-latest}
+    container_name: demo-os-api
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
     ports:
@@ -37,7 +37,7 @@ services:
       - PYTHONPATH=/app
       - AGENTOS_URL=http://127.0.0.1:8000
       # Database
-      - DB_HOST=agno-demo-db
+      - DB_HOST=demo-os-db
       - DB_PORT=5432
       - DB_USER=${DB_USER:-ai}
       - DB_PASS=${DB_PASS:-ai}
@@ -58,14 +58,14 @@ services:
       - SLACK_TOKEN=${SLACK_TOKEN:-}
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}
     depends_on:
-      - agno-demo-db
+      - demo-os-db
     networks:
-      - agno-demo
+      - demo-os
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 networks:
-  agno-demo:
+  demo-os:
 
 volumes:
   pgdata:
