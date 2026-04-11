@@ -2,7 +2,7 @@ chat:
   quick_prompts:
     # --- Agents ---
 
-    knowledge:
+    docs:
       - "What is Agno?"
       - "Tell me about Learning Machines"
       - "Summarize the key features of Agno"

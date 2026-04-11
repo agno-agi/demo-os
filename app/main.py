@@ -19,11 +19,10 @@ from agents.compressor import compressor
 from agents.contacts import contacts
 from agents.craftsman import craftsman
 from agents.dash import dash, dash_knowledge, dash_learnings
+from agents.docs import docs_agent
 from agents.feedback import feedback
 from agents.helpdesk import helpdesk
 from agents.injector import injector
-from agents.knowledge import knowledge as agno_knowledge
-from agents.knowledge import knowledge_agent
 from agents.mcp import mcp_agent
 from agents.pal import pal, pal_knowledge, pal_learnings
 from agents.reasoner import reasoner
@@ -57,7 +56,7 @@ if SLACK_TOKEN and SLACK_SIGNING_SECRET:
 
     interfaces.append(
         Slack(
-            agent=knowledge_agent,
+            agent=docs_agent,
             streaming=True,
             token=SLACK_TOKEN,
             signing_secret=SLACK_SIGNING_SECRET,
@@ -87,7 +86,7 @@ agent_os = AgentOS(
     lifespan=lifespan,
     db=agent_db,
     agents=[
-        knowledge_agent,
+        docs_agent,
         mcp_agent,
         helpdesk,
         feedback,
@@ -123,7 +122,6 @@ agent_os = AgentOS(
         support_triage,
     ],
     knowledge=[
-        agno_knowledge,
         dash_knowledge,
         dash_learnings,
         pal_knowledge,
@@ -140,21 +138,6 @@ app = agent_os.get_app()
 
 
 # ---------------------------------------------------------------------------
-# Custom endpoints
-# ---------------------------------------------------------------------------
-@app.post("/knowledge/reload")
-def reload_knowledge() -> dict[str, str]:
-    """Reload all knowledge files into vector databases."""
-    from agents.knowledge.agent import load_agno_documentation
-
-    try:
-        load_agno_documentation()
-        return {"status": "ok"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-
-
-# ---------------------------------------------------------------------------
 # Schedules
 # ---------------------------------------------------------------------------
 def _register_schedules() -> None:
@@ -162,15 +145,6 @@ def _register_schedules() -> None:
     from agno.scheduler import ScheduleManager
 
     mgr = ScheduleManager(agent_db)
-    mgr.create(
-        name="knowledge-refresh",
-        cron="0 4 * * *",
-        endpoint="/knowledge/reload",
-        payload={},
-        timezone="UTC",
-        description="Daily knowledge file re-index",
-        if_exists="update",
-    )
     mgr.create(
         name="morning-brief",
         cron="0 8 * * 1-5",

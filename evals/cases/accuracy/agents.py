@@ -8,25 +8,25 @@ Scored 1-10 by AccuracyEval, pass threshold >= 7.0.
 
 CASES: list[dict] = [
     # -------------------------------------------------------------------------
-    # Knowledge — RAG retrieval
+    # Docs — documentation retrieval
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "knowledge",
+        "entity_id": "docs",
         "input": "What model providers does Agno support?",
         "expected_output": "OpenAI, Anthropic, Google/Gemini among supported providers",
         "guidelines": "Must name at least 3 specific providers.",
     },
     {
         "entity_type": "agent",
-        "entity_id": "knowledge",
+        "entity_id": "docs",
         "input": "How do you create a knowledge base in Agno?",
         "expected_output": "Use the Knowledge class with a vector database like PgVector",
         "guidelines": "Must mention Knowledge class and vector database. Code example preferred.",
     },
     {
         "entity_type": "agent",
-        "entity_id": "knowledge",
+        "entity_id": "docs",
         "input": "What is hybrid search in Agno?",
         "expected_output": "Combines keyword and semantic search using PgVector SearchType.hybrid",
         "guidelines": "Must explain it combines two search approaches. Mention PgVector if possible.",

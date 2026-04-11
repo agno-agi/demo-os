@@ -1,1 +1,0 @@
-"""Knowledge agent scripts."""

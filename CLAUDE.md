@@ -11,7 +11,7 @@ AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework 
 ```
 AgentOS (app/main.py)
 ├── Agents (14)
-│   ├── Knowledge (agents/knowledge/)                            # RAG-based Q&A
+│   ├── Docs (agents/docs/)                                      # LLMs.txt documentation agent
 │   ├── MCP (agents/mcp/)                                        # External tools via MCP
 │   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
 │   ├── Feedback (agents/feedback/)                              # User feedback + control flow
@@ -58,7 +58,7 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/knowledge/agent.py` | Knowledge - RAG-based Q&A using Agno documentation |
+| `agents/docs/agent.py` | Docs - Agno documentation agent using LLMs.txt tools |
 | `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
 | `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/feedback/agent.py` | Feedback - user feedback + control flow tools |
@@ -178,7 +178,7 @@ agent_db = get_postgres_db()
 from db import db_url, get_postgres_db, create_knowledge
 
 # Agents
-from agents.knowledge import knowledge_agent
+from agents.docs import docs_agent
 from agents.mcp import mcp_agent
 from agents.helpdesk import helpdesk
 from agents.feedback import feedback
@@ -232,9 +232,6 @@ source .venv/bin/activate
 # Local development with Docker
 docker compose up -d --build
 
-# Load documents into knowledge agent
-python -m agents.knowledge.scripts.load_knowledge
-
 # Load knowledge for Dash
 python -m agents.dash.scripts.load_knowledge
 
@@ -242,20 +239,33 @@ python -m agents.dash.scripts.load_knowledge
 ./scripts/format.sh
 ./scripts/validate.sh
 
-# Run evals — Agno evals (AgentAsJudgeEval, AccuracyEval)
-python -m evals
-python -m evals --category security
-python -m evals --verbose
-
 # Run evals — smoke tests (fast, no LLM cost)
 python -m evals smoke
 python -m evals smoke --group agents
 python -m evals smoke --group security
-python -m evals smoke --entity knowledge
+python -m evals smoke --group hitl
+python -m evals smoke --entity docs
+python -m evals smoke --output --compare
 
-# Auto-improvement loop (see evals/IMPROVE.md for full workflow)
-python -m evals improve --entity knowledge
+# Run evals — reliability (tool call validation, no LLM cost)
+python -m evals reliability
+python -m evals reliability --entity helpdesk
+
+# Run evals — Agno evals (AgentAsJudgeEval, AccuracyEval — LLM cost)
+python -m evals
+python -m evals --category security
+python -m evals --category accuracy
+python -m evals --category quality
+python -m evals --verbose
+
+# Run evals — performance baselines
+python -m evals perf --update-baselines
+python -m evals perf
+
+# Auto-improvement loop (see docs/EVALS.md for full workflow)
+python -m evals improve --entity docs
 python -m evals improve --failures
+python -m evals improve --entity docs --json
 ```
 
 ## Environment Variables
@@ -277,16 +287,22 @@ Optional (tools & integrations):
 - `ELEVENLABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
 - `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
-- `GITHUB_TOKEN` - GitHub integration for Coda
+- `GITHUB_TOKEN` - GitHub integration for Coda (see `docs/GITHUB_ACCESS.md`)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
 - `RUNTIME_ENV` - Set to `dev` for auto-reload, `prd` for RBAC auth
 - `AGENTOS_URL` - Scheduler callback URL (default: `http://127.0.0.1:8000`)
-- `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface
+- `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface (see `docs/SLACK_CONNECT.md`)
 - `REPOS_DIR` - Coda repos directory (default: `/repos`, container volume)
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_PROJECT_ID` - Pal Gmail/Calendar
 - `GITHUB_ACCESS_TOKEN`, `PAL_REPO_URL` - Pal Git sync
+
+## Documentation
+
+- `docs/EVALS.md` - Eval framework: smoke tests, reliability, accuracy, performance, improvement loop
+- `docs/SLACK_CONNECT.md` - Slack setup: app manifest, scopes, credentials, SlackTools vs Interface
+- `docs/GITHUB_ACCESS.md` - GitHub PAT setup: permissions, troubleshooting
 
 ## Deployment
 
@@ -313,7 +329,8 @@ Optional (tools & integrations):
 
 | Feature | Where |
 |---------|-------|
-| RAG / hybrid search | Knowledge, Pal, Dash, Investment |
+| RAG / hybrid search | Pal, Dash, Investment |
+| LLMs.txt tools | Docs |
 | MCP tools | MCP, Pal, Dash, AI Research, Investment |
 | HITL — confirmation | Helpdesk, Approvals |
 | HITL — user input | Helpdesk, Feedback |

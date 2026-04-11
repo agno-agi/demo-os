@@ -4,13 +4,13 @@ from evals.cases.smoke import SmokeTest
 
 AGENT_TESTS: list[SmokeTest] = [
     # -------------------------------------------------------------------------
-    # Knowledge (RAG-based Q&A)
+    # Docs (LLMs.txt documentation agent)
     # -------------------------------------------------------------------------
     SmokeTest(
         id="a.1",
-        name="knowledge — What is Agno?",
+        name="docs — What is Agno?",
         entity_type="agent",
-        entity_id="knowledge",
+        entity_id="docs",
         group="agents",
         prompt="What is Agno?",
         response_contains=["Agno"],
@@ -20,9 +20,9 @@ AGENT_TESTS: list[SmokeTest] = [
     ),
     SmokeTest(
         id="a.1.2",
-        name="knowledge — model providers",
+        name="docs — model providers",
         entity_type="agent",
-        entity_id="knowledge",
+        entity_id="docs",
         group="agents",
         prompt="What model providers does Agno support?",
         response_matches=[r"(?i)(openai|anthropic|google|gemini)"],
