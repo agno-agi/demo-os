@@ -6,6 +6,9 @@ from agno.tools.dalle import DalleTools
 from agents.studio.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
 
+# ---------------------------------------------------------------------------
+# Tools
+# ---------------------------------------------------------------------------
 tools: list = [DalleTools(model="dall-e-3", size="1024x1024", quality="standard")]
 
 if getenv("FAL_KEY"):
@@ -31,6 +34,9 @@ if getenv("LUMAAI_API_KEY"):
 
     tools.append(LumaLabTools())
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 studio = Agent(
     id="studio",
     name="Studio",

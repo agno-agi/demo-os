@@ -6,6 +6,9 @@ from agents.reasoner.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db, get_parallel_tools
 from utils.exa import get_exa_mcp_tools
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 reasoner = Agent(
     id="reasoner",
     name="Reasoner",

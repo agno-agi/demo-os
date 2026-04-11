@@ -12,6 +12,9 @@ from workflows.content_pipeline.instructions import (
     WRITER_INSTRUCTIONS,
 )
 
+# ---------------------------------------------------------------------------
+# Agents
+# ---------------------------------------------------------------------------
 researcher = Agent(
     name="Content Researcher",
     model=MODEL,
@@ -43,6 +46,9 @@ editor = Agent(
 )
 
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 def quality_check(outputs) -> bool:
     """End the loop if the editor approves (score >= 8)."""
     if not outputs:
@@ -51,6 +57,9 @@ def quality_check(outputs) -> bool:
     return "APPROVED" in (last_output or "").upper()
 
 
+# ---------------------------------------------------------------------------
+# Create Workflow
+# ---------------------------------------------------------------------------
 content_pipeline = Workflow(
     id="content-pipeline",
     name="Content Pipeline",

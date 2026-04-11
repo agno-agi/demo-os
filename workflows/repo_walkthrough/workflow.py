@@ -13,6 +13,9 @@ from workflows.repo_walkthrough.instructions import (
 
 REPOS_DIR = getenv("REPOS_DIR", "./repos")
 
+# ---------------------------------------------------------------------------
+# Agents
+# ---------------------------------------------------------------------------
 code_analyst = Agent(
     name="Code Analyst",
     model=MODEL,
@@ -55,6 +58,9 @@ narrator = Agent(
     instructions=NARRATOR_INSTRUCTIONS,
 )
 
+# ---------------------------------------------------------------------------
+# Create Workflow
+# ---------------------------------------------------------------------------
 repo_walkthrough = Workflow(
     id="repo-walkthrough",
     name="Repo Walkthrough",

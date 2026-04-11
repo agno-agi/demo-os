@@ -11,6 +11,9 @@ from agents.contacts.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
 from utils.exa import get_exa_mcp_tools
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 contacts = Agent(
     id="contacts",
     name="Contacts",

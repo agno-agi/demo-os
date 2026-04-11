@@ -14,6 +14,9 @@ from agents.taskboard.instructions import INSTRUCTIONS
 from agents.taskboard.tools import add_task, get_summary, list_tasks, remove_task, update_task_status
 from app.settings import MODEL, agent_db
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 taskboard = Agent(
     id="taskboard",
     name="Taskboard",

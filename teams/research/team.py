@@ -13,7 +13,9 @@ from teams.research.instructions import (
 )
 from utils.exa import get_exa_mcp_tools
 
-# Member agents
+# ---------------------------------------------------------------------------
+# Members
+# ---------------------------------------------------------------------------
 analyst = Agent(
     id="research-analyst",
     name="Analyst",
@@ -51,7 +53,9 @@ writer = Agent(
 
 members: list[Agent | Team] = [analyst, investigator, writer]
 
-# 4 team modes with the same members
+# ---------------------------------------------------------------------------
+# Create Teams
+# ---------------------------------------------------------------------------
 research_coordinate = Team(
     id="research-coordinate",
     name="Research Team (Coordinate)",

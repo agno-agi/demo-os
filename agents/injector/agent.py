@@ -14,6 +14,9 @@ from agents.injector.instructions import INSTRUCTIONS
 from agents.injector.tools import check_feature_flag, get_config, get_user_preference
 from app.settings import MODEL, agent_db
 
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
 DEPENDENCIES = {
     "config": {
         "app_name": "AgentOS Demo",
@@ -44,6 +47,9 @@ DEPENDENCIES = {
     },
 }
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 injector = Agent(
     id="injector",
     name="Injector",

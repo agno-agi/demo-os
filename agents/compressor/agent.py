@@ -16,6 +16,9 @@ from agents.compressor.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
 from utils.exa import get_exa_mcp_tools
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 compressor = Agent(
     id="compressor",
     name="Compressor",

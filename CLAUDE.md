@@ -193,6 +193,31 @@ markdown
 
 **Workflow parameter order:** `id`, `name`, `steps`
 
+### Section Headers
+
+All agent, team, and workflow files use `# ---` section headers to separate logical
+blocks. Every file must have at least a `# Create Agent`, `# Create Team`, or
+`# Create Workflow` header before the main constructor. Files with additional code
+get descriptive headers for each block.
+
+Common headers by file type:
+
+| File Type | Headers |
+|-----------|---------|
+| Simple agent | `# Create Agent` |
+| Agent with setup | `# Tools` / `# Dependencies` / `# Create Agent` |
+| Agent with hooks | `# Hooks` (or descriptive name) / `# Create Agent` |
+| Team with members | `# Members` / `# Create Team` |
+| Team with setup | `# Team Leader Tools` / `# Instructions` / `# Members` / `# Create Team` |
+| Workflow | `# Agents` / `# Helpers` (if any) / `# Create Workflow` |
+
+Header format (75-char wide):
+```python
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
+```
+
 ### Agent Pattern
 
 All standalone agents follow this structure:
@@ -203,6 +228,9 @@ from agno.agent import Agent
 from agents.my_agent.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 my_agent = Agent(
     id="my-agent",
     name="My Agent",
@@ -226,6 +254,9 @@ Team-based agents have their own settings.py with specialized knowledge bases an
 ```python
 from agno.team import Team, TeamMode
 
+# ---------------------------------------------------------------------------
+# Create Team
+# ---------------------------------------------------------------------------
 team = Team(
     id="my-team",
     name="My Team",

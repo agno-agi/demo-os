@@ -14,6 +14,9 @@ from workflows.ai_research.instructions import (
     SYNTHESIZER_INSTRUCTIONS,
 )
 
+# ---------------------------------------------------------------------------
+# Agents
+# ---------------------------------------------------------------------------
 models_agent = Agent(
     name="AI Models & Releases",
     model=MODEL,
@@ -54,6 +57,9 @@ synthesizer = Agent(
     markdown=True,
 )
 
+# ---------------------------------------------------------------------------
+# Create Workflow
+# ---------------------------------------------------------------------------
 ai_research = Workflow(
     id="ai-research",
     name="AI Research",

@@ -13,6 +13,9 @@ from agno.tools.llms_txt import LLMsTxtTools
 from agents.docs.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 docs_agent = Agent(
     id="docs",
     name="Docs",

@@ -14,6 +14,9 @@ from workflows.morning_brief.instructions import (
 )
 from workflows.morning_brief.tools import get_email_digest, get_todays_calendar
 
+# ---------------------------------------------------------------------------
+# Agents
+# ---------------------------------------------------------------------------
 calendar_agent = Agent(
     name="Calendar Scanner",
     model=MODEL,
@@ -46,6 +49,9 @@ synthesizer = Agent(
     markdown=True,
 )
 
+# ---------------------------------------------------------------------------
+# Create Workflow
+# ---------------------------------------------------------------------------
 morning_brief = Workflow(
     id="morning-brief",
     name="Morning Brief",

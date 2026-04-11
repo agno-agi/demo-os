@@ -6,6 +6,9 @@ from agents.reporter.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
 from utils.exa import get_exa_mcp_tools
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 reporter = Agent(
     id="reporter",
     name="Reporter",

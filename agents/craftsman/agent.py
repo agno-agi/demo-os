@@ -21,6 +21,9 @@ from app.settings import MODEL, agent_db
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 
+# ---------------------------------------------------------------------------
+# Create Agent
+# ---------------------------------------------------------------------------
 craftsman = Agent(
     id="craftsman",
     name="Craftsman",
