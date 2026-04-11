@@ -14,6 +14,7 @@ dependencies = [
   "elevenlabs",
   "exa-py",
   "fal-client",
+  "lumaai",
   "google-api-python-client",
   "google-auth-oauthlib",
   "google-genai>=1.52.0",

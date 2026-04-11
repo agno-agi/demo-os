@@ -15,7 +15,7 @@
 set -e
 
 CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OS_ROOT="$(dirname "${CURR_DIR}")"
+REPO_ROOT="$(dirname "${CURR_DIR}")"
 DOCKER_FILE="Dockerfile"
 IMAGE_NAME="demo-os"
 IMAGE_TAG="latest"
@@ -32,8 +32,8 @@ echo -e "    ${DIM}Image: ${IMAGE_NAME}:${IMAGE_TAG}${NC}"
 echo -e "    ${DIM}Platforms: linux/amd64, linux/arm64${NC}"
 echo ""
 
-echo -e "    ${DIM}> docker buildx build --platform=linux/amd64,linux/arm64 -t ${IMAGE_NAME}:${IMAGE_TAG} -f ${DOCKER_FILE} ${OS_ROOT} --push${NC}"
-docker buildx build --platform=linux/amd64,linux/arm64 -t ${IMAGE_NAME}:${IMAGE_TAG} -f ${DOCKER_FILE} ${OS_ROOT} --push
+echo -e "    ${DIM}> docker buildx build --platform=linux/amd64,linux/arm64 -t ${IMAGE_NAME}:${IMAGE_TAG} -f ${DOCKER_FILE} ${REPO_ROOT} --push${NC}"
+docker buildx build --platform=linux/amd64,linux/arm64 -t ${IMAGE_NAME}:${IMAGE_TAG} -f ${DOCKER_FILE} ${REPO_ROOT} --push
 
 echo ""
 echo -e "    ${BOLD}Done.${NC}"

@@ -4,13 +4,13 @@ This file provides context for Claude Code when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing 45+ Agno framework features (10 agents, 11 teams, 4 workflows).
+AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework features (14 agents, 11 teams, 5 workflows).
 
 ## Architecture
 
 ```
 AgentOS (app/main.py)
-├── Agents (10)
+├── Agents (14)
 │   ├── Knowledge (agents/knowledge/)                            # RAG-based Q&A
 │   ├── MCP (agents/mcp/)                                        # External tools via MCP
 │   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
@@ -19,8 +19,12 @@ AgentOS (app/main.py)
 │   ├── Reasoner (agents/reasoner/)                              # Reasoning + multi-model + fallback
 │   ├── Reporter (agents/reporter/)                              # Structured output + file generation
 │   ├── Contacts (agents/contacts/)                              # Entity memory + relationships
-│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL)
-│   └── Scheduler (agents/scheduler/)                            # Schedule management (SchedulerTools)
+│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
+│   ├── Scheduler (agents/scheduler/)                            # Schedule management (SchedulerTools)
+│   ├── Taskboard (agents/taskboard/)                            # Session state + agentic state
+│   ├── Compressor (agents/compressor/)                          # Tool result compression
+│   ├── Injector (agents/injector/)                              # Dependency injection via RunContext
+│   └── Craftsman (agents/craftsman/)                            # Skills system (LocalSkills)
 ├── Teams (11)
 │   ├── Pal (agents/pal/)                                        # Personal knowledge agent (team)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
@@ -33,11 +37,12 @@ AgentOS (app/main.py)
 │   ├── Investment Route (teams/investment/)                     # Investment team route
 │   ├── Investment Broadcast (teams/investment/)                 # Investment team broadcast
 │   └── Investment Tasks (teams/investment/)                     # Investment team tasks
-└── Workflows (4)
+└── Workflows (5)
     ├── Morning Brief (workflows/morning_brief/)                 # Daily parallel briefing
     ├── AI Research (workflows/ai_research/)                     # Daily parallel AI research
-    ├── Content Pipeline (workflows/content_pipeline/)           # Router + loop + condition
-    └── Repo Walkthrough (workflows/repo_walkthrough/)           # Code → script → narrated audio
+    ├── Content Pipeline (workflows/content_pipeline/)           # Parallel + loop + condition
+    ├── Repo Walkthrough (workflows/repo_walkthrough/)           # Code → script → narrated audio
+    └── Support Triage (workflows/support_triage/)               # Router + condition + escalation
 ```
 
 All agents share:
@@ -55,14 +60,18 @@ All agents share:
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/knowledge/agent.py` | Knowledge - RAG-based Q&A using Agno documentation |
 | `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
-| `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (PII, injection) |
+| `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/feedback/agent.py` | Feedback - user feedback + control flow tools |
 | `agents/approvals/agent.py` | Approvals - approval flows + audit trail |
 | `agents/reasoner/agent.py` | Reasoner - reasoning + multi-model + fallback |
 | `agents/reporter/agent.py` | Reporter - structured output + file generation |
 | `agents/contacts/agent.py` | Contacts - entity memory + relationships |
-| `agents/studio/agent.py` | Studio - multimodal media generation |
+| `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/scheduler/agent.py` | Scheduler - schedule management (create, list, enable/disable, delete) |
+| `agents/taskboard/agent.py` | Taskboard - session state + agentic state demo |
+| `agents/compressor/agent.py` | Compressor - tool result compression with CompressionManager |
+| `agents/injector/agent.py` | Injector - dependency injection via RunContext |
+| `agents/craftsman/agent.py` | Craftsman - Skills system with LocalSkills loader |
 | `agents/pal/team.py` | Pal team (Navigator, Researcher, Compiler, Linter, Syncer) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `agents/coda/team.py` | Coda team (Coder, Explorer, Planner, Researcher, Triager) |
@@ -72,6 +81,7 @@ All agents share:
 | `workflows/ai_research/workflow.py` | AI Research (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Content Pipeline (router, parallel, loop, HITL) |
 | `workflows/repo_walkthrough/workflow.py` | Repo Walkthrough (analyze → script → narrate) |
+| `workflows/support_triage/workflow.py` | Support Triage (classify → route → escalate) |
 | `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
 | `db/url.py` | Builds database URL from environment |
 | `compose.yaml` | Local development with Docker |
@@ -178,6 +188,10 @@ from agents.reporter import reporter
 from agents.contacts import contacts
 from agents.studio import studio
 from agents.scheduler import scheduler
+from agents.taskboard import taskboard
+from agents.compressor import compressor
+from agents.injector import injector
+from agents.craftsman import craftsman
 
 # Teams
 from agents.pal import pal
@@ -191,6 +205,7 @@ from workflows.morning_brief import morning_brief
 from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.repo_walkthrough import repo_walkthrough
+from workflows.support_triage import support_triage
 ```
 
 ## Adding a New Agent
@@ -261,6 +276,7 @@ Optional (tools & integrations):
 - `PARALLEL_API_KEY` - Parallel web search (Pal Researcher, Coda Researcher)
 - `ELEVENLABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
+- `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
 - `GITHUB_TOKEN` - GitHub integration for Coda
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
@@ -302,7 +318,8 @@ Optional (tools & integrations):
 | HITL — confirmation | Helpdesk, Approvals |
 | HITL — user input | Helpdesk, Feedback |
 | HITL — external execution | Helpdesk |
-| Guardrails (PII, injection) | Helpdesk |
+| Guardrails (moderation, PII, injection) | Helpdesk |
+| Output guardrails | Helpdesk |
 | Pre/post hooks | Helpdesk |
 | Approval — blocking | Approvals |
 | Approval — audit trail | Approvals |
@@ -323,6 +340,7 @@ Optional (tools & integrations):
 | Image generation (DALL-E) | Studio |
 | Image-to-image (FAL) | Studio |
 | Text-to-speech (ElevenLabs) | Studio, Repo Walkthrough |
+| Video generation (LumaLab) | Studio |
 | Sound effects | Studio |
 | YFinance tools | Investment |
 | File tools (memos) | Investment |
@@ -335,6 +353,12 @@ Optional (tools & integrations):
 | Scheduling (cron) | Morning Brief, AI Research, Scheduler |
 | SchedulerTools (CRUD) | Scheduler |
 | Parallel execution | Morning Brief, AI Research, Content Pipeline |
+| Workflow — router | Support Triage |
+| Workflow — condition | Support Triage |
+| Session state + agentic state | Taskboard |
+| Tool result compression | Compressor |
+| Dependency injection (RunContext) | Injector |
+| Skills system (LocalSkills) | Craftsman |
 | Cross-modal chaining | Repo Walkthrough |
 
 ---

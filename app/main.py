@@ -15,10 +15,13 @@ from agno.os import AgentOS
 
 from agents.approvals import approvals
 from agents.coda import coda
+from agents.compressor import compressor
 from agents.contacts import contacts
+from agents.craftsman import craftsman
 from agents.dash import dash, dash_knowledge, dash_learnings
 from agents.feedback import feedback
 from agents.helpdesk import helpdesk
+from agents.injector import injector
 from agents.knowledge import knowledge as agno_knowledge
 from agents.knowledge import knowledge_agent
 from agents.mcp import mcp_agent
@@ -27,6 +30,7 @@ from agents.reasoner import reasoner
 from agents.reporter import reporter
 from agents.scheduler import scheduler
 from agents.studio import studio
+from agents.taskboard import taskboard
 from app.registry import registry
 from app.settings import RUNTIME_ENV, SCHEDULER_BASE_URL, SLACK_SIGNING_SECRET, SLACK_TOKEN, agent_db
 from teams.investment import (
@@ -42,6 +46,7 @@ from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.morning_brief import morning_brief
 from workflows.repo_walkthrough import repo_walkthrough
+from workflows.support_triage import support_triage
 
 # ---------------------------------------------------------------------------
 # Interfaces
@@ -92,6 +97,10 @@ agent_os = AgentOS(
         contacts,
         studio,
         scheduler,
+        taskboard,
+        compressor,
+        injector,
+        craftsman,
     ],
     teams=[
         pal,
@@ -111,6 +120,7 @@ agent_os = AgentOS(
         ai_research,
         content_pipeline,
         repo_walkthrough,
+        support_triage,
     ],
     knowledge=[
         agno_knowledge,

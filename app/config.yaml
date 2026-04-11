@@ -45,12 +45,32 @@ chat:
     studio:
       - "Generate an image of a futuristic city skyline at sunset"
       - "Read this aloud: 'Welcome to Agno, the platform for building AI agents.'"
-      - "Generate a sound effect of thunder rolling in the distance"
+      - "Generate a 5-second video of waves crashing on a beach at sunset"
 
     scheduler:
       - "Show me all active schedules"
       - "Schedule the AI research brief to run every day at 7am UTC"
       - "Disable the morning-brief schedule"
+
+    taskboard:
+      - "Add a task: Review Q2 roadmap, priority high, category work"
+      - "Show me all my tasks"
+      - "Mark T-001 as done and add a new task: prepare demo for Friday"
+
+    compressor:
+      - "Research the current state of quantum computing — search at least 5 sources"
+      - "Compare the top 3 AI agent frameworks with deep web research"
+      - "What are the latest developments in nuclear fusion energy?"
+
+    injector:
+      - "What's the current app configuration?"
+      - "Is the dark_mode feature flag enabled?"
+      - "Check all feature flags and tell me which are disabled"
+
+    craftsman:
+      - "Review this Python function for bugs: def login(user, pwd): return db.query(f'SELECT * FROM users WHERE name={user}')"
+      - "Design a REST API for a task management application"
+      - "Write a system prompt for a customer support chatbot"
 
     # --- Teams ---
 
@@ -126,3 +146,8 @@ chat:
       - "Walk me through the Pal codebase"
       - "Explain how Dash works as a 2-minute walkthrough"
       - "Generate a narrated overview of the Agno repo"
+
+    support-triage:
+      - "I can't log into my account, it says my password is wrong"
+      - "I was charged twice for my subscription last month"
+      - "The API is returning 500 errors when I try to upload files larger than 10MB"
