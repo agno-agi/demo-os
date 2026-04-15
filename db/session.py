@@ -15,17 +15,17 @@ from db.url import db_url
 DB_ID = "demo-os-db"
 
 
-def get_postgres_db(contents_table: str | None = None) -> PostgresDb:
+def get_postgres_db(knowledge_table: str | None = None) -> PostgresDb:
     """Create a PostgresDb instance.
 
     Args:
-        contents_table: Optional table name for storing knowledge contents.
+        knowledge_table: Optional table name for storing knowledge contents.
 
     Returns:
         Configured PostgresDb instance.
     """
-    if contents_table is not None:
-        return PostgresDb(id=DB_ID, db_url=db_url, knowledge_table=contents_table)
+    if knowledge_table is not None:
+        return PostgresDb(id=DB_ID, db_url=db_url, knowledge_table=knowledge_table)
     return PostgresDb(id=DB_ID, db_url=db_url)
 
 
@@ -47,5 +47,5 @@ def create_knowledge(name: str, table_name: str) -> Knowledge:
             search_type=SearchType.hybrid,
             embedder=OpenAIEmbedder(id="text-embedding-3-small"),
         ),
-        contents_db=get_postgres_db(contents_table=f"{table_name}_contents"),
+        contents_db=get_postgres_db(knowledge_table=f"{table_name}_contents"),
     )

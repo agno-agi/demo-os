@@ -8,7 +8,7 @@ Usage:
     from evals.client import AgentOSClient
 
     client = AgentOSClient(base_url="http://localhost:8000")
-    result = client.run_agent("knowledge", "What is Agno?")
+    result = client.run_agent("docs", "What is Agno?")
 """
 
 from __future__ import annotations

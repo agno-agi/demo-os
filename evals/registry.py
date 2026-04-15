@@ -131,7 +131,7 @@ ENTITIES: dict[str, Entity] = {
     "coda": Entity(
         id="coda",
         type="team",
-        instruction_file="agents/coda/instructions.py",
+        instruction_file="agents/coda/team.py",
         definition_file="agents/coda/team.py",
     ),
     "research-coordinate": Entity(

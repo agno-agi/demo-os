@@ -2,19 +2,16 @@
 
 from os import getenv
 from pathlib import Path
-from typing import List
 
-from agno.models.openai import OpenAIResponses
-
+from app.settings import MODEL  # noqa: F401 — re-exported for agents
 from db import create_knowledge, get_postgres_db
 
 agent_db = get_postgres_db()
 REPOS_DIR = Path(getenv("REPOS_DIR", "/repos"))
-MODEL = OpenAIResponses(id="gpt-5.4")
 coda_learnings = create_knowledge("Coda Learnings", "coda_learnings")
 
 
-def get_github_tools(include_tools: List[str]) -> list:
+def get_github_tools(include_tools: list[str]) -> list:
     """Return GithubTools if a GitHub token is available, else empty list."""
     if getenv("GITHUB_TOKEN") or getenv("GITHUB_ACCESS_TOKEN"):
         from agno.tools.github import GithubTools

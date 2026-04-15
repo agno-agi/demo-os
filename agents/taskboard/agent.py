@@ -30,6 +30,7 @@ taskboard = Agent(
     },
     enable_agentic_state=True,
     add_session_state_to_context=True,
+    enable_agentic_memory=True,
     add_datetime_to_context=True,
     add_history_to_context=True,
     read_chat_history=True,

@@ -18,6 +18,7 @@ from workflows.morning_brief.tools import get_email_digest, get_todays_calendar
 # Agents
 # ---------------------------------------------------------------------------
 calendar_agent = Agent(
+    id="morning-brief-calendar",
     name="Calendar Scanner",
     model=MODEL,
     db=agent_db,
@@ -26,6 +27,7 @@ calendar_agent = Agent(
 )
 
 email_agent = Agent(
+    id="morning-brief-email",
     name="Email Digester",
     model=MODEL,
     db=agent_db,
@@ -34,6 +36,7 @@ email_agent = Agent(
 )
 
 news_agent = Agent(
+    id="morning-brief-news",
     name="News Scanner",
     model=MODEL,
     db=agent_db,
@@ -42,6 +45,7 @@ news_agent = Agent(
 )
 
 synthesizer = Agent(
+    id="morning-brief-synthesizer",
     name="Brief Synthesizer",
     model=MODEL,
     db=agent_db,

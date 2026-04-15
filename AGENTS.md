@@ -276,7 +276,7 @@ team = Team(
 ### Database
 
 - Use `get_postgres_db()` from `db` module
-- **Important**: The `contents_table` parameter is only needed when the database is provided to a Knowledge base as a `contents_db`.
+- **Important**: The `knowledge_table` parameter is only needed when the database is provided to a Knowledge base as a `contents_db`.
 
 ```python
 # Agent WITH a Knowledge base
@@ -529,7 +529,7 @@ knowledge = Knowledge(
         search_type=SearchType.hybrid,
         embedder=OpenAIEmbedder(id="text-embedding-3-small"),
     ),
-    contents_db=get_postgres_db(contents_table="my_contents"),
+    contents_db=get_postgres_db(knowledge_table="my_contents"),
 )
 ```
 

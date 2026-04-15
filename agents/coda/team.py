@@ -21,13 +21,7 @@ from agents.coda.agents.planner import planner
 from agents.coda.agents.researcher import researcher
 from agents.coda.agents.triager import triager
 from agents.coda.repos import load_repos_config
-from agents.coda.settings import MODEL, coda_learnings
-from db import get_postgres_db
-
-# ---------------------------------------------------------------------------
-# Setup
-# ---------------------------------------------------------------------------
-team_db = get_postgres_db()
+from agents.coda.settings import MODEL, agent_db, coda_learnings
 
 # Build repo list for leader context
 _repos = load_repos_config()
@@ -189,7 +183,7 @@ coda = Team(
     mode=TeamMode.coordinate,
     model=MODEL,
     members=[m for m in [coder, explorer, planner, researcher, triager] if m is not None],
-    db=team_db,
+    db=agent_db,
     tools=tools if tools else None,
     # Learning (shared knowledge base with members)
     learning=LearningMachine(

@@ -1,15 +1,16 @@
 # Demo AgentOS
 
-A multi-agent system showcasing 50+ agentic features across 14 agents, 11 multi-agent teams, and 5 workflows.
+A reference AgentOS application built with Agno.
 
-This is a reference implementation for building production agentic software with Agno. Every major Agno capability: RAG, MCP, human-in-the-loop, guardrails, approvals, reasoning, structured output, multi-model, entity memory, scheduling, session state, dependency injection, skills, team modes, and workflows, is demonstrated in a working agent you can run, test, and extend.
+This repo packages a broad set of agent patterns into one runnable system: standalone agents, multi-agent teams, scheduled workflows, shared memory, guardrails, approvals, and external integrations. You can run it locally, inspect each example in isolation, and use it as a starting point for your own AgentOS.
 
-This codebase demonstrates two things:
+The architecture is intentionally simple. Fourteen agents, eleven teams, and five workflows run inside one FastAPI service with PostgreSQL for persistence and shared context. The goal is not to show off a feature checklist. It is to show how agentic systems can be built with ordinary application architecture, clear boundaries, and production-minded patterns.
 
-1. **You can run a near-unlimited number of agents in a single service.** 14 agents, 11 teams, and 5 workflows all run in one process. Scale the number of replicas based on load, not the number of agents.
-2. **You don't need complex architecture to run agentic software.** There's no event queues, no message bus, no custom infrastructure. It's a FastAPI app with a PostgreSQL database.
+Use this project to:
 
-Agentic software is just software. Using systems engineering principles, you can build production-grade agent systems with Agno, the same way you'd build any other service.
+1. **See how core Agno patterns fit together in a single app.**
+2. **Explore working examples of memory, RAG, tool use, scheduling, guardrails, and collaboration modes.**
+3. **Extend the system with your own agents, teams, workflows, and integrations.**
 
 ## Quick Start
 

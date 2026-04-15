@@ -1,10 +1,8 @@
 """Investment Team — 7 agents across 4 team modes."""
 
-from __future__ import annotations
-
 from os import getenv
 from pathlib import Path
-from typing import Any
+from typing import Any  # noqa: UP035 — used for dict[str, Any] unpacking
 
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
@@ -131,7 +129,6 @@ memo_writer = Agent(
     name="Memo Writer",
     role="Synthesize analyst inputs into formal investment memos",
     model=MODEL,
-    db=agent_db,
     tools=[
         FileTools(
             base_dir=MEMOS_DIR,
@@ -143,11 +140,7 @@ memo_writer = Agent(
         )
     ],
     instructions=MEMO_WRITER_INSTRUCTIONS,
-    enable_agentic_memory=True,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    num_history_runs=5,
-    markdown=True,
+    **_common,
 )
 
 committee_chair = Agent(
@@ -174,9 +167,14 @@ investment_coordinate = Team(
     db=agent_db,
     learning=_learning,
     instructions=COORDINATE_INSTRUCTIONS,
-    show_members_responses=True,
+    share_member_interactions=True,
     enable_agentic_memory=True,
+    search_past_sessions=True,
+    num_past_sessions_to_search=5,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )
 
@@ -187,9 +185,14 @@ investment_route = Team(
     model=MODEL,
     members=[*_full_members, committee_chair],
     db=agent_db,
+    learning=_learning,
     instructions=ROUTE_INSTRUCTIONS,
-    show_members_responses=True,
+    share_member_interactions=True,
+    enable_agentic_memory=True,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )
 
@@ -202,9 +205,12 @@ investment_broadcast = Team(
     db=agent_db,
     learning=_learning,
     instructions=BROADCAST_INSTRUCTIONS,
-    show_members_responses=True,
+    share_member_interactions=True,
     enable_agentic_memory=True,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )
 
@@ -217,8 +223,13 @@ investment_tasks = Team(
     db=agent_db,
     learning=_learning,
     instructions=TASKS_INSTRUCTIONS,
-    show_members_responses=True,
+    share_member_interactions=True,
     enable_agentic_memory=True,
+    search_past_sessions=True,
+    num_past_sessions_to_search=5,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )

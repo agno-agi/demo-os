@@ -6,8 +6,6 @@ Demonstrates:
 - ``StepInput`` — passing data between workflow steps
 """
 
-from typing import List
-
 from agno.agent import Agent
 from agno.workflow import Condition, Router, Step, Workflow
 from agno.workflow.types import StepInput
@@ -26,6 +24,7 @@ from workflows.support_triage.instructions import (
 # ---------------------------------------------------------------------------
 
 classifier = Agent(
+    id="support-triage-classifier",
     name="Classifier",
     model=MODEL,
     db=agent_db,
@@ -33,6 +32,7 @@ classifier = Agent(
 )
 
 billing_specialist = Agent(
+    id="support-triage-billing",
     name="Billing Specialist",
     model=MODEL,
     db=agent_db,
@@ -41,6 +41,7 @@ billing_specialist = Agent(
 )
 
 technical_specialist = Agent(
+    id="support-triage-technical",
     name="Technical Specialist",
     model=MODEL,
     db=agent_db,
@@ -49,6 +50,7 @@ technical_specialist = Agent(
 )
 
 account_specialist = Agent(
+    id="support-triage-account",
     name="Account Specialist",
     model=MODEL,
     db=agent_db,
@@ -57,6 +59,7 @@ account_specialist = Agent(
 )
 
 escalation_agent = Agent(
+    id="support-triage-escalation",
     name="Escalation Handler",
     model=MODEL,
     db=agent_db,
@@ -68,7 +71,7 @@ escalation_agent = Agent(
 # ---------------------------------------------------------------------------
 # Router selector — parse classifier output to pick a specialist
 # ---------------------------------------------------------------------------
-def route_to_specialist(step_input: StepInput) -> List[Step]:
+def route_to_specialist(step_input: StepInput) -> list[Step]:
     """Route to the correct specialist based on the classifier's CATEGORY line."""
     content = str(step_input.previous_step_content or "").upper()
     if "CATEGORY: BILLING" in content:

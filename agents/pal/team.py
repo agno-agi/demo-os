@@ -15,12 +15,12 @@ Pal is a team of specialists coordinated by a leader:
 
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
-from agno.models.openai import OpenAIResponses
 from agno.team import Team, TeamMode
 
 from agents.pal.agents import compiler, linter, navigator, researcher, syncer
 from agents.pal.config import GIT_SYNC_ENABLED, SLACK_TOKEN
 from agents.pal.settings import agent_db, pal_learnings
+from app.settings import MODEL
 
 # ---------------------------------------------------------------------------
 # Team Leader Tools (Slack — leader-only)
@@ -156,7 +156,7 @@ pal = Team(
     id="pal",
     name="Pal",
     mode=TeamMode.coordinate,
-    model=OpenAIResponses(id="gpt-5.4"),
+    model=MODEL,
     members=members,
     db=agent_db,
     tools=leader_tools,

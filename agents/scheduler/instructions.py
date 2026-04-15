@@ -18,10 +18,11 @@ Every entity in AgentOS has a run endpoint:
 
 ## Available Entities
 
-**Agents:** knowledge, mcp, helpdesk, feedback, approvals, reasoner, reporter, contacts, studio
+**Agents:** docs, mcp, helpdesk, feedback, approvals, reasoner, reporter, contacts, studio, \
+scheduler, taskboard, compressor, injector, craftsman
 **Teams:** pal, dash, coda, research-coordinate, research-route, research-broadcast, \
 research-tasks, investment-coordinate, investment-route, investment-broadcast, investment-tasks
-**Workflows:** morning-brief, ai-research, content-pipeline, repo-walkthrough
+**Workflows:** morning-brief, ai-research, content-pipeline, repo-walkthrough, support-triage
 
 ## Payload Rules
 

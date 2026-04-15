@@ -37,7 +37,7 @@ def check_style(code: str, filename: str = "<input>") -> str:
             findings.append(f"{filename}:{i} — Bare except clause (catch specific exceptions)")
 
         # Print statements (potential debug leftover)
-        if stripped.startswith("print(") and "# noqa" not in line:
+        if stripped.startswith("print(") and not any(tag in line for tag in ("# noqa", "# audit")):
             findings.append(f"{filename}:{i} — print() statement (use logging instead?)")
 
         # TODO/FIXME/HACK comments

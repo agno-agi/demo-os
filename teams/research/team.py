@@ -64,8 +64,14 @@ research_coordinate = Team(
     members=members,
     db=agent_db,
     instructions=COORDINATE_INSTRUCTIONS,
+    share_member_interactions=True,
     enable_agentic_memory=True,
+    search_past_sessions=True,
+    num_past_sessions_to_search=5,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )
 
@@ -77,7 +83,11 @@ research_route = Team(
     members=members,
     db=agent_db,
     instructions=ROUTE_INSTRUCTIONS,
+    enable_agentic_memory=True,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )
 
@@ -89,7 +99,11 @@ research_broadcast = Team(
     members=members,
     db=agent_db,
     instructions=BROADCAST_INSTRUCTIONS,
+    enable_agentic_memory=True,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )
 
@@ -101,7 +115,13 @@ research_tasks = Team(
     members=members,
     db=agent_db,
     instructions=TASKS_INSTRUCTIONS,
+    share_member_interactions=True,
     enable_agentic_memory=True,
+    search_past_sessions=True,
+    num_past_sessions_to_search=5,
     add_datetime_to_context=True,
+    add_history_to_context=True,
+    read_chat_history=True,
+    num_history_runs=5,
     markdown=True,
 )

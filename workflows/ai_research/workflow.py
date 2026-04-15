@@ -18,6 +18,7 @@ from workflows.ai_research.instructions import (
 # Agents
 # ---------------------------------------------------------------------------
 models_agent = Agent(
+    id="ai-research-models",
     name="AI Models & Releases",
     model=MODEL,
     db=agent_db,
@@ -26,6 +27,7 @@ models_agent = Agent(
 )
 
 products_agent = Agent(
+    id="ai-research-products",
     name="AI Products & Startups",
     model=MODEL,
     db=agent_db,
@@ -34,6 +36,7 @@ products_agent = Agent(
 )
 
 infra_agent = Agent(
+    id="ai-research-infra",
     name="AI Infrastructure",
     model=MODEL,
     db=agent_db,
@@ -42,6 +45,7 @@ infra_agent = Agent(
 )
 
 industry_agent = Agent(
+    id="ai-research-industry",
     name="AI Policy & Industry",
     model=MODEL,
     db=agent_db,
@@ -50,6 +54,7 @@ industry_agent = Agent(
 )
 
 synthesizer = Agent(
+    id="ai-research-synthesizer",
     name="Research Synthesizer",
     model=MODEL,
     db=agent_db,

@@ -17,6 +17,7 @@ REPOS_DIR = getenv("REPOS_DIR", "./repos")
 # Agents
 # ---------------------------------------------------------------------------
 code_analyst = Agent(
+    id="repo-walkthrough-analyst",
     name="Code Analyst",
     model=MODEL,
     db=agent_db,
@@ -36,6 +37,7 @@ code_analyst = Agent(
 )
 
 script_writer = Agent(
+    id="repo-walkthrough-scriptwriter",
     name="Script Writer",
     model=MODEL,
     db=agent_db,
@@ -51,6 +53,7 @@ if getenv("ELEVENLABS_API_KEY"):
     narrator_tools.append(ElevenLabsTools(enable_text_to_speech=True, voice_id="21m00Tcm4TlvDq8ikWAM"))
 
 narrator = Agent(
+    id="repo-walkthrough-narrator",
     name="Narrator",
     model=MODEL,
     db=agent_db,
