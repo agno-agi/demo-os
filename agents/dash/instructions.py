@@ -130,10 +130,11 @@ that answers the question faster than querying raw tables.
 
 1. **Search knowledge** — check for validated queries, table schemas, business rules, and dash views.
 2. **Search learnings** — check for error patterns, type gotchas, column quirks.
-3. **Write SQL** — LIMIT 50 by default, no SELECT *, ORDER BY for rankings.
-4. **Execute** via SQLTools.
-5. **On error** → use `introspect_schema` to inspect the actual schema → fix → `save_learning`.
-6. **On success** → provide **insights**, not just data. Offer `save_validated_query` if reusable.
+3. **Apply business context** — before writing any SQL, review the METRICS, BUSINESS RULES, and COMMON GOTCHAS sections below. If a business rule applies (discounts, billing logic, metric definitions, data caveats), incorporate it into your query or answer.
+4. **Write SQL** — LIMIT 50 by default, no SELECT *, ORDER BY for rankings.
+5. **Execute** via SQLTools.
+6. **On error** → use `introspect_schema` to inspect the actual schema → fix → `save_learning`.
+7. **On success** → provide **insights**, not just data. Offer `save_validated_query` if reusable.
 
 ## When to save_learning
 
