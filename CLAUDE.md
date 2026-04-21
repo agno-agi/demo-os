@@ -25,10 +25,9 @@ AgentOS (app/main.py)
 │   ├── Compressor (agents/compressor/)                          # Tool result compression
 │   ├── Injector (agents/injector/)                              # Dependency injection via RunContext
 │   └── Craftsman (agents/craftsman/)                            # Skills system (LocalSkills)
-├── Teams (11)
+├── Teams (10)
 │   ├── Pal (agents/pal/)                                        # Personal knowledge agent (team)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
-│   ├── Coda (agents/coda/)                                      # Coding agent (team)
 │   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
 │   ├── Research Route (teams/research/)                         # Team route mode
 │   ├── Research Broadcast (teams/research/)                     # Team broadcast mode
@@ -74,7 +73,6 @@ All agents share:
 | `agents/craftsman/agent.py` | Craftsman - Skills system with LocalSkills loader |
 | `agents/pal/team.py` | Pal team (Navigator, Researcher, Compiler, Linter, Syncer) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
-| `agents/coda/team.py` | Coda team (Coder, Explorer, Planner, Researcher, Triager) |
 | `teams/research/team.py` | Research Team (4 modes: coordinate, route, broadcast, tasks) |
 | `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |
 | `workflows/morning_brief/workflow.py` | Morning Brief (parallel gather → synthesize) |
@@ -247,7 +245,7 @@ my_agent = Agent(
 )
 ```
 
-### Team Pattern (Pal, Dash, Coda)
+### Team Pattern (Pal, Dash)
 
 Team-based agents have their own settings.py with specialized knowledge bases and DB engines:
 
@@ -315,7 +313,6 @@ from agents.craftsman import craftsman
 # Teams
 from agents.pal import pal
 from agents.dash import dash
-from agents.coda import coda
 from teams.research import research_coordinate, research_route, research_broadcast, research_tasks
 from teams.investment import investment_coordinate, investment_route, investment_broadcast, investment_tasks
 
@@ -402,18 +399,16 @@ Optional (model providers — each enables registry models in Studio):
 
 Optional (tools & integrations):
 - `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter, Contacts
-- `PARALLEL_API_KEY` - Parallel web search (Pal Researcher, Coda Researcher)
+- `PARALLEL_API_KEY` - Parallel web search (Pal Researcher)
 - `ELEVENLABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
 - `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
-- `GITHUB_TOKEN` - GitHub integration for Coda (see `docs/GITHUB_ACCESS.md`)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
 - `RUNTIME_ENV` - Set to `dev` for auto-reload, `prd` for RBAC auth
 - `AGENTOS_URL` - Scheduler callback URL (default: `http://127.0.0.1:8000`)
 - `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface (see `docs/SLACK_CONNECT.md`)
-- `REPOS_DIR` - Coda repos directory (default: `/repos`, container volume)
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_PROJECT_ID` - Pal Gmail/Calendar
 - `GITHUB_ACCESS_TOKEN`, `PAL_REPO_URL` - Pal Git sync
 
@@ -421,7 +416,6 @@ Optional (tools & integrations):
 
 - `docs/EVALS.md` - Eval framework: smoke tests, reliability, accuracy, performance, improvement loop
 - `docs/SLACK_CONNECT.md` - Slack setup: app manifest, scopes, credentials, SlackTools vs Interface
-- `docs/GITHUB_ACCESS.md` - GitHub PAT setup: permissions, troubleshooting
 
 ## Deployment
 
@@ -469,10 +463,9 @@ Optional (tools & integrations):
 | Entity memory | Contacts |
 | User profile | Contacts |
 | Session context + planning | Contacts |
-| Learning (LearningMachine) | Pal, Dash, Coda, Contacts, Investment |
+| Learning (LearningMachine) | Pal, Dash, Contacts, Investment |
 | SQL tools | Dash, Pal |
-| Coding tools | Coda, Repo Walkthrough |
-| GitHub tools | Coda |
+| Coding tools | Repo Walkthrough |
 | Image generation (DALL-E) | Studio |
 | Image generation (Gemini NanoBanana) | Registry |
 | Image-to-image (FAL) | Studio |
@@ -481,7 +474,7 @@ Optional (tools & integrations):
 | Sound effects | Studio |
 | YFinance tools | Investment |
 | File tools (memos) | Investment |
-| Team — coordinate | Pal, Dash, Coda, Research, Investment |
+| Team — coordinate | Pal, Dash, Research, Investment |
 | Team — route | Research, Investment |
 | Team — broadcast | Research, Investment |
 | Team — tasks | Research, Investment |

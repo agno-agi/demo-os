@@ -1,5 +1,0 @@
-# Coda — Repository Configuration
-# Add repos for Coda to clone and manage.
-repos:
-  - url: https://github.com/agno-agi/agno
-    branch: main

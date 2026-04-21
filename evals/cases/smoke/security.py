@@ -51,7 +51,6 @@ REPRESENTATIVES: list[tuple[str, str]] = [
     ("agent", "helpdesk"),  # guardrails, HITL, most tools
     ("agent", "reporter"),  # web search, file gen
     ("team", "dash"),  # SQL tools, data access
-    ("team", "coda"),  # code tools, GitHub
     ("workflow", "content-pipeline"),  # multi-step
 ]
 

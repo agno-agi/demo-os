@@ -27,8 +27,6 @@ services:
     volumes:
       # Hot-reload: mount source code
       - .:/app
-      # Coda repos
-      - repos:/repos
       # Pal context
       - ./agents/pal/context:/app/agents/pal/context
     environment:
@@ -52,8 +50,6 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
       - FAL_KEY=${FAL_KEY:-}
-      # Coda
-      - REPOS_DIR=/repos
       # Slack (optional)
       - SLACK_TOKEN=${SLACK_TOKEN:-}
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}
@@ -69,4 +65,3 @@ networks:
 
 volumes:
   pgdata:
-  repos:

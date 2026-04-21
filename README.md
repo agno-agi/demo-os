@@ -65,7 +65,6 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |------|------|-------------|----------|
 | [**Pal**](agents/pal/) | coordinate | Personal knowledge agent (5 specialist agents) | SQL tools, file tools, wiki pipeline, web research, git sync |
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
-| [**Coda**](agents/coda/) | coordinate | Coding agent (5 specialist agents) | CodingTools, GitTools, GithubTools, worktree isolation |
 | [**Research**](teams/research/) | coordinate, route, broadcast, tasks | Research team demonstrating all 4 team modes | ParallelTools, Exa MCP, team mode comparison |
 | [**Investment**](teams/investment/) | coordinate, route, broadcast, tasks | 7-agent investment committee using Gemini | Multi-model (Gemini), YFinanceTools, FileTools, LearningMachine |
 
@@ -102,10 +101,9 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | File generation (CSV/JSON/PDF) | Reporter |
 | Entity memory | Contacts |
 | User profile | Contacts |
-| Learning (LearningMachine) | Pal, Dash, Coda, Contacts, Investment |
+| Learning (LearningMachine) | Pal, Dash, Contacts, Investment |
 | SQL tools | Dash, Pal |
-| Coding tools | Coda, Repo Walkthrough |
-| GitHub tools | Coda |
+| Coding tools | Repo Walkthrough |
 | Image generation (DALL-E) | Studio |
 | Image-to-image (FAL) | Studio |
 | Text-to-speech (ElevenLabs) | Studio, Repo Walkthrough |
@@ -116,7 +114,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Tool result compression | Compressor |
 | Dependency injection (RunContext) | Injector |
 | Skills system (LocalSkills) | Craftsman |
-| Team — coordinate | Pal, Dash, Coda, Research, Investment |
+| Team — coordinate | Pal, Dash, Research, Investment |
 | Team — route | Research, Investment |
 | Team — broadcast | Research, Investment |
 | Team — tasks | Research, Investment |
@@ -274,22 +272,9 @@ model=Claude(id="claude-sonnet-4-5")
 </details>
 
 <details>
-<summary><strong>Giving Coda access to GitHub</strong></summary>
-
-Coda needs a GitHub token to clone repos, read issues/PRs, push branches, and open PRs. Create a Fine-grained Personal Access Token with Contents, Pull requests, Issues, and Metadata permissions, then add it to your `.env`:
-
-```bash
-GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxxxx
-```
-
-See [docs/GITHUB_ACCESS.md](docs/GITHUB_ACCESS.md) for the full setup guide.
-
-</details>
-
-<details>
 <summary><strong>Connect to Slack</strong></summary>
 
-Slack gives AgentOS two capabilities: receiving messages (DMs, @mentions, threads) and sending messages (proactive posts from Pal, Dash, Coda). Each thread maps to a session ID for conversation context.
+Slack gives AgentOS two capabilities: receiving messages (DMs, @mentions, threads) and sending messages (proactive posts from Pal, Dash). Each thread maps to a session ID for conversation context.
 
 1. Get a public URL (ngrok for local, deployed URL for production)
 2. Create a Slack app from the manifest in the setup guide
@@ -327,15 +312,13 @@ python -m app.main
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
 | `EXA_API_KEY` | No | - | Web search for Reasoner, Reporter, Contacts, Research, Investment |
-| `PARALLEL_API_KEY` | No | - | Parallel web search (Pal Researcher, Coda Researcher) |
+| `PARALLEL_API_KEY` | No | - | Parallel web search (Pal Researcher) |
 | `ELEVENLABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
 | `FAL_KEY` | No | - | Image-to-image for Studio |
 | `LUMAAI_API_KEY` | No | - | Video generation for Studio |
-| `GITHUB_TOKEN` | No | - | GitHub integration for Coda ([setup guide](docs/GITHUB_ACCESS.md)) |
 | `ANTHROPIC_API_KEY` | No | - | Fallback model for Reasoner |
 | `SLACK_TOKEN` | No | - | Slack interface + team leader tools ([setup guide](docs/SLACK_CONNECT.md)) |
 | `SLACK_SIGNING_SECRET` | No | - | Slack webhook verification ([setup guide](docs/SLACK_CONNECT.md)) |
-| `REPOS_DIR` | No | `./repos` | Coda repos directory |
 | `RUNTIME_ENV` | No | `prd` | Set to `dev` for auto-reload |
 | `DB_HOST` | No | `localhost` | Database host |
 | `DB_PORT` | No | `5432` | Database port |
@@ -377,7 +360,6 @@ See [docs/EVALS.md](docs/EVALS.md) for the full eval system documentation.
 |----------|---------------|
 | [docs/EVALS.md](docs/EVALS.md) | Eval framework -- smoke tests, reliability, accuracy, performance, improvement loop |
 | [docs/SLACK_CONNECT.md](docs/SLACK_CONNECT.md) | Connecting AgentOS to Slack -- app manifest, scopes, credentials |
-| [docs/GITHUB_ACCESS.md](docs/GITHUB_ACCESS.md) | Giving Coda access to GitHub -- fine-grained PAT setup, permissions, troubleshooting |
 
 ## Learn More
 

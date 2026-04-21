@@ -43,20 +43,6 @@ TEAM_TESTS: list[SmokeTest] = [
         max_duration=60.0,
     ),
     # -------------------------------------------------------------------------
-    # Coda (coding team)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.3",
-        name="coda — repos",
-        entity_type="team",
-        entity_id="coda",
-        group="teams",
-        prompt="What repos are available?",
-        response_matches=[r"(?i)(repo|available|configured|no.*repo)"],
-        response_not_contains=["Traceback"],
-        max_duration=60.0,
-    ),
-    # -------------------------------------------------------------------------
     # Research — coordinate mode
     # -------------------------------------------------------------------------
     SmokeTest(

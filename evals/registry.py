@@ -128,12 +128,6 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="agents/dash/instructions.py",
         definition_file="agents/dash/team.py",
     ),
-    "coda": Entity(
-        id="coda",
-        type="team",
-        instruction_file="agents/coda/team.py",
-        definition_file="agents/coda/team.py",
-    ),
     "research-coordinate": Entity(
         id="research-coordinate",
         type="team",

@@ -14,7 +14,6 @@ from pathlib import Path
 from agno.os import AgentOS
 
 from agents.approvals import approvals
-from agents.coda import coda
 from agents.compressor import compressor
 from agents.contacts import contacts
 from agents.craftsman import craftsman
@@ -104,7 +103,6 @@ agent_os = AgentOS(
     teams=[
         pal,
         dash,
-        coda,
         research_coordinate,
         research_route,
         research_broadcast,

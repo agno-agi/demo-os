@@ -84,11 +84,6 @@ chat:
       - "Break down our MRR by plan"
       - "Show me the revenue trend by month"
 
-    coda:
-      - "What repos are available?"
-      - "Explain the architecture of this codebase"
-      - "Review the latest open PRs"
-
     investment-coordinate:
       - "Should we invest in NVIDIA?"
       - "Evaluate Microsoft for a $2M allocation"

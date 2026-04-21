@@ -77,7 +77,7 @@ python -m evals smoke --verbose                # Show full responses
 
 Instead of testing every prompt against every entity (which would be 30 x 7 = 210 tests), security uses a sampling strategy:
 
-- **5 representative entities** (helpdesk, reporter, dash, coda, content-pipeline) get all 7 security prompts — these have the highest tool/data surface area
+- **4 representative entities** (helpdesk, reporter, dash, content-pipeline) get all 7 security prompts — these have the highest tool/data surface area
 - **All other entities** get 1 spot-check prompt
 
 This gives 60 tests with the same coverage confidence, running in a fraction of the time.

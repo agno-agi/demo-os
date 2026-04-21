@@ -20,7 +20,7 @@ Every entity in AgentOS has a run endpoint:
 
 **Agents:** docs, mcp, helpdesk, feedback, approvals, reasoner, reporter, contacts, studio, \
 scheduler, taskboard, compressor, injector, craftsman
-**Teams:** pal, dash, coda, research-coordinate, research-route, research-broadcast, \
+**Teams:** pal, dash, research-coordinate, research-route, research-broadcast, \
 research-tasks, investment-coordinate, investment-route, investment-broadcast, investment-tasks
 **Workflows:** morning-brief, ai-research, content-pipeline, repo-walkthrough, support-triage
 
