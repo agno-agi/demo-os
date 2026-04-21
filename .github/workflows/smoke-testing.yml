@@ -14,7 +14,7 @@ on:
     types: [labeled, synchronize]
     branches: ["main"]
 
-concurrency: 
+concurrency:
   group: smoke-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
