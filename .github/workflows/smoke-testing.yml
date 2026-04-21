@@ -103,8 +103,16 @@ jobs:
       - name: Run smoke tests
         id: smoke
         run: |
-          # TODO: temporarily isolated to dash MRR test to debug regex match failure
-          uv run python -m evals smoke --entity dash --verbose --output
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            GROUP="${{ github.event.inputs.group }}"
+            if [ -n "$GROUP" ]; then
+              uv run python -m evals smoke --group "$GROUP" --output
+            else
+              uv run python -m evals smoke --output
+            fi
+          else
+            uv run python -m evals smoke --output
+          fi
 
       - name: Upload results
         if: always()
