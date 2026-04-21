@@ -38,7 +38,7 @@ TEAM_TESTS: list[SmokeTest] = [
         entity_id="dash",
         group="teams",
         prompt="What's our current MRR?",
-        response_matches=[r"\$[\d,.]+"],
+        response_matches=[r"\$[\d,]+"],
         response_not_contains=["Traceback"],
         max_duration=60.0,
     ),

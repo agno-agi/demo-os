@@ -355,6 +355,6 @@ AGENT_TESTS: list[SmokeTest] = [
         prompt="Design a REST API for a todo list app",
         response_matches=[r"(?i)(api|endpoint|rest|todo|resource)"],
         response_not_contains=["Traceback"],
-        max_duration=55.0,
+        max_duration=45.0,
     ),
 ]
