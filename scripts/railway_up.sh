@@ -122,6 +122,12 @@ echo ""
 railway domain --service demo-os
 
 echo ""
+echo -e "${BOLD}Seeding Dash data...${NC}"
+echo ""
+railway run --service demo-os python -m agents.dash.scripts.load_data --drop
+railway run --service demo-os python -m agents.dash.scripts.load_knowledge --recreate
+
+echo ""
 echo -e "${BOLD}Done.${NC} Domain may take ~5 minutes."
 echo -e "${DIM}Logs: railway logs --service demo-os${NC}"
 echo ""
