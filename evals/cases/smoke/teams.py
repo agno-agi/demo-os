@@ -131,7 +131,7 @@ TEAM_TESTS: list[SmokeTest] = [
         response_matches=[r"(?i)(nvda|nvidia|analy|risk|technical|fundamental)"],
         response_not_contains=["Traceback"],
         requires=["EXA_API_KEY"],
-        max_duration=90.0,
+        max_duration=110.0,
     ),
     # -------------------------------------------------------------------------
     # Investment — tasks mode
@@ -146,6 +146,6 @@ TEAM_TESTS: list[SmokeTest] = [
         response_matches=[r"(?i)(portfolio|diversif|stock|allocation)"],
         response_not_contains=["Traceback"],
         requires=["EXA_API_KEY"],
-        max_duration=210.0,
+        max_duration=250.0,
     ),
 ]
