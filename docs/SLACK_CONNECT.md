@@ -185,7 +185,7 @@ The Slack interface is registered conditionally in `app/main.py` -- only when bo
 Two separate things:
 
 - **Slack Interface** (`app/main.py`): Receives incoming events from Slack. This is the webhook endpoint that Slack calls. Requires both `SLACK_TOKEN` and `SLACK_SIGNING_SECRET`.
-- **SlackTools** (on Dash leader): Lets the team leader send messages to channels, search messages, and get user info. Requires only `SLACK_TOKEN`.
+- **SlackTools** (on Dash leader): Lets the team leader send messages to channels, search messages, and get user info. Requires only `SLACK_TOKEN`. Enabled tools:
 
 | Team | SlackTools enabled |
 |------|--------------------|
