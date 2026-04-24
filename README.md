@@ -63,7 +63,6 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Team | Mode | What it does | Features |
 |------|------|-------------|----------|
-| [**Pal**](agents/pal/) | coordinate | Personal knowledge agent (5 specialist agents) | SQL tools, file tools, wiki pipeline, web research, git sync |
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
 | [**Research**](teams/research/) | coordinate, route, broadcast, tasks | Research team demonstrating all 4 team modes | ParallelTools, Exa MCP, team mode comparison |
 | [**Investment**](teams/investment/) | coordinate, route, broadcast, tasks | 7-agent investment committee using Gemini | Multi-model (Gemini), YFinanceTools, FileTools, LearningMachine |
@@ -82,9 +81,9 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Feature | Where |
 |---------|-------|
-| RAG / hybrid search | Pal, Dash |
+| RAG / hybrid search | Dash |
 | LLMs.txt tools | Docs |
-| MCP tools | MCP, Pal, Dash, AI Research |
+| MCP tools | MCP, Dash, AI Research |
 | HITL — confirmation | Helpdesk, Approvals |
 | HITL — user input | Helpdesk, Feedback |
 | HITL — external execution | Helpdesk |
@@ -101,8 +100,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | File generation (CSV/JSON/PDF) | Reporter |
 | Entity memory | Contacts |
 | User profile | Contacts |
-| Learning (LearningMachine) | Pal, Dash, Contacts, Investment |
-| SQL tools | Dash, Pal |
+| Learning (LearningMachine) | Dash, Contacts, Investment |
+| SQL tools | Dash |
 | Coding tools | Repo Walkthrough |
 | Image generation (DALL-E) | Studio |
 | Image-to-image (FAL) | Studio |
@@ -114,7 +113,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Tool result compression | Compressor |
 | Dependency injection (RunContext) | Injector |
 | Skills system (LocalSkills) | Craftsman |
-| Team — coordinate | Pal, Dash, Research, Investment |
+| Team — coordinate | Dash, Research, Investment |
 | Team — route | Research, Investment |
 | Team — broadcast | Research, Investment |
 | Team — tasks | Research, Investment |
@@ -274,7 +273,7 @@ model=Claude(id="claude-sonnet-4-5")
 <details>
 <summary><strong>Connect to Slack</strong></summary>
 
-Slack gives AgentOS two capabilities: receiving messages (DMs, @mentions, threads) and sending messages (proactive posts from Pal, Dash). Each thread maps to a session ID for conversation context.
+Slack gives AgentOS two capabilities: receiving messages (DMs, @mentions, threads) and sending messages (proactive posts from Dash). Each thread maps to a session ID for conversation context.
 
 1. Get a public URL (ngrok for local, deployed URL for production)
 2. Create a Slack app from the manifest in the setup guide
@@ -312,7 +311,7 @@ python -m app.main
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
 | `EXA_API_KEY` | No | - | Web search for Reasoner, Reporter, Contacts, Research, Investment |
-| `PARALLEL_API_KEY` | No | - | Parallel web search (Pal Researcher) |
+| `PARALLEL_API_KEY` | No | - | Parallel web search |
 | `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
 | `FAL_KEY` | No | - | Image-to-image for Studio |
 | `LUMAAI_API_KEY` | No | - | Video generation for Studio |

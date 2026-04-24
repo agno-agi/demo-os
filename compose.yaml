@@ -27,8 +27,6 @@ services:
     volumes:
       # Hot-reload: mount source code
       - .:/app
-      # Pal context
-      - ./agents/pal/context:/app/agents/pal/context
     environment:
       - RUNTIME_ENV=dev
       - AGNO_DEBUG=True

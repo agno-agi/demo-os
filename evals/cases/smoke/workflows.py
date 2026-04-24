@@ -52,12 +52,12 @@ WORKFLOW_TESTS: list[SmokeTest] = [
     # -------------------------------------------------------------------------
     SmokeTest(
         id="w.4",
-        name="repo-walkthrough — Pal codebase",
+        name="repo-walkthrough — Dash codebase",
         entity_type="workflow",
         entity_id="repo-walkthrough",
         group="workflows",
-        prompt="Walk me through the Pal codebase",
-        response_matches=[r"(?i)(pal|code|agent|team|navigat)"],
+        prompt="Walk me through the Dash codebase",
+        response_matches=[r"(?i)(dash|code|agent|team|analyst)"],
         response_not_contains=["Traceback"],
         max_duration=120.0,
     ),

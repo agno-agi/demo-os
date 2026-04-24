@@ -23,7 +23,6 @@ from agents.feedback import feedback
 from agents.helpdesk import helpdesk
 from agents.injector import injector
 from agents.mcp import mcp_agent
-from agents.pal import pal, pal_knowledge, pal_learnings
 from agents.reasoner import reasoner
 from agents.reporter import reporter
 from agents.scheduler import scheduler
@@ -101,7 +100,6 @@ agent_os = AgentOS(
         craftsman,
     ],
     teams=[
-        pal,
         dash,
         research_coordinate,
         research_route,
@@ -122,8 +120,6 @@ agent_os = AgentOS(
     knowledge=[
         dash_knowledge,
         dash_learnings,
-        pal_knowledge,
-        pal_learnings,
         investment_knowledge,
         investment_learnings,
     ],

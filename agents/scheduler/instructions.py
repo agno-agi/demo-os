@@ -12,7 +12,7 @@ Every entity in AgentOS has a run endpoint:
 | Type | Endpoint Pattern | Examples |
 |------|-----------------|----------|
 | Agent | `/agents/<id>/runs` | `/agents/knowledge/runs`, `/agents/reporter/runs` |
-| Team | `/teams/<id>/runs` | `/teams/dash/runs`, `/teams/pal/runs` |
+| Team | `/teams/<id>/runs` | `/teams/dash/runs`, `/teams/research-coordinate/runs` |
 | Workflow | `/workflows/<id>/runs` | `/workflows/morning-brief/runs`, `/workflows/ai-research/runs` |
 | Custom | Any path | `/knowledge/reload` |
 
@@ -20,7 +20,7 @@ Every entity in AgentOS has a run endpoint:
 
 **Agents:** docs, mcp, helpdesk, feedback, approvals, reasoner, reporter, contacts, studio, \
 scheduler, taskboard, compressor, injector, craftsman
-**Teams:** pal, dash, research-coordinate, research-route, research-broadcast, \
+**Teams:** dash, research-coordinate, research-route, research-broadcast, \
 research-tasks, investment-coordinate, investment-route, investment-broadcast, investment-tasks
 **Workflows:** morning-brief, ai-research, content-pipeline, repo-walkthrough, support-triage
 

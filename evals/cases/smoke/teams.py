@@ -4,20 +4,6 @@ from evals.cases.smoke import SmokeTest
 
 TEAM_TESTS: list[SmokeTest] = [
     # -------------------------------------------------------------------------
-    # Pal (personal knowledge team)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.1",
-        name="pal — capabilities",
-        entity_type="team",
-        entity_id="pal",
-        group="teams",
-        prompt="What can you do?",
-        response_matches=[r"(?i)(help|research|knowledge|wiki)"],
-        response_not_contains=["Traceback"],
-        max_duration=60.0,
-    ),
-    # -------------------------------------------------------------------------
     # Dash (data analyst team)
     # -------------------------------------------------------------------------
     SmokeTest(

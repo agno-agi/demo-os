@@ -3,7 +3,7 @@
 Slack gives AgentOS two capabilities:
 
 1. **Receiving messages** -- users interact with agents via DMs, @mentions, and thread replies.
-2. **Sending messages** -- team leaders (Pal, Dash) post to channels proactively or on request.
+2. **Sending messages** -- team leaders (Dash) post to channels proactively or on request.
 
 Each Slack thread maps to a session ID, so every thread gets its own conversation context.
 
@@ -185,11 +185,10 @@ The Slack interface is registered conditionally in `app/main.py` -- only when bo
 Two separate things:
 
 - **Slack Interface** (`app/main.py`): Receives incoming events from Slack. This is the webhook endpoint that Slack calls. Requires both `SLACK_TOKEN` and `SLACK_SIGNING_SECRET`.
-- **SlackTools** (on Pal, Dash leaders): Lets team leaders send messages to channels, search messages, and get user info. Requires only `SLACK_TOKEN`. Each team has different tools enabled:
+- **SlackTools** (on Dash leader): Lets the team leader send messages to channels, search messages, and get user info. Requires only `SLACK_TOKEN`.
 
 | Team | SlackTools enabled |
 |------|--------------------|
-| Pal | `send_message`, `list_channels` |
 | Dash | `send_message`, `list_channels`, `send_message_thread`, `get_channel_info`, `get_thread`, `get_user_info`, `search_messages` |
 
 SlackTools are conditional -- if `SLACK_TOKEN` is not set, the team leaders still work but can't interact with Slack.
