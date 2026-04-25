@@ -124,6 +124,16 @@ AGENT_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
+    SmokeTest(
+        id="a.3.4",
+        name="helpdesk — PII in prompt",
+        entity_type="agent",
+        entity_id="helpdesk",
+        group="agents",
+        prompt="My SSN is 123-45-6789, please open a ticket about my login issue",
+        response_not_contains=["123-45-6789", "Traceback"],
+        max_duration=30.0,
+    ),
     # -------------------------------------------------------------------------
     # Feedback (user feedback + control flow)
     # -------------------------------------------------------------------------
@@ -268,6 +278,17 @@ AGENT_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
+    SmokeTest(
+        id="a.10.3",
+        name="scheduler — create schedule",
+        entity_type="agent",
+        entity_id="scheduler",
+        group="agents",
+        prompt="Create a schedule to run the docs agent every day at 9am UTC with the message 'Daily check'",
+        response_matches=[r"(?i)(created|added|scheduled)"],
+        response_not_contains=["Traceback"],
+        max_duration=30.0,
+    ),
     # -------------------------------------------------------------------------
     # Taskboard (session state + agentic state)
     # -------------------------------------------------------------------------
@@ -290,6 +311,17 @@ AGENT_TESTS: list[SmokeTest] = [
         group="agents",
         prompt="Show me all my tasks",
         response_matches=[r"(?i)(task|list|no.*task|none|summary)"],
+        response_not_contains=["Traceback"],
+        max_duration=30.0,
+    ),
+    SmokeTest(
+        id="a.11.3",
+        name="taskboard — add and complete",
+        entity_type="agent",
+        entity_id="taskboard",
+        group="agents",
+        prompt="Add a task 'Write smoke tests' and then mark it as complete",
+        response_matches=[r"(?i)(complet|done|marked|finish)"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
