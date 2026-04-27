@@ -55,7 +55,7 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
       PARALLEL_API_KEY: ${{ secrets.PARALLEL_API_KEY }}
-      ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      ELEVEN_LABS_API_KEY: ${{ secrets.ELEVEN_LABS_API_KEY }}
       FAL_KEY: ${{ secrets.FAL_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 

@@ -400,7 +400,7 @@ Optional (model providers — each enables registry models in Studio):
 Optional (tools & integrations):
 - `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter, Contacts
 - `PARALLEL_API_KEY` - Parallel web search (Pal Researcher)
-- `ELEVENLABS_API_KEY` - TTS for Studio, Repo Walkthrough
+- `ELEVEN_LABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
 - `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
