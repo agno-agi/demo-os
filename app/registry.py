@@ -116,11 +116,6 @@ def _get_tools() -> list:
 
         tools.append(FalTools())
 
-    if getenv("GITHUB_TOKEN") or getenv("GITHUB_ACCESS_TOKEN"):
-        from agno.tools.github import GithubTools
-
-        tools.append(GithubTools())
-
     if getenv("GOOGLE_API_KEY"):
         from agno.tools.nano_banana import NanoBananaTools
 

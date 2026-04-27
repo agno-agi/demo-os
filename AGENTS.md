@@ -25,8 +25,7 @@ AgentOS (app/main.py)
 │   ├── Compressor (agents/compressor/)                          # Tool result compression
 │   ├── Injector (agents/injector/)                              # Dependency injection via RunContext
 │   └── Craftsman (agents/craftsman/)                            # Skills system (LocalSkills)
-├── Teams (10)
-│   ├── Pal (agents/pal/)                                        # Personal knowledge agent (team)
+├── Teams (9)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
 │   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
 │   ├── Research Route (teams/research/)                         # Team route mode
@@ -71,7 +70,6 @@ All agents share:
 | `agents/compressor/agent.py` | Compressor - tool result compression with CompressionManager |
 | `agents/injector/agent.py` | Injector - dependency injection via RunContext |
 | `agents/craftsman/agent.py` | Craftsman - Skills system with LocalSkills loader |
-| `agents/pal/team.py` | Pal team (Navigator, Researcher, Compiler, Linter, Syncer) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Research Team (4 modes: coordinate, route, broadcast, tasks) |
 | `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |
@@ -245,7 +243,7 @@ my_agent = Agent(
 )
 ```
 
-### Team Pattern (Pal, Dash)
+### Team Pattern (Dash)
 
 Team-based agents have their own settings.py with specialized knowledge bases and DB engines:
 
@@ -311,7 +309,6 @@ from agents.injector import injector
 from agents.craftsman import craftsman
 
 # Teams
-from agents.pal import pal
 from agents.dash import dash
 from teams.research import research_coordinate, research_route, research_broadcast, research_tasks
 from teams.investment import investment_coordinate, investment_route, investment_broadcast, investment_tasks
@@ -399,7 +396,7 @@ Optional (model providers — each enables registry models in Studio):
 
 Optional (tools & integrations):
 - `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter, Contacts
-- `PARALLEL_API_KEY` - Parallel web search (Pal Researcher)
+- `PARALLEL_API_KEY` - Parallel web search
 - `ELEVEN_LABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
 - `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
@@ -409,8 +406,6 @@ Optional (tools & integrations):
 - `RUNTIME_ENV` - Set to `dev` for auto-reload, `prd` for RBAC auth
 - `AGENTOS_URL` - Scheduler callback URL (default: `http://127.0.0.1:8000`)
 - `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface (see `docs/SLACK_CONNECT.md`)
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_PROJECT_ID` - Pal Gmail/Calendar
-- `GITHUB_ACCESS_TOKEN`, `PAL_REPO_URL` - Pal Git sync
 
 ## Documentation
 
@@ -442,9 +437,9 @@ Optional (tools & integrations):
 
 | Feature | Where |
 |---------|-------|
-| RAG / hybrid search | Pal, Dash, Investment |
+| RAG / hybrid search | Dash, Investment |
 | LLMs.txt tools | Docs |
-| MCP tools | MCP, Pal, Dash, AI Research, Investment |
+| MCP tools | MCP, Dash, AI Research, Investment |
 | HITL — confirmation | Helpdesk, Approvals |
 | HITL — user input | Helpdesk, Feedback |
 | HITL — external execution | Helpdesk |
@@ -463,8 +458,8 @@ Optional (tools & integrations):
 | Entity memory | Contacts |
 | User profile | Contacts |
 | Session context + planning | Contacts |
-| Learning (LearningMachine) | Pal, Dash, Contacts, Investment |
-| SQL tools | Dash, Pal |
+| Learning (LearningMachine) | Dash, Contacts, Investment |
+| SQL tools | Dash |
 | Coding tools | Repo Walkthrough |
 | Image generation (DALL-E) | Studio |
 | Image-to-image (FAL) | Studio |
@@ -473,7 +468,7 @@ Optional (tools & integrations):
 | Sound effects | Studio |
 | YFinance tools | Investment |
 | File tools (memos) | Investment |
-| Team — coordinate | Pal, Dash, Research, Investment |
+| Team — coordinate | Dash, Research, Investment |
 | Team — route | Research, Investment |
 | Team — broadcast | Research, Investment |
 | Team — tasks | Research, Investment |

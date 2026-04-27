@@ -27,8 +27,6 @@ services:
     volumes:
       # Hot-reload: mount source code
       - .:/app
-      # Pal context
-      - ./agents/pal/context:/app/agents/pal/context
     environment:
       - RUNTIME_ENV=dev
       - AGNO_DEBUG=True
@@ -47,7 +45,6 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - EXA_API_KEY=${EXA_API_KEY:-}
       - PARALLEL_API_KEY=${PARALLEL_API_KEY:-}
-      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - ELEVEN_LABS_API_KEY=${ELEVEN_LABS_API_KEY:-}
       - FAL_KEY=${FAL_KEY:-}
       # Slack (optional)

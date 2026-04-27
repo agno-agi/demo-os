@@ -74,11 +74,6 @@ chat:
 
     # --- Teams ---
 
-    pal:
-      - "What can you do?"
-      - "Ingest this article: https://docs.agno.com/agent-os/introduction"
-      - "Save a note: quarterly planning meeting moved to Friday 3pm"
-
     dash:
       - "What's our current MRR?"
       - "Break down our MRR by plan"
@@ -138,7 +133,7 @@ chat:
       - "Draft an announcement email for our new feature"
 
     repo-walkthrough:
-      - "Walk me through the Pal codebase"
+      - "Walk me through the Dash codebase"
       - "Explain how Dash works as a 2-minute walkthrough"
       - "Generate a narrated overview of the Agno repo"
 

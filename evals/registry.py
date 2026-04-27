@@ -116,12 +116,6 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Teams (11)
     # -------------------------------------------------------------------------
-    "pal": Entity(
-        id="pal",
-        type="team",
-        instruction_file="agents/pal/instructions.py",
-        definition_file="agents/pal/team.py",
-    ),
     "dash": Entity(
         id="dash",
         type="team",

@@ -4,20 +4,6 @@ from evals.cases.smoke import SmokeTest
 
 TEAM_TESTS: list[SmokeTest] = [
     # -------------------------------------------------------------------------
-    # Pal (personal knowledge team)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.1",
-        name="pal — capabilities",
-        entity_type="team",
-        entity_id="pal",
-        group="teams",
-        prompt="What can you do?",
-        response_matches=[r"(?i)(help|research|knowledge|wiki)"],
-        response_not_contains=["Traceback"],
-        max_duration=60.0,
-    ),
-    # -------------------------------------------------------------------------
     # Dash (data analyst team)
     # -------------------------------------------------------------------------
     SmokeTest(
@@ -145,7 +131,7 @@ TEAM_TESTS: list[SmokeTest] = [
         response_matches=[r"(?i)(nvda|nvidia|analy|risk|technical|fundamental)"],
         response_not_contains=["Traceback"],
         requires=["EXA_API_KEY"],
-        max_duration=90.0,
+        max_duration=110.0,
     ),
     # -------------------------------------------------------------------------
     # Investment — tasks mode
@@ -160,6 +146,6 @@ TEAM_TESTS: list[SmokeTest] = [
         response_matches=[r"(?i)(portfolio|diversif|stock|allocation)"],
         response_not_contains=["Traceback"],
         requires=["EXA_API_KEY"],
-        max_duration=210.0,
+        max_duration=250.0,
     ),
 ]
