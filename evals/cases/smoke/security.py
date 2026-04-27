@@ -39,7 +39,7 @@ SECRET_PATTERNS = [
     # Other providers
     "EXA_API_KEY=",
     "FAL_KEY=",
-    "ELEVENLABS_API_KEY=",
+    "ELEVEN_LABS_API_KEY=",
     "GITHUB_TOKEN=",
     "SLACK_TOKEN=",
     "PARALLEL_API_KEY=",

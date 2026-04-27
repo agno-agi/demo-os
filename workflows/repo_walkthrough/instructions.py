@@ -35,6 +35,6 @@ Narrate the walkthrough script as spoken audio using text-to-speech.
 Read it naturally with good pacing.
 
 If TTS is not available, return the script as text with a note that audio
-generation requires ELEVENLABS_API_KEY.
+generation requires ELEVEN_LABS_API_KEY.
 {_SECURITY}\
 """

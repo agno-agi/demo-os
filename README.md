@@ -313,7 +313,7 @@ python -m app.main
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
 | `EXA_API_KEY` | No | - | Web search for Reasoner, Reporter, Contacts, Research, Investment |
 | `PARALLEL_API_KEY` | No | - | Parallel web search (Pal Researcher) |
-| `ELEVENLABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
+| `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
 | `FAL_KEY` | No | - | Image-to-image for Studio |
 | `LUMAAI_API_KEY` | No | - | Video generation for Studio |
 | `ANTHROPIC_API_KEY` | No | - | Fallback model for Reasoner |

@@ -47,7 +47,7 @@ script_writer = Agent(
 
 # Narrator — conditionally uses ElevenLabs TTS
 narrator_tools: list = []
-if getenv("ELEVENLABS_API_KEY"):
+if getenv("ELEVEN_LABS_API_KEY"):
     from agno.tools.eleven_labs import ElevenLabsTools
 
     narrator_tools.append(ElevenLabsTools(enable_text_to_speech=True, voice_id="21m00Tcm4TlvDq8ikWAM"))

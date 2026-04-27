@@ -48,7 +48,7 @@ services:
       - EXA_API_KEY=${EXA_API_KEY:-}
       - PARALLEL_API_KEY=${PARALLEL_API_KEY:-}
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
-      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
+      - ELEVEN_LABS_API_KEY=${ELEVEN_LABS_API_KEY:-}
       - FAL_KEY=${FAL_KEY:-}
       # Slack (optional)
       - SLACK_TOKEN=${SLACK_TOKEN:-}

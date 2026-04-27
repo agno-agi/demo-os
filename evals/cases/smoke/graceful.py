@@ -11,7 +11,7 @@ GRACEFUL_TESTS: list[SmokeTest] = [
         group="graceful",
         prompt="Read this aloud: hello",
         response_not_contains=["Traceback", "traceback"],
-        requires=["!ELEVENLABS_API_KEY"],  # Run only when key is MISSING
+        requires=["!ELEVEN_LABS_API_KEY"],  # Run only when key is MISSING
     ),
     SmokeTest(
         id="g.2",

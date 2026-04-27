@@ -106,7 +106,7 @@ def _get_tools() -> list:
 
     # --- Env-gated tools ---------------------------------------------------
 
-    if getenv("ELEVENLABS_API_KEY"):
+    if getenv("ELEVEN_LABS_API_KEY"):
         from agno.tools.eleven_labs import ElevenLabsTools
 
         tools.append(ElevenLabsTools())
