@@ -106,7 +106,7 @@ railway add -s demo-os \
     -v "DB_DRIVER=postgresql+psycopg" \
     -v "RUNTIME_ENV=prd" \
     -v "WAIT_FOR_DB=True" \
-    -v "REPOS_DIR=/repos" \
+    -v "REPOS_DIR=." \
     -v "OPENAI_API_KEY=${OPENAI_API_KEY}" \
     -v "PORT=8000" \
     "${OPTIONAL_VARS[@]}"

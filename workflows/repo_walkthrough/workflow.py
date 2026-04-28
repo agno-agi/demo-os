@@ -11,7 +11,7 @@ from workflows.repo_walkthrough.instructions import (
     SCRIPT_WRITER_INSTRUCTIONS,
 )
 
-REPOS_DIR = getenv("REPOS_DIR", "./repos")
+REPOS_DIR = getenv("REPOS_DIR", ".")
 
 # ---------------------------------------------------------------------------
 # Agents
