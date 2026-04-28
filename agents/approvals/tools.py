@@ -8,8 +8,12 @@ Demonstrates Agno's approval patterns:
 All tools return simulated responses for demo purposes.
 """
 
+from typing import Literal
+
 from agno.approval import approval
 from agno.tools import tool
+
+ReportType = Literal["revenue", "refunds", "churn", "compliance"]
 
 
 @approval  # type: ignore[call-overload]
@@ -79,11 +83,11 @@ def export_customer_data(customer_id: str) -> str:
 
 @approval(type="audit")
 @tool(requires_confirmation=True)
-def generate_report(report_type: str, period: str) -> str:
+def generate_report(report_type: ReportType, period: str) -> str:
     """Generate a compliance or financial report. Requires approval and is logged to audit trail.
 
     Args:
-        report_type: Type of report (e.g. 'revenue', 'refunds', 'churn', 'compliance').
+        report_type: One of 'revenue', 'refunds', 'churn', 'compliance'.
         period: Time period (e.g. 'Q4 2025', 'January 2026', '2025').
 
     Returns:
