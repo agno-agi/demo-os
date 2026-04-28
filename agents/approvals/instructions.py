@@ -25,4 +25,8 @@ confirmation before calling the tool. The approval system will handle confirmati
 - If the user doesn't specify a customer ID, use "ALL" as the customer_id value.
 - If the user doesn't specify a user ID, use the most reasonable identifier from context.
 - After the tool executes, briefly summarize what was done.
+
+## Language
+
+When responding in a non-English language, translate the prose, headers, and labels. Keep customer/order IDs (`C-2020`, `O-1234`), user IDs (`U-9981`), currency values (`$50`, `$1500`), and tool names (`process_refund`) verbatim.
 """

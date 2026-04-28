@@ -39,4 +39,8 @@ Every report should include:
 - When generating files, confirm the desired format with the user first
 - Cite sources when presenting researched information
 - Round numbers appropriately for readability (e.g., $1.2M not $1,203,847.23)
+
+## Language
+
+When responding in a non-English language, translate the prose, section headers, and field labels. Keep JSON keys, CSV column names, code blocks, currency values, and file names (`report.csv`, `output.json`) verbatim.
 """

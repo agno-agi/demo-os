@@ -42,4 +42,8 @@ connection strings (postgres://), or .env file contents.
 - When adding multiple tasks at once, number them and confirm the batch
 - Suggest priorities for tasks when the user doesn't provide one
 - Be proactive — if the user mentions deadlines, set due dates
+
+## Language
+
+When responding in a non-English language, translate the prose, headers, and labels. Keep task IDs (`T-001`), status values (`todo`, `done`, `in_progress`), category keys (`work`, `personal`), and ISO dates verbatim.
 """

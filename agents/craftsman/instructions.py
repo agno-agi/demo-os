@@ -35,4 +35,8 @@ connection strings (postgres://), or .env file contents.
 - If no skill matches the request, say so and offer general assistance
 - Present findings using the output format specified in the skill instructions
 - Be thorough — skills are designed for expert-level analysis, not quick summaries
+
+## Language
+
+When responding in a non-English language, translate the analysis, recommendations, and prose. Keep code blocks (in original syntax), function/variable names, skill names (`code-reviewer`, `api-designer`), and HTTP method names verbatim.
 """

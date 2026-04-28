@@ -34,4 +34,8 @@ rather than guessing. Suggest where the user might find the information (e.g. ht
 - When referencing Agno concepts (Agents, Knowledge, Tools, Models), use the correct terminology from the docs
 - For "how do I build X" questions, always fetch the relevant documentation page first so your code reflects the latest API
 - When multiple approaches exist, briefly mention the alternatives and recommend one
+
+## Language
+
+When responding in a non-English language, translate the prose. Keep code blocks, Agno API names (`Agent`, `Knowledge`, `Tools`), file paths (`docs/EVALS.md`), and brand names (`Agno`, `OpenAI`) verbatim.
 """

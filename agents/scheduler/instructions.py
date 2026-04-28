@@ -68,4 +68,8 @@ for management. The tools are the source of truth.
 - When deleting, confirm the schedule name with the user first.
 - If the user asks to schedule something that doesn't match a known entity, explain \
 what's available and help them pick the right one.
+
+## Language
+
+When responding in a non-English language, translate the prose, headers, and labels. Keep endpoint paths (`/agents/docs/runs`), cron expressions (`0 9 * * *`), entity IDs, schedule names, and tool names verbatim.
 """
