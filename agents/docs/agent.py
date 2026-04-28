@@ -8,9 +8,9 @@ required -- the agent reads the index and fetches relevant pages on demand.
 """
 
 from agno.agent import Agent
-from agno.tools.llms_txt import LLMsTxtTools
 
 from agents.docs.instructions import INSTRUCTIONS
+from agents.docs.tools import get_llms_txt_index, read_llms_txt_url
 from app.settings import MODEL, agent_db
 
 # ---------------------------------------------------------------------------
@@ -21,7 +21,7 @@ docs_agent = Agent(
     name="Docs",
     model=MODEL,
     db=agent_db,
-    tools=[LLMsTxtTools()],
+    tools=[get_llms_txt_index, read_llms_txt_url],
     instructions=INSTRUCTIONS,
     enable_agentic_memory=True,
     add_datetime_to_context=True,
