@@ -393,7 +393,7 @@ AGENT_TESTS: list[SmokeTest] = [
         group="agents",
         prompt="Review this Python function: def add(a, b): return a + b",
         response_matches=[r"(?i)(review|function|code|add)"],
-        response_not_contains=["Traceback"],
+        response_not_contains=["Traceback", "failed to execute", "exec format error"],
         max_duration=30.0,
     ),
     SmokeTest(
@@ -406,5 +406,24 @@ AGENT_TESTS: list[SmokeTest] = [
         response_matches=[r"(?i)(api|endpoint|rest|todo|resource)"],
         response_not_contains=["Traceback"],
         max_duration=80.0,
+    ),
+    SmokeTest(
+        id="a.14.3",
+        name="craftsman — code-reviewer style script runs",
+        entity_type="agent",
+        entity_id="craftsman",
+        group="agents",
+        prompt=(
+            "Use the code-reviewer skill to review this code:\n"
+            "def f():\n"
+            "    # TODO: refactor this\n"
+            "    try:\n"
+            "        return 1\n"
+            "    except:\n"
+            "        pass"
+        ),
+        response_matches=[r"(?i)(todo|bare except|except)"],
+        response_not_contains=["Traceback", "failed to execute", "exec format error"],
+        max_duration=45.0,
     ),
 ]

@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 """Automated Python style checker for the code-reviewer skill.
 
 Checks basic style rules without requiring external dependencies.
 Returns a list of findings as formatted strings.
 """
+
+import argparse
 
 
 def check_style(code: str, filename: str = "<input>") -> str:
@@ -45,17 +48,13 @@ def check_style(code: str, filename: str = "<input>") -> str:
             if tag in line:
                 findings.append(f"{filename}:{i} — {tag} comment found: {stripped}")
 
-    # Function length check
-    func_start = None
-    func_name = None
-    for i, line in enumerate(lines, 1):
-        stripped = line.strip()
-        if stripped.startswith("def "):
-            if func_start and func_name and (i - func_start) > 30:
-                findings.append(f"{filename}:{func_start} — Function '{func_name}' is {i - func_start} lines (>30)")
-            func_start = i
-            func_name = stripped.split("(")[0].replace("def ", "")
-
     if not findings:
         return "No style issues found."
     return "\n".join(findings)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Check Python code for style issues.")
+    parser.add_argument("code", help="Python code to check.")
+    args = parser.parse_args()
+    print(check_style(args.code))
