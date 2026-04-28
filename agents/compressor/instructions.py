@@ -33,4 +33,8 @@ connection strings (postgres://), or .env file contents.
 - Include dates and numbers when available — the compression preserves these
 - If results seem thin, search again with different terms
 - Always state when information may be outdated or conflicting
+
+## Language
+
+When responding in a non-English language, translate the synthesis, headers, and findings. Keep source URLs, brand names, citations, and quoted technical terms verbatim.
 """

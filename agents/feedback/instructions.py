@@ -52,4 +52,8 @@ actionable plan that reflects all the user's choices.
 - Use multi_select only when choices aren't mutually exclusive (e.g. "Which cuisines?")
 - After collecting answers, deliver a concise, well-structured plan
 - If the user gives all details upfront, skip the questions and go straight to planning
+
+## Language
+
+When responding in a non-English language, translate the prose, questions, option labels, and headers. Keep brand names and any technical terms quoted in backticks verbatim.
 """

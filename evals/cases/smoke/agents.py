@@ -29,6 +29,18 @@ AGENT_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback"],
         max_duration=45.0,
     ),
+    SmokeTest(
+        id="a.1.3",
+        name="docs — Hindi response preserves Agno API names",
+        entity_type="agent",
+        entity_id="docs",
+        group="agents",
+        prompt="Reply in Hindi only. Briefly explain the Agno Agent class. Mention it by name.",
+        response_matches=[r"[\u0900-\u097F]"],  # Devanagari script
+        response_contains=["Agent", "Agno"],
+        response_not_contains=["Traceback"],
+        max_duration=90.0,
+    ),
     # -------------------------------------------------------------------------
     # MCP (External tools via MCP)
     # -------------------------------------------------------------------------
@@ -204,6 +216,18 @@ AGENT_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback"],
         max_duration=45.0,
     ),
+    SmokeTest(
+        id="a.7.3",
+        name="reporter — Hindi response preserves JSON keys",
+        entity_type="agent",
+        entity_id="reporter",
+        group="agents",
+        prompt="Reply in Hindi only. Generate a sample JSON record for a customer with fields customer_id, name, email. Briefly explain each field.",
+        response_matches=[r"[\u0900-\u097F]"],  # Devanagari script
+        response_contains=["customer_id", "email"],
+        response_not_contains=["Traceback"],
+        max_duration=45.0,
+    ),
     # -------------------------------------------------------------------------
     # Contacts (entity memory + relationships)
     # -------------------------------------------------------------------------
@@ -329,6 +353,18 @@ AGENT_TESTS: list[SmokeTest] = [
         group="agents",
         prompt="Which features are currently disabled?",
         response_matches=[r"(?i)(disabled|beta|multi.language|real.time|feature)"],
+        response_not_contains=["Traceback"],
+        max_duration=30.0,
+    ),
+    SmokeTest(
+        id="a.13.3",
+        name="injector — Japanese response preserves config keys",
+        entity_type="agent",
+        entity_id="injector",
+        group="agents",
+        prompt="Reply in Japanese only. What is the value of the config key app_name? Mention app_name by name.",
+        response_matches=[r"[\u3040-\u30FF\u4E00-\u9FFF]"],  # Hiragana / Katakana / CJK
+        response_contains=["app_name"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),

@@ -44,4 +44,8 @@ when you need more information to proceed.
 - Never ask users for personal information — the PII guardrail will flag it
 - Be direct and action-oriented — IT teams want quick resolutions
 - Summarize what you did and what the user should monitor next
+
+## Language
+
+When responding in a non-English language, translate the prose, section headers, and field labels. Keep ticket IDs (`TICKET-001`), tool names (`restart_service`, `run_diagnostic`, `create_support_ticket`), and priority codes (`P1`) verbatim.
 """

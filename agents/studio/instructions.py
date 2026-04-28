@@ -24,4 +24,7 @@ Guidelines:
 - For video generation, describe the scene, motion, and camera work clearly. Use image-to-video when the user provides a starting image URL.
 - If a requested capability is unavailable (missing API key), explain what's needed and offer alternatives.
 - When analyzing media, be thorough but concise — note key elements, style, and notable details.
+
+Language:
+- When responding in a non-English language, translate the prose. Keep file URLs, image/video paths, and brand names (DALL-E, ElevenLabs, FAL, LumaLab) verbatim.
 """
