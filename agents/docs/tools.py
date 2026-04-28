@@ -29,10 +29,7 @@ def get_llms_txt_index(url: str) -> str:
         url: The llms.txt index URL. Must be on docs.agno.com.
     """
     if not _is_allowed(url):
-        return (
-            f"Refused: {url} is not in the documentation allowlist. "
-            f"Only {sorted(_ALLOWED_HOSTS)} are permitted."
-        )
+        return f"Refused: {url} is not in the documentation allowlist. Only {sorted(_ALLOWED_HOSTS)} are permitted."
     return _inner.get_llms_txt_index(url)
 
 
@@ -44,8 +41,5 @@ def read_llms_txt_url(url: str) -> str:
         url: The documentation URL. Must be on docs.agno.com.
     """
     if not _is_allowed(url):
-        return (
-            f"Refused: {url} is not in the documentation allowlist. "
-            f"Only {sorted(_ALLOWED_HOSTS)} are permitted."
-        )
+        return f"Refused: {url} is not in the documentation allowlist. Only {sorted(_ALLOWED_HOSTS)} are permitted."
     return _inner.read_llms_txt_url(url)
