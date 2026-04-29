@@ -414,7 +414,8 @@ AGENT_TESTS: list[SmokeTest] = [
         entity_id="craftsman",
         group="agents",
         prompt=(
-            "Use the code-reviewer skill's `check_style.py` script to review this code:\n"
+            "Run `check_style.py` from the code-reviewer skill on this code and "
+            "quote the script's stdout verbatim before any analysis:\n"
             "def f():\n"
             "    # TODO: refactor this\n"
             "    try:\n"
@@ -422,7 +423,9 @@ AGENT_TESTS: list[SmokeTest] = [
             "    except:\n"
             "        pass"
         ),
-        response_matches=[r"(?i)(todo|bare except|except)"],
+        response_matches=[
+            r"<input>:\d+ — (Bare except clause|TODO comment found|Tab indentation)"
+        ],
         response_not_contains=["Traceback", "failed to execute", "exec format error"],
         max_duration=60.0,
     ),
