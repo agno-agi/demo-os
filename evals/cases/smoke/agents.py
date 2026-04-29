@@ -423,9 +423,7 @@ AGENT_TESTS: list[SmokeTest] = [
             "    except:\n"
             "        pass"
         ),
-        response_matches=[
-            r"<input>:\d+ — (Bare except clause|TODO comment found|Tab indentation)"
-        ],
+        response_matches=[r"<input>:\d+ — (Bare except clause|TODO comment found|Tab indentation)"],
         response_not_contains=["Traceback", "failed to execute", "exec format error"],
         max_duration=60.0,
     ),
