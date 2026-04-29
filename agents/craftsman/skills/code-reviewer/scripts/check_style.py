@@ -48,6 +48,25 @@ def check_style(code: str, filename: str = "<input>") -> str:
             if tag in line:
                 findings.append(f"{filename}:{i} — {tag} comment found: {stripped}")
 
+    # Function length check — collect every def, then measure each uniformly.
+    defs: list[tuple[int, str]] = []
+    for i, line in enumerate(lines, 1):
+        stripped = line.strip()
+        if stripped.startswith("def ") or stripped.startswith("async def "):
+            name = stripped.split("(")[0].replace("async def ", "").replace("def ", "")
+            defs.append((i, name))
+
+    # Ignore trailing empty lines so a file ending in "\n" doesn't over-count.
+    last_real = len(lines)
+    while last_real > 0 and not lines[last_real - 1].strip():
+        last_real -= 1
+
+    for idx, (start, name) in enumerate(defs):
+        end = defs[idx + 1][0] - 1 if idx + 1 < len(defs) else last_real
+        length = end - start + 1
+        if length > 30:
+            findings.append(f"{filename}:{start} — Function '{name}' is {length} lines (>30)")
+
     if not findings:
         return "No style issues found."
     return "\n".join(findings)

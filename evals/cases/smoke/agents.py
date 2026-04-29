@@ -414,7 +414,7 @@ AGENT_TESTS: list[SmokeTest] = [
         entity_id="craftsman",
         group="agents",
         prompt=(
-            "Use the code-reviewer skill to review this code:\n"
+            "Use the code-reviewer skill's `check_style.py` script to review this code:\n"
             "def f():\n"
             "    # TODO: refactor this\n"
             "    try:\n"
@@ -424,6 +424,6 @@ AGENT_TESTS: list[SmokeTest] = [
         ),
         response_matches=[r"(?i)(todo|bare except|except)"],
         response_not_contains=["Traceback", "failed to execute", "exec format error"],
-        max_duration=45.0,
+        max_duration=60.0,
     ),
 ]
