@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 """Automated Python style checker for the code-reviewer skill.
 
 Checks basic style rules without requiring external dependencies.
 Returns a list of findings as formatted strings.
 """
+
+import argparse
 
 
 def check_style(code: str, filename: str = "<input>") -> str:
@@ -45,17 +48,32 @@ def check_style(code: str, filename: str = "<input>") -> str:
             if tag in line:
                 findings.append(f"{filename}:{i} — {tag} comment found: {stripped}")
 
-    # Function length check
-    func_start = None
-    func_name = None
+    # Function length check — collect every def, then measure each uniformly.
+    defs: list[tuple[int, str]] = []
     for i, line in enumerate(lines, 1):
         stripped = line.strip()
-        if stripped.startswith("def "):
-            if func_start and func_name and (i - func_start) > 30:
-                findings.append(f"{filename}:{func_start} — Function '{func_name}' is {i - func_start} lines (>30)")
-            func_start = i
-            func_name = stripped.split("(")[0].replace("def ", "")
+        if stripped.startswith("def ") or stripped.startswith("async def "):
+            name = stripped.split("(")[0].replace("async def ", "").replace("def ", "")
+            defs.append((i, name))
+
+    # Ignore trailing empty lines so a file ending in "\n" doesn't over-count.
+    last_real = len(lines)
+    while last_real > 0 and not lines[last_real - 1].strip():
+        last_real -= 1
+
+    for idx, (start, name) in enumerate(defs):
+        end = defs[idx + 1][0] - 1 if idx + 1 < len(defs) else last_real
+        length = end - start + 1
+        if length > 30:
+            findings.append(f"{filename}:{start} — Function '{name}' is {length} lines (>30)")
 
     if not findings:
         return "No style issues found."
     return "\n".join(findings)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Check Python code for style issues.")
+    parser.add_argument("code", help="Python code to check.")
+    args = parser.parse_args()
+    print(check_style(args.code))
