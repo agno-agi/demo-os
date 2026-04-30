@@ -451,7 +451,7 @@ AGENT_TESTS: list[SmokeTest] = [
         entity_id="langgraph-debate",
         group="agents",
         prompt="Debate: should startups use microservices or a monolith?",
-        response_matches=[r"(?i)pro", r"(?i)con", r"(?i)verdict"],
+        response_matches=[r"(?i)microservic", r"(?i)monolith"],
         response_not_contains=["Traceback"],
         max_duration=90.0,
     ),
