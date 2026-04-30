@@ -1,15 +1,12 @@
 """
-LangGraph debate graph: Pro and Con branches run in parallel, then a Judge merges.
+LangGraph debate graph: Pro argues, then Con argues, then a Judge decides.
 
 Flow:
-    START
-      ├── pro_advocate ──┐
-      │                  ├── judge ── END
-      └── con_advocate ──┘
+    START ── pro ── con ── judge ── END
 
-The Pro and Con nodes run concurrently against the same input. The Judge
-sees both arguments and produces a verdict, returned as the assistant's
-final message.
+Each node has its own role and prompt. State is shared across nodes via the
+`arguments` list, and the Judge synthesizes a verdict from both sides as the
+assistant's final message.
 """
 
 from functools import lru_cache
@@ -40,26 +37,35 @@ def _topic(state: DebateState) -> str:
 
 
 def pro_advocate(state: DebateState) -> dict:
-    prompt = f"Argue PRO on this topic. Give your strongest 3 points, each in 1-2 sentences. Topic: {_topic(state)}"
+    prompt = (
+        f"You are arguing PRO on the following topic. Make your case in flowing prose — "
+        f"a few well-formed paragraphs that build a persuasive argument. Avoid bullet "
+        f"lists.\n\nTopic: {_topic(state)}"
+    )
     response = _llm().invoke(prompt)
-    return {"arguments": [f"**PRO**\n{response.content}"]}
+    return {"arguments": [f"**PRO**\n\n{response.content}"]}
 
 
 def con_advocate(state: DebateState) -> dict:
-    prompt = f"Argue CON on this topic. Give your strongest 3 points, each in 1-2 sentences. Topic: {_topic(state)}"
+    prompt = (
+        f"You are arguing CON on the following topic. Make your case in flowing prose — "
+        f"a few well-formed paragraphs that build a persuasive argument. Avoid bullet "
+        f"lists.\n\nTopic: {_topic(state)}"
+    )
     response = _llm().invoke(prompt)
-    return {"arguments": [f"**CON**\n{response.content}"]}
+    return {"arguments": [f"**CON**\n\n{response.content}"]}
 
 
 def judge(state: DebateState) -> dict:
     args = "\n\n".join(state["arguments"])
     prompt = (
-        f"You are an impartial judge. Read both sides and declare a winner with one "
-        f"paragraph of reasoning, then summarize the strongest point from each side.\n\n"
+        f"You are an impartial judge. Read both sides and write your verdict in one or two "
+        f"clear paragraphs: declare a winner, explain your reasoning, and acknowledge the "
+        f"strongest counterpoint. Write in flowing prose, not bullet lists.\n\n"
         f"Topic: {_topic(state)}\n\n{args}"
     )
     response = _llm().invoke(prompt)
-    verdict = f"{args}\n\n---\n\n**VERDICT**\n{response.content}"
+    verdict = f"{args}\n\n---\n\n**VERDICT**\n\n{response.content}"
     return {"messages": [AIMessage(content=verdict)]}
 
 
@@ -70,8 +76,7 @@ def build_graph():
     graph.add_node("judge", judge)
 
     graph.add_edge(START, "pro")
-    graph.add_edge(START, "con")
-    graph.add_edge("pro", "judge")
+    graph.add_edge("pro", "con")
     graph.add_edge("con", "judge")
     graph.add_edge("judge", END)
 
