@@ -30,6 +30,9 @@ from agents.studio import studio
 from agents.taskboard import taskboard
 from app.registry import registry
 from app.settings import RUNTIME_ENV, SCHEDULER_BASE_URL, SLACK_SIGNING_SECRET, SLACK_TOKEN, agent_db
+from frameworks.claude_repo import claude_repo
+from frameworks.dspy_math import dspy_math
+from frameworks.langgraph_debate import langgraph_debate
 from teams.investment import (
     investment_broadcast,
     investment_coordinate,
@@ -98,6 +101,9 @@ agent_os = AgentOS(
         compressor,
         injector,
         craftsman,
+        claude_repo,  # type: ignore[list-item]
+        langgraph_debate,  # type: ignore[list-item]
+        dspy_math,  # type: ignore[list-item]
     ],
     teams=[
         dash,

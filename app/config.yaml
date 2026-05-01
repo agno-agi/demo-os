@@ -72,6 +72,23 @@ chat:
       - "Design a REST API for a task management application"
       - "Write a system prompt for a customer support chatbot"
 
+    # --- Multi-Framework Agents ---
+
+    claude-repo:
+      - "Summarize the agno-agi/agno repo"
+      - "What does the langchain-ai/langgraph repo do? Where's the entry point?"
+      - "Explain the architecture of openai/openai-python"
+
+    langgraph-debate:
+      - "Debate: should startups use microservices or a monolith?"
+      - "Debate: is RAG dead in the era of long-context models?"
+      - "Debate: should engineers learn Rust in 2026?"
+
+    dspy-math:
+      - "If a train leaves Chicago at 60mph and another leaves NYC 800 miles away at 80mph going toward each other, when do they meet?"
+      - "A store offers 20% off, then 10% off the discounted price. What is the total discount on a $200 item?"
+      - "If I invest $5000 at 7% annual interest compounded monthly, how much will I have in 10 years?"
+
     # --- Teams ---
 
     dash:

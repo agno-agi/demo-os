@@ -4,7 +4,7 @@ This file provides context for Codex when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework features (14 agents, 11 teams, 5 workflows).
+AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework features (14 agents, 9 teams, 5 workflows, 3 multi-framework agents).
 
 ## Architecture
 

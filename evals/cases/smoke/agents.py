@@ -427,4 +427,46 @@ AGENT_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback", "failed to execute", "exec format error"],
         max_duration=60.0,
     ),
+    # -------------------------------------------------------------------------
+    # Multi-Framework — Repo Explainer (Claude Agent SDK)
+    # -------------------------------------------------------------------------
+    SmokeTest(
+        id="a.15",
+        name="claude-repo — explain a public repo",
+        entity_type="agent",
+        entity_id="claude-repo",
+        group="agents",
+        prompt="Summarize the agno-agi/agno repo in 3 bullets.",
+        response_matches=[r"(?i)(agno|agent|framework)"],
+        response_not_contains=["Traceback"],
+        max_duration=120.0,
+    ),
+    # -------------------------------------------------------------------------
+    # Multi-Framework — Debate Bot (LangGraph)
+    # -------------------------------------------------------------------------
+    SmokeTest(
+        id="a.16",
+        name="langgraph-debate — pro/con/verdict",
+        entity_type="agent",
+        entity_id="langgraph-debate",
+        group="agents",
+        prompt="Debate: should startups use microservices or a monolith?",
+        response_matches=[r"(?i)microservic", r"(?i)monolith"],
+        response_not_contains=["Traceback"],
+        max_duration=90.0,
+    ),
+    # -------------------------------------------------------------------------
+    # Multi-Framework — Math Solver (DSPy)
+    # -------------------------------------------------------------------------
+    SmokeTest(
+        id="a.17",
+        name="dspy-math — word problem with steps",
+        entity_type="agent",
+        entity_id="dspy-math",
+        group="agents",
+        prompt="A store offers 20% off, then 10% off the discounted price. What is the total discount on a $200 item?",
+        response_matches=[r"(?i)(28|56)"],  # 28% off or $56 saved on $200
+        response_not_contains=["Traceback"],
+        max_duration=60.0,
+    ),
 ]

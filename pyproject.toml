@@ -10,7 +10,9 @@ dependencies = [
   "agno[os]",
   "anthropic",
   "arxiv",
+  "claude-agent-sdk",
   "ddgs",
+  "dspy",
   "elevenlabs",
   "exa-py",
   "fal-client",
@@ -18,6 +20,8 @@ dependencies = [
   "google-api-python-client",
   "google-auth-oauthlib",
   "google-genai>=1.52.0",
+  "langchain-openai",
+  "langgraph",
   "mcp",
   "openai",
   "pandas",
@@ -43,7 +47,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["agents*", "db*", "app*", "teams*", "workflows*", "evals*", "utils*", "scripts*"]
+include = ["agents*", "db*", "app*", "frameworks*", "teams*", "workflows*", "evals*", "utils*", "scripts*"]
 
 [tool.ruff]
 line-length = 120
@@ -60,7 +64,7 @@ plugins = ["pydantic.mypy"]
 exclude = [".venv*"]
 
 [[tool.mypy.overrides]]
-module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "yaml.*", "parallel.*", "sqlalchemy.*"]
+module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "yaml.*", "parallel.*", "sqlalchemy.*", "dspy.*"]
 ignore_missing_imports = true
 
 [tool.uv.pip]

@@ -39,7 +39,7 @@ Copy the `https://` URL (e.g., `https://abc123.ngrok-free.app`). This is your ba
 {
   "display_information": {
     "name": "AgentOS",
-    "description": "Multi-agent system with 14 agents, 11 teams, and 5 workflows",
+    "description": "Multi-agent system with 14 agents, 9 teams, and 5 workflows",
     "background_color": "#1a1a2e"
   },
   "features": {

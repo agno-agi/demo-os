@@ -1,4 +1,4 @@
-"""Smoke test cases for the 11 teams."""
+"""Smoke test cases for the 9 teams."""
 
 from evals.cases.smoke import SmokeTest
 

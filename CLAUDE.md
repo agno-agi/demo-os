@@ -4,7 +4,7 @@ This file provides context for Claude Code when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework features (14 agents, 11 teams, 5 workflows).
+AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework features (14 agents, 9 teams, 5 workflows, 3 multi-framework agents).
 
 ## Architecture
 
@@ -25,6 +25,10 @@ AgentOS (app/main.py)
 │   ├── Compressor (agents/compressor/)                          # Tool result compression
 │   ├── Injector (agents/injector/)                              # Dependency injection via RunContext
 │   └── Craftsman (agents/craftsman/)                            # Skills system (LocalSkills)
+├── Multi-Framework Agents (3)
+│   ├── Repo Explainer (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
+│   ├── Debate Bot (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
+│   └── Math Solver (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
 ├── Teams (9)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
 │   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
@@ -70,6 +74,10 @@ All agents share:
 | `agents/compressor/agent.py` | Compressor - tool result compression with CompressionManager |
 | `agents/injector/agent.py` | Injector - dependency injection via RunContext |
 | `agents/craftsman/agent.py` | Craftsman - Skills system with LocalSkills loader |
+| `frameworks/claude_repo/agent.py` | Repo Explainer - Claude Agent SDK with WebSearch/WebFetch |
+| `frameworks/langgraph_debate/graph.py` | Debate Bot - LangGraph graph with parallel branches |
+| `frameworks/langgraph_debate/agent.py` | Debate Bot - LangGraphAgent wrapper |
+| `frameworks/dspy_math/agent.py` | Math Solver - DSPyAgent with typed ChainOfThought signature |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Research Team (4 modes: coordinate, route, broadcast, tasks) |
 | `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |

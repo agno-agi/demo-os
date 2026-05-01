@@ -1,6 +1,6 @@
 # Evaluations
 
-The eval framework tests all 30 AgentOS entities (14 agents, 11 teams, 5 workflows) across multiple dimensions: basic functionality, tool call correctness, secret leakage, response quality, and latency.
+The eval framework tests all 31 AgentOS entities (14 agents, 9 teams, 5 workflows, 3 multi-framework agents) across multiple dimensions: basic functionality, tool call correctness, secret leakage, response quality, and latency.
 
 Everything runs against the live HTTP API — no mocks, no in-process shortcuts. The server must be running (`docker compose up -d`) before you run evals.
 
