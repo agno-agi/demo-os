@@ -54,11 +54,13 @@ editor = Agent(
 # Helpers
 # ---------------------------------------------------------------------------
 def quality_check(outputs) -> bool:
-    """End the loop if the editor approves (score >= 8)."""
     if not outputs:
         return False
-    last_output = outputs[-1].content or ""
-    return "APPROVED" in last_output.upper()
+    last_output = (outputs[-1].content or "").strip()
+    if not last_output:
+        return False
+    last_line = last_output.split("\n")[-1]
+    return last_line.strip(" \t*_`.!?,:;").upper() == "APPROVED"
 
 
 # ---------------------------------------------------------------------------
