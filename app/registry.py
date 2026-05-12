@@ -115,7 +115,7 @@ def _get_tools() -> list:
     if getenv("FAL_KEY"):
         from agno.tools.fal import FalTools
 
-        tools.append(FalTools())
+        tools.append(FalTools(api_key=getenv("FAL_KEY")))
 
     if getenv("GOOGLE_API_KEY"):
         from agno.tools.nano_banana import NanoBananaTools
