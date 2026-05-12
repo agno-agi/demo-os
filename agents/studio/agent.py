@@ -14,7 +14,7 @@ tools: list = [DalleTools(model="dall-e-3", size="1024x1024", quality="standard"
 if getenv("FAL_KEY"):
     from agno.tools.fal import FalTools
 
-    tools.append(FalTools(model="fal-ai/flux/dev/image-to-image"))
+    tools.append(FalTools(model="fal-ai/flux/dev/image-to-image", api_key=getenv("FAL_KEY")))
 
 if getenv("ELEVEN_LABS_API_KEY"):
     from agno.tools.eleven_labs import ElevenLabsTools
