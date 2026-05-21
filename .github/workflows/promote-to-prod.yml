@@ -1,0 +1,87 @@
+name: Promote to Production
+
+# One-click promotion from `main` → `release` branch.
+# Railway auto-deploys to production from `release`.
+#
+# Usage:
+#   1. GitHub repo → Actions tab → "Promote to Production"
+#   2. Click "Run workflow"
+#   3. Optionally paste a specific main SHA, or leave blank to promote latest main HEAD
+#   4. Click "Run workflow" to confirm
+#
+# Rollback:
+#   Each promotion creates a tag like `prod-2026-05-21-1430-a1b2c3d`.
+#   To roll back, run this workflow again with a previous tag's SHA.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "main SHA to promote (blank = latest main HEAD)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Resolve target SHA
+        id: resolve
+        run: |
+          INPUT_SHA="${{ inputs.sha }}"
+          if [ -z "$INPUT_SHA" ]; then
+            TARGET=$(git rev-parse origin/main)
+          else
+            TARGET=$(git rev-parse "$INPUT_SHA")
+          fi
+          echo "sha=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "short=$(git rev-parse --short "$TARGET")" >> "$GITHUB_OUTPUT"
+          echo "Promoting SHA: $TARGET"
+
+      - name: Verify SHA is on main
+        run: |
+          if ! git merge-base --is-ancestor "${{ steps.resolve.outputs.sha }}" origin/main; then
+            echo "::error::SHA ${{ steps.resolve.outputs.sha }} is not an ancestor of main — refusing to promote"
+            exit 1
+          fi
+
+      - name: Fast-forward release to target SHA
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin release
+          git checkout release
+          if ! git merge --ff-only "${{ steps.resolve.outputs.sha }}"; then
+            echo "::error::Cannot fast-forward release to ${{ steps.resolve.outputs.sha }} — release has diverged from main"
+            exit 1
+          fi
+          git push origin release
+
+      - name: Tag the promotion
+        run: |
+          TAG="prod-$(date -u +%Y-%m-%d-%H%M)-${{ steps.resolve.outputs.short }}"
+          git tag -a "$TAG" -m "Promoted to prod by @${{ github.actor }}" "${{ steps.resolve.outputs.sha }}"
+          git push origin "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_ENV"
+
+      - name: Summary
+        run: |
+          {
+            echo "### Promoted to production"
+            echo ""
+            echo "- **SHA:** \`${{ steps.resolve.outputs.sha }}\`"
+            echo "- **Tag:** \`${TAG:-$tag}\`"
+            echo "- **Triggered by:** @${{ github.actor }}"
+            echo ""
+            echo "Railway will auto-deploy from \`release\` shortly."
+          } >> "$GITHUB_STEP_SUMMARY"
