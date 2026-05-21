@@ -12,6 +12,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from agno.os import AgentOS
+from agno.os.config import AuthorizationConfig
 
 from agents.approvals import approvals
 from agents.compressor import compressor
@@ -84,6 +85,7 @@ agent_os = AgentOS(
     scheduler=True,
     scheduler_base_url=SCHEDULER_BASE_URL,
     authorization=RUNTIME_ENV == "prd",
+    authorization_config=AuthorizationConfig(user_isolation=True),
     lifespan=lifespan,
     db=agent_db,
     agents=[
