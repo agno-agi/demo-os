@@ -21,6 +21,11 @@ class SmokeTest:
     requires: list[str] = field(default_factory=list)
     timeout: float = 120.0
     max_duration: float | None = None
+    # Post-hook AgentAsJudge assertions. When set, the runner queries /eval-runs
+    # for the most recent row matching this entity + judge name and checks the
+    # judge's pass/fail verdict against `expect_eval_passed`.
+    expect_eval_judge: str | None = None
+    expect_eval_passed: bool | None = None
 
 
 def all_smoke_tests() -> list[SmokeTest]:
@@ -28,8 +33,9 @@ def all_smoke_tests() -> list[SmokeTest]:
     from evals.cases.smoke.agents import AGENT_TESTS
     from evals.cases.smoke.graceful import GRACEFUL_TESTS
     from evals.cases.smoke.hitl import HITL_TESTS
+    from evals.cases.smoke.post_hooks import POST_HOOK_TESTS
     from evals.cases.smoke.security import SECURITY_TESTS
     from evals.cases.smoke.teams import TEAM_TESTS
     from evals.cases.smoke.workflows import WORKFLOW_TESTS
 
-    return AGENT_TESTS + TEAM_TESTS + WORKFLOW_TESTS + SECURITY_TESTS + GRACEFUL_TESTS + HITL_TESTS
+    return AGENT_TESTS + TEAM_TESTS + WORKFLOW_TESTS + SECURITY_TESTS + GRACEFUL_TESTS + HITL_TESTS + POST_HOOK_TESTS

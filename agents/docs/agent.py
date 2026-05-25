@@ -6,7 +6,7 @@ Answers developer questions about the Agno framework by dynamically
 fetching documentation pages via the llms.txt protocol. No pre-loading
 required -- the agent reads the index and fetches relevant pages on demand.
 
-Every response is scored by an AgentAsJudgeEval post-hook so demo-os users can 
+Every response is scored by an AgentAsJudgeEval post-hook so demo-os users can
 still see eval results accumulated in the DB.
 """
 
