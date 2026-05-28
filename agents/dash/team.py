@@ -7,47 +7,12 @@ The leader routes requests to specialized agents:
 Analyst for SQL/data queries, Engineer for schema/pipeline operations.
 """
 
-from agno.eval.agent_as_judge import AgentAsJudgeEval
 from agno.team import Team, TeamMode
 
 from agents.dash.agents.analyst import analyst
 from agents.dash.agents.engineer import engineer
 from agents.dash.instructions import build_leader_instructions
 from agents.dash.settings import MODEL, SLACK_TOKEN, agent_db, dash_learning
-
-# ---------------------------------------------------------------------------
-# Post-hook: AgentAsJudge data-quality grade
-# ---------------------------------------------------------------------------
-DASH_JUDGE_CRITERIA = (
-    "You can only see the user's question and the assistant's answer. You cannot run SQL,\n"
-    "inspect the database, or verify whether specific numbers, table names, or column names are\n"
-    "correct — do not try.\n"
-    "\n"
-    "Question: does the answer behave appropriately for what was asked?\n"
-    "\n"
-    "PASS if any of these are true:\n"
-    "  - It gives a numeric or qualitative answer to the data question.\n"
-    "  - It reports 'no such table' or 'no rows returned' for missing data.\n"
-    "  - It refuses destructive SQL (DROP, DELETE without WHERE).\n"
-    "  - It pushes back on a wrong premise instead of accepting it.\n"
-    "  - It redirects an off-topic question (weather, trivia) back to the data domain.\n"
-    "  - It asks a clarifying question for a vague request.\n"
-    "\n"
-    "FAIL only if:\n"
-    "  - The answer is internally contradictory or incoherent.\n"
-    "  - It treats a clearly off-topic question (weather, news, recipes) as if it were a valid\n"
-    "    data question and answers it as such.\n"
-    "  - It does not address the question at all (ignores it, changes the subject).\n"
-    "\n"
-    "Be lenient on style and format. Do not penalize the answer for content you cannot verify."
-)
-
-dash_quality_judge = AgentAsJudgeEval(
-    name="Dash Quality Judge",
-    criteria=DASH_JUDGE_CRITERIA,
-    model=MODEL,
-    db=agent_db,
-)
 
 # ---------------------------------------------------------------------------
 # Team Leader Tools (Slack — leader-only)
@@ -84,7 +49,6 @@ dash = Team(
     learning=dash_learning,
     add_learnings_to_context=True,
     instructions=build_leader_instructions(),
-    post_hooks=[dash_quality_judge],
     # Member coordination
     share_member_interactions=True,
     # Memory

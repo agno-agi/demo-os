@@ -61,20 +61,6 @@ def _check_assertions(test: SmokeTest, result: RunResult) -> tuple[bool, str]:
     return True, ""
 
 
-def _check_eval_row(client: AgentOSClient, test: SmokeTest) -> tuple[bool, str]:
-    """Verify the post-hook judge logged the expected pass/fail to agno_eval_runs."""
-    rows = client.client.get(f"{client.base_url}/eval-runs", params={"limit": 10}).json()["data"]
-
-    for row in rows:
-        if row["name"] == test.expect_eval_judge and (row["agent_id"] or row["team_id"]) == test.entity_id:
-            passed = row["eval_data"]["results"][0]["passed"]
-            if passed != test.expect_eval_passed:
-                return False, f"judge verdict {passed}, expected {test.expect_eval_passed}"
-            return True, ""
-
-    return False, f"no eval row for {test.expect_eval_judge}/{test.entity_id}"
-
-
 def run_smoke_tests(
     client: AgentOSClient,
     group: str | None = None,
@@ -154,13 +140,6 @@ def run_smoke_tests(
         if passed and test.max_duration and run_result.duration > test.max_duration:
             passed = False
             failure_reason = f"too slow: {run_result.duration}s > {test.max_duration}s"
-
-        # Check that the post-hook judge logged the expected verdict
-        if passed and test.expect_eval_judge:
-            eval_ok, eval_reason = _check_eval_row(client, test)
-            if not eval_ok:
-                passed = False
-                failure_reason = eval_reason
 
         status = "PASS" if passed else "FAIL"
         result = {
