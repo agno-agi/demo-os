@@ -14,19 +14,13 @@ from pathlib import Path
 from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
 
-from agents.approvals import approvals
-from agents.compressor import compressor
 from agents.contacts import contacts
 from agents.craftsman import craftsman
 from agents.dash import dash, dash_knowledge, dash_learnings
 from agents.docs import docs_agent
-from agents.feedback import feedback
 from agents.helpdesk import helpdesk
-from agents.injector import injector
-from agents.mcp import mcp_agent
 from agents.reasoner import reasoner
 from agents.reporter import reporter
-from agents.scheduler import scheduler
 from agents.studio import studio
 from agents.taskboard import taskboard
 from app.registry import registry
@@ -42,7 +36,7 @@ from teams.investment import (
     investment_route,
     investment_tasks,
 )
-from teams.research import research_broadcast, research_coordinate, research_route, research_tasks
+from teams.research import research_coordinate
 from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.morning_brief import morning_brief
@@ -90,18 +84,12 @@ agent_os = AgentOS(
     db=agent_db,
     agents=[
         docs_agent,
-        mcp_agent,
         helpdesk,
-        feedback,
-        approvals,
         reasoner,
         reporter,
         contacts,
         studio,
-        scheduler,
         taskboard,
-        compressor,
-        injector,
         craftsman,
         claude_repo,  # type: ignore[list-item]
         langgraph_debate,  # type: ignore[list-item]
@@ -110,9 +98,6 @@ agent_os = AgentOS(
     teams=[
         dash,
         research_coordinate,
-        research_route,
-        research_broadcast,
-        research_tasks,
         investment_coordinate,
         investment_route,
         investment_broadcast,

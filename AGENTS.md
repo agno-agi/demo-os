@@ -4,33 +4,24 @@ This file provides context for Codex when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing 50+ Agno framework features (14 agents, 9 teams, 5 workflows, 3 multi-framework agents).
+AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (8 agents, 6 teams, 5 workflows, 3 multi-framework agents).
 
 ## Architecture
 
 ```
 AgentOS (app/main.py)
-├── Agents (14)
+├── Agents (8)
 │   ├── Docs (agents/docs/)                                      # LLMs.txt documentation agent
-│   ├── MCP (agents/mcp/)                                        # External tools via MCP
 │   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
-│   ├── Feedback (agents/feedback/)                              # User feedback + control flow
-│   ├── Approvals (agents/approvals/)                            # Approval flows + audit trail
 │   ├── Reasoner (agents/reasoner/)                              # Reasoning + multi-model + fallback
 │   ├── Reporter (agents/reporter/)                              # Structured output + file generation
 │   ├── Contacts (agents/contacts/)                              # Entity memory + relationships
 │   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
-│   ├── Scheduler (agents/scheduler/)                            # Schedule management (SchedulerTools)
 │   ├── Taskboard (agents/taskboard/)                            # Session state + agentic state
-│   ├── Compressor (agents/compressor/)                          # Tool result compression
-│   ├── Injector (agents/injector/)                              # Dependency injection via RunContext
 │   └── Craftsman (agents/craftsman/)                            # Skills system (LocalSkills)
-├── Teams (9)
+├── Teams (6)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
 │   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
-│   ├── Research Route (teams/research/)                         # Team route mode
-│   ├── Research Broadcast (teams/research/)                     # Team broadcast mode
-│   ├── Research Tasks (teams/research/)                         # Team tasks mode
 │   ├── Investment Coordinate (teams/investment/)                # Investment team coordinate
 │   ├── Investment Route (teams/investment/)                     # Investment team route
 │   ├── Investment Broadcast (teams/investment/)                 # Investment team broadcast
@@ -57,21 +48,15 @@ All agents share:
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/docs/agent.py` | Docs - Agno documentation agent using LLMs.txt tools |
-| `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
 | `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
-| `agents/feedback/agent.py` | Feedback - user feedback + control flow tools |
-| `agents/approvals/agent.py` | Approvals - approval flows + audit trail |
 | `agents/reasoner/agent.py` | Reasoner - reasoning + multi-model + fallback |
 | `agents/reporter/agent.py` | Reporter - structured output + file generation |
 | `agents/contacts/agent.py` | Contacts - entity memory + relationships |
 | `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
-| `agents/scheduler/agent.py` | Scheduler - schedule management (create, list, enable/disable, delete) |
 | `agents/taskboard/agent.py` | Taskboard - session state + agentic state demo |
-| `agents/compressor/agent.py` | Compressor - tool result compression with CompressionManager |
-| `agents/injector/agent.py` | Injector - dependency injection via RunContext |
 | `agents/craftsman/agent.py` | Craftsman - Skills system with LocalSkills loader |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
-| `teams/research/team.py` | Research Team (4 modes: coordinate, route, broadcast, tasks) |
+| `teams/research/team.py` | Research Team (coordinate mode) |
 | `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |
 | `workflows/morning_brief/workflow.py` | Morning Brief (parallel gather → synthesize) |
 | `workflows/ai_research/workflow.py` | AI Research (4 parallel researchers → synthesize) |
@@ -294,23 +279,17 @@ from db import db_url, get_postgres_db, create_knowledge
 
 # Agents
 from agents.docs import docs_agent
-from agents.mcp import mcp_agent
 from agents.helpdesk import helpdesk
-from agents.feedback import feedback
-from agents.approvals import approvals
 from agents.reasoner import reasoner
 from agents.reporter import reporter
 from agents.contacts import contacts
 from agents.studio import studio
-from agents.scheduler import scheduler
 from agents.taskboard import taskboard
-from agents.compressor import compressor
-from agents.injector import injector
 from agents.craftsman import craftsman
 
 # Teams
 from agents.dash import dash
-from teams.research import research_coordinate, research_route, research_broadcast, research_tasks
+from teams.research import research_coordinate
 from teams.investment import investment_coordinate, investment_route, investment_broadcast, investment_tasks
 
 # Workflows
@@ -439,17 +418,14 @@ Optional (tools & integrations):
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
 | LLMs.txt tools | Docs |
-| MCP tools | MCP, Dash, AI Research, Investment |
-| HITL — confirmation | Helpdesk, Approvals |
-| HITL — user input | Helpdesk, Feedback |
+| MCP tools | Dash, AI Research, Investment |
+| HITL — confirmation | Helpdesk |
+| HITL — user input | Helpdesk |
 | HITL — external execution | Helpdesk |
 | Guardrails (moderation, PII, injection) | Helpdesk |
 | Output guardrails | Helpdesk |
 | Pre/post hooks | Helpdesk |
-| Approval — blocking | Approvals |
-| Approval — audit trail | Approvals |
-| User feedback (ask_user) | Feedback |
-| User control flow | Feedback |
+| User feedback (ask_user) | Helpdesk |
 | Reasoning tools | Reasoner |
 | Native reasoning mode | Reasoner |
 | Model fallback | Reasoner |
@@ -469,19 +445,16 @@ Optional (tools & integrations):
 | YFinance tools | Investment |
 | File tools (memos) | Investment |
 | Team — coordinate | Dash, Research, Investment |
-| Team — route | Research, Investment |
-| Team — broadcast | Research, Investment |
-| Team — tasks | Research, Investment |
+| Team — route | Investment |
+| Team — broadcast | Investment |
+| Team — tasks | Investment |
 | Workflow — parallel | Morning Brief, AI Research, Content Pipeline |
 | Workflow — loop | Content Pipeline |
-| Scheduling (cron) | Morning Brief, AI Research, Scheduler |
-| SchedulerTools (CRUD) | Scheduler |
+| Scheduling (cron) | Morning Brief, AI Research |
 | Parallel execution | Morning Brief, AI Research, Content Pipeline |
 | Workflow — router | Support Triage |
 | Workflow — condition | Support Triage |
 | Session state + agentic state | Taskboard |
-| Tool result compression | Compressor |
-| Dependency injection (RunContext) | Injector |
 | Skills system (LocalSkills) | Craftsman |
 | Cross-modal chaining | Repo Walkthrough |
 

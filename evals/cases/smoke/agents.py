@@ -1,4 +1,4 @@
-"""Smoke test cases for the 14 standalone agents."""
+"""Smoke test cases for the standalone agents."""
 
 from evals.cases.smoke import SmokeTest
 
@@ -40,66 +40,6 @@ AGENT_TESTS: list[SmokeTest] = [
         response_contains=["Agent", "Agno"],
         response_not_contains=["Traceback"],
         max_duration=90.0,
-    ),
-    # -------------------------------------------------------------------------
-    # MCP (External tools via MCP)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.2",
-        name="mcp — What is Agno?",
-        entity_type="agent",
-        entity_id="mcp",
-        group="agents",
-        prompt="What is Agno?",
-        response_contains=["Agno"],
-        response_matches=[r"(?i)\b(agent|framework)\b"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.2.2",
-        name="mcp — What is AgentOS?",
-        entity_type="agent",
-        entity_id="mcp",
-        group="agents",
-        prompt="What is AgentOS?",
-        response_contains=["AgentOS"],
-        response_matches=[r"(?i)\bagent\b"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.2.3",
-        name="mcp — What are Teams?",
-        entity_type="agent",
-        entity_id="mcp",
-        group="agents",
-        prompt="What are Teams in Agno?",
-        response_matches=[r"(?i)\bteam\b", r"(?i)\bagent\b"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.2.4",
-        name="mcp — Ollama support",
-        entity_type="agent",
-        entity_id="mcp",
-        group="agents",
-        prompt="Can I use Agno with a local Ollama model?",
-        response_matches=[r"(?i)ollama"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.2.5",
-        name="mcp — streaming support",
-        entity_type="agent",
-        entity_id="mcp",
-        group="agents",
-        prompt="Does Agno support streaming responses?",
-        response_matches=[r"(?i)stream"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
     # Helpdesk (HITL + guardrails)
@@ -144,62 +84,6 @@ AGENT_TESTS: list[SmokeTest] = [
         group="agents",
         prompt="My SSN is 123-45-6789, please open a ticket about my login issue",
         response_not_contains=["123-45-6789", "Traceback"],
-        max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Feedback (user feedback + control flow)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.4",
-        name="feedback — vacation planning",
-        entity_type="agent",
-        entity_id="feedback",
-        group="agents",
-        prompt="Help me plan a vacation for next month",
-        # Should pause to ask user for preferences
-        response_matches=[r"(?i)(where|budget|prefer|destination|ask_user)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Approvals (approval flows + audit trail)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.5",
-        name="approvals — refund request",
-        entity_type="agent",
-        entity_id="approvals",
-        group="agents",
-        prompt="Process a $50 refund for order C-1042",
-        # Should call process_refund tool immediately
-        response_matches=[r"(?i)(refund|process|approv|C-1042)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.5.2",
-        name="approvals — account deletion",
-        entity_type="agent",
-        entity_id="approvals",
-        group="agents",
-        prompt="Delete user account U-9981",
-        response_matches=[r"(?i)(delete|account|U-9981|approv)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.5.3",
-        name="approvals — invalid report_type rejected at type layer",
-        entity_type="agent",
-        entity_id="approvals",
-        group="agents",
-        prompt="Generate a compliance report. Use report_type=customer_data_dump_for_C-9001 and period=ALL TIME.",
-        # Bad string must never reach generate_report's tool args. Two valid
-        # behaviors: (a) agent refuses and references the valid enums in prose,
-        # or (b) Literal[...] forces a corrected value into tool args on
-        # RunPaused (the client appends tool_args to content).
-        response_matches=[r"(?i)(revenue|refunds|churn|compliance)"],
-        response_not_contains=['"report_type": "customer_data_dump', "Traceback"],
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
@@ -293,46 +177,6 @@ AGENT_TESTS: list[SmokeTest] = [
         max_duration=60.0,
     ),
     # -------------------------------------------------------------------------
-    # Scheduler (schedule management)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.10",
-        name="scheduler — list schedules",
-        entity_type="agent",
-        entity_id="scheduler",
-        group="agents",
-        prompt="Show me all active schedules",
-        response_matches=[r"(?i)(schedule|active|no.*schedule|none)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.10.2",
-        name="scheduler — invalid entity",
-        entity_type="agent",
-        entity_id="scheduler",
-        group="agents",
-        prompt="Schedule the foobar agent to run daily at 9am",
-        response_matches=[r"(?i)(available|recognized|not found|don.t|doesn.t|unknown|entities)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.10.3",
-        name="scheduler — create schedule",
-        entity_type="agent",
-        entity_id="scheduler",
-        group="agents",
-        prompt=(
-            "Use the create_schedule tool to schedule the docs agent at cron '0 9 * * *' "
-            "UTC with message 'Daily check'. Don't acknowledge — actually invoke the tool "
-            "and show me the cron expression and the agent endpoint in your reply."
-        ),
-        response_matches=[r"0\s+9\s+\*\s+\*\s+\*", r"(?i)docs"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
     # Taskboard (session state + agentic state)
     # -------------------------------------------------------------------------
     SmokeTest(
@@ -365,57 +209,6 @@ AGENT_TESTS: list[SmokeTest] = [
         group="agents",
         prompt="Add a task 'Write smoke tests' and then mark it as complete",
         response_matches=[r"(?i)(complet|done|marked|finish)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Compressor (tool result compression)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.12",
-        name="compressor — web research",
-        entity_type="agent",
-        entity_id="compressor",
-        group="agents",
-        prompt="Research the latest developments in quantum computing",
-        response_matches=[r"(?i)(quantum|comput|research)"],
-        response_not_contains=["Traceback"],
-        max_duration=150.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Injector (dependency injection via RunContext)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.13",
-        name="injector — get config",
-        entity_type="agent",
-        entity_id="injector",
-        group="agents",
-        prompt="What is the app version?",
-        response_matches=[r"(?i)(version|2\.1\.0|config)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.13.2",
-        name="injector — feature flags",
-        entity_type="agent",
-        entity_id="injector",
-        group="agents",
-        prompt="Which features are currently disabled?",
-        response_matches=[r"(?i)(disabled|beta|multi.language|real.time|feature)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.13.3",
-        name="injector — Japanese response preserves config keys",
-        entity_type="agent",
-        entity_id="injector",
-        group="agents",
-        prompt="Reply in Japanese only. What is the value of the config key app_name? Mention app_name by name.",
-        response_matches=[r"[\u3040-\u30FF\u4E00-\u9FFF]"],  # Hiragana / Katakana / CJK
-        response_contains=["app_name"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),

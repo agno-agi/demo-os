@@ -4,11 +4,8 @@ from agno.team import Team, TeamMode
 from app.settings import MODEL, agent_db, get_parallel_tools
 from teams.research.instructions import (
     ANALYST_INSTRUCTIONS,
-    BROADCAST_INSTRUCTIONS,
     COORDINATE_INSTRUCTIONS,
     INVESTIGATOR_INSTRUCTIONS,
-    ROUTE_INSTRUCTIONS,
-    TASKS_INSTRUCTIONS,
     WRITER_INSTRUCTIONS,
 )
 from utils.exa import get_exa_mcp_tools
@@ -64,57 +61,6 @@ research_coordinate = Team(
     members=members,
     db=agent_db,
     instructions=COORDINATE_INSTRUCTIONS,
-    share_member_interactions=True,
-    enable_agentic_memory=True,
-    search_past_sessions=True,
-    num_past_sessions_to_search=5,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    read_chat_history=True,
-    num_history_runs=5,
-    markdown=True,
-)
-
-research_route = Team(
-    id="research-route",
-    name="Research Team (Route)",
-    mode=TeamMode.route,
-    model=MODEL,
-    members=members,
-    db=agent_db,
-    instructions=ROUTE_INSTRUCTIONS,
-    enable_agentic_memory=True,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    read_chat_history=True,
-    num_history_runs=5,
-    markdown=True,
-)
-
-research_broadcast = Team(
-    id="research-broadcast",
-    name="Research Team (Broadcast)",
-    mode=TeamMode.broadcast,
-    model=MODEL,
-    members=members,
-    db=agent_db,
-    instructions=BROADCAST_INSTRUCTIONS,
-    enable_agentic_memory=True,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    read_chat_history=True,
-    num_history_runs=5,
-    markdown=True,
-)
-
-research_tasks = Team(
-    id="research-tasks",
-    name="Research Team (Tasks)",
-    mode=TeamMode.tasks,
-    model=MODEL,
-    members=members,
-    db=agent_db,
-    instructions=TASKS_INSTRUCTIONS,
     share_member_interactions=True,
     enable_agentic_memory=True,
     search_past_sessions=True,

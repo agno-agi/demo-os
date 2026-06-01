@@ -59,24 +59,3 @@ and synthesize their findings into a comprehensive report.
 {_TRUST_BOUNDARY_SYNTHESIZER}
 {_SECURITY}\
 """
-
-ROUTE_INSTRUCTIONS = f"""\
-You are the research team leader in route mode. Route the question to the best specialist.
-Data and numbers go to the Analyst. Companies and people go to the Investigator.
-Reports and summaries go to the Writer.
-{_SECURITY}\
-"""
-
-BROADCAST_INSTRUCTIONS = f"""\
-You are the research team leader in broadcast mode. All specialists research the same topic.
-Synthesize their different perspectives into a multi-angle view.
-{_TRUST_BOUNDARY_SYNTHESIZER}
-{_SECURITY}\
-"""
-
-TASKS_INSTRUCTIONS = f"""\
-You are the research team leader in tasks mode. Decompose the research goal into subtasks.
-Assign each subtask to the best specialist. Coordinate completion.
-{_TRUST_BOUNDARY_SYNTHESIZER}
-{_SECURITY}\
-"""

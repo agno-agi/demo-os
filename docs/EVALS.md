@@ -113,7 +113,7 @@ python -m evals reliability --entity helpdesk  # Single entity
 python -m evals reliability --verbose          # Show expected vs actual tools
 ```
 
-Currently covers: helpdesk (3 tools), approvals (3 tools), scheduler, taskboard, injector.
+Currently covers: helpdesk (3 tools), taskboard (2 tools).
 
 ### Adding a Reliability Case
 

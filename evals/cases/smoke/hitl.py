@@ -42,49 +42,16 @@ HITL_TESTS: list[SmokeTest] = [
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Feedback — ask_user
+    # Helpdesk — ask_user (structured question)
     # -------------------------------------------------------------------------
     SmokeTest(
         id="h.4",
-        name="feedback — asks structured question",
+        name="helpdesk — asks structured question",
         entity_type="agent",
-        entity_id="feedback",
+        entity_id="helpdesk",
         group="hitl",
-        prompt="Help me plan a vacation for next month",
+        prompt="Something's wrong with one of our services but I'm not sure which — help me triage it.",
         response_contains=["ask_user"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="h.4.2",
-        name="feedback — free-form fields use get_user_input",
-        entity_type="agent",
-        entity_id="feedback",
-        group="hitl",
-        prompt="Plan a workshop, but first collect my exact city and attendee_count in a form before continuing.",
-        response_contains=["get_user_input"],
-        max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Approvals — approval gates
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="h.5",
-        name="approvals — refund requires approval",
-        entity_type="agent",
-        entity_id="approvals",
-        group="hitl",
-        prompt="Process a $50 refund for order C-1042",
-        response_contains=["process_refund"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="h.6",
-        name="approvals — export requires approval",
-        entity_type="agent",
-        entity_id="approvals",
-        group="hitl",
-        prompt="Export all customer data for C-5500",
-        response_contains=["export_customer_data"],
         max_duration=30.0,
     ),
 ]

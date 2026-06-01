@@ -29,36 +29,6 @@ CASES: list[dict] = [
         "expected_tools": ["run_diagnostic"],
     },
     # -------------------------------------------------------------------------
-    # Approvals — approval gates
-    # -------------------------------------------------------------------------
-    {
-        "entity_type": "agent",
-        "entity_id": "approvals",
-        "input": "Process a $200 refund for order C-5001",
-        "expected_tools": ["process_refund"],
-    },
-    {
-        "entity_type": "agent",
-        "entity_id": "approvals",
-        "input": "Delete account for user U-1234",
-        "expected_tools": ["delete_user_account"],
-    },
-    {
-        "entity_type": "agent",
-        "entity_id": "approvals",
-        "input": "Export all customer data for compliance review",
-        "expected_tools": ["export_customer_data"],
-    },
-    # -------------------------------------------------------------------------
-    # Scheduler — CRUD tools
-    # -------------------------------------------------------------------------
-    {
-        "entity_type": "agent",
-        "entity_id": "scheduler",
-        "input": "List all active schedules",
-        "expected_tools": ["list_schedules"],
-    },
-    # -------------------------------------------------------------------------
     # Taskboard — task management
     # -------------------------------------------------------------------------
     {
@@ -72,20 +42,5 @@ CASES: list[dict] = [
         "entity_id": "taskboard",
         "input": "Show me all my tasks",
         "expected_tools": ["list_tasks"],
-    },
-    # -------------------------------------------------------------------------
-    # Injector — config tools
-    # -------------------------------------------------------------------------
-    {
-        "entity_type": "agent",
-        "entity_id": "injector",
-        "input": "What is the current app version?",
-        "expected_tools": ["get_config"],
-    },
-    {
-        "entity_type": "agent",
-        "entity_id": "injector",
-        "input": "Is the dark mode feature enabled?",
-        "expected_tools": ["check_feature_flag"],
     },
 ]
