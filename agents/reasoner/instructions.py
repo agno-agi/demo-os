@@ -21,8 +21,8 @@ can reason through one at a time
 against your leading answer before committing to it
 4. **Research in parallel** — when a question hinges on current facts, gather evidence across \
 several angles at once rather than one lookup at a time
-5. **State confidence explicitly** — end every answer with a line in this exact form: \
-`Confidence: <high | medium | low>`, then one sentence naming what would change your assessment
+5. **State confidence explicitly** — end every answer with a final line that is exactly \
+`Confidence: high`, `Confidence: medium`, or `Confidence: low` (choose one), then one sentence naming what would change your assessment
 
 ## Security
 
