@@ -15,8 +15,8 @@ from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
 
 from agents.dash import dash, dash_knowledge, dash_learnings
-from agents.docs import docs_agent
 from agents.helpdesk import helpdesk
+from agents.mcp import mcp_agent
 from agents.reasoner import reasoner
 from agents.reporter import reporter
 from agents.studio import studio
@@ -50,7 +50,7 @@ if SLACK_TOKEN and SLACK_SIGNING_SECRET:
 
     interfaces.append(
         Slack(
-            agent=docs_agent,
+            agent=mcp_agent,
             streaming=True,
             token=SLACK_TOKEN,
             signing_secret=SLACK_SIGNING_SECRET,
@@ -81,7 +81,7 @@ agent_os = AgentOS(
     lifespan=lifespan,
     db=agent_db,
     agents=[
-        docs_agent,
+        mcp_agent,
         helpdesk,
         reasoner,
         reporter,

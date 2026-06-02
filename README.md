@@ -44,7 +44,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Agent | What it does | Features |
 |-------|-------------|----------|
-| [**Docs**](agents/docs/) | Answers questions about Agno using live documentation | LLMs.txt tools, on-demand fetching |
+| [**MCP**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Helpdesk**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Reasoner**](agents/reasoner/) | Strategic analysis with step-by-step reasoning | ReasoningTools, native reasoning mode, model fallback (Claude) |
 | [**Reporter**](agents/reporter/) | On-demand report generator | FileGenerationTools (CSV/JSON/PDF), CalculatorTools, structured output |
@@ -74,8 +74,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash |
-| LLMs.txt tools | Docs |
-| MCP tools | Dash, AI Research |
+| MCP tools | MCP, Dash, AI Research |
 | HITL — confirmation | Helpdesk |
 | HITL — user input | Helpdesk |
 | HITL — external execution | Helpdesk |

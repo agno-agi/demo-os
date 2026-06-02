@@ -11,7 +11,7 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 ```
 AgentOS (app/main.py)
 ├── Agents (6)
-│   ├── Docs (agents/docs/)                                      # LLMs.txt documentation agent
+│   ├── MCP (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
 │   ├── Reasoner (agents/reasoner/)                              # Reasoning + multi-model + fallback
 │   ├── Reporter (agents/reporter/)                              # Structured output + file generation
@@ -49,7 +49,7 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/docs/agent.py` | Docs - Agno documentation agent using LLMs.txt tools |
+| `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
 | `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/reasoner/agent.py` | Reasoner - reasoning + multi-model + fallback |
 | `agents/reporter/agent.py` | Reporter - structured output + file generation |
@@ -282,7 +282,7 @@ agent_db = get_postgres_db()
 from db import db_url, get_postgres_db, create_knowledge
 
 # Agents
-from agents.docs import docs_agent
+from agents.mcp import mcp_agent
 from agents.helpdesk import helpdesk
 from agents.reasoner import reasoner
 from agents.reporter import reporter
@@ -419,8 +419,7 @@ Optional (tools & integrations):
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
-| LLMs.txt tools | Docs |
-| MCP tools | Dash, AI Research, Investment |
+| MCP tools | MCP, Dash, AI Research, Investment |
 | HITL — confirmation | Helpdesk |
 | HITL — user input | Helpdesk |
 | HITL — external execution | Helpdesk |
