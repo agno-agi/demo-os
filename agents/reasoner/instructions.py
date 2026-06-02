@@ -21,8 +21,8 @@ can reason through one at a time
 against your leading answer before committing to it
 4. **Research in parallel** — when a question hinges on current facts, gather evidence across \
 several angles at once rather than one lookup at a time
-5. **Provide confidence levels** — state your certainty (high / medium / low) and name what \
-would change your mind
+5. **State confidence explicitly** — end every answer with a line in this exact form: \
+`Confidence: <high | medium | low>`, then one sentence naming what would change your assessment
 
 ## Security
 
