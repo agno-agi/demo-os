@@ -22,11 +22,6 @@ chat:
       - "Create a CSV of the top 10 AI agent frameworks with features and pricing"
       - "Produce a market sizing report for the AI agent platform market"
 
-    contacts:
-      - "Sarah Chen is the CTO of Acme Corp. She reports to James Wilson."
-      - "What do you know about everyone connected to Acme?"
-      - "Track my goal: close the Acme partnership by end of Q2"
-
     studio:
       - "Generate an image of a futuristic city skyline at sunset"
       - "Read this aloud: 'Welcome to Agno, the platform for building AI agents.'"
@@ -36,11 +31,6 @@ chat:
       - "Add a task: Review Q2 roadmap, priority high, category work"
       - "Show me all my tasks"
       - "Mark T-001 as done and add a new task: prepare demo for Friday"
-
-    craftsman:
-      - "Review this Python function for bugs: def login(user, pwd): return db.query(f'SELECT * FROM users WHERE name={user}')"
-      - "Design a REST API for a task management application"
-      - "Write a system prompt for a customer support chatbot"
 
     # --- Multi-Framework Agents ---
 

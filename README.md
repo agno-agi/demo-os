@@ -48,10 +48,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Helpdesk**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Reasoner**](agents/reasoner/) | Strategic analysis with step-by-step reasoning | ReasoningTools, native reasoning mode, model fallback (Claude) |
 | [**Reporter**](agents/reporter/) | On-demand report generator | FileGenerationTools (CSV/JSON/PDF), CalculatorTools, structured output |
-| [**Contacts**](agents/contacts/) | Relationship intelligence / mini CRM | Entity memory, user profile, session context, LearningMachine |
 | [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Taskboard**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
-| [**Craftsman**](agents/craftsman/) | Domain-specific expert guidance via skills | LocalSkills (code-reviewer, api-designer, prompt-engineer) |
 
 ### Teams
 
@@ -89,9 +87,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Model fallback | Reasoner |
 | Structured output (Pydantic) | Reporter |
 | File generation (CSV/JSON/PDF) | Reporter |
-| Entity memory | Contacts |
-| User profile | Contacts |
-| Learning (LearningMachine) | Dash, Contacts, Investment |
+| Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
 | Coding tools | Repo Walkthrough |
 | Image generation (DALL-E) | Studio |
@@ -101,7 +97,6 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Multi-model (Gemini) | Investment |
 | YFinance tools | Investment |
 | Session state + agentic state | Taskboard |
-| Skills system (LocalSkills) | Craftsman |
 | Team — coordinate | Dash, Research, Investment |
 | Team — route | Investment |
 | Team — broadcast | Investment |
@@ -299,7 +294,7 @@ python -m app.main
 |----------|----------|---------|-------------|
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
-| `EXA_API_KEY` | No | - | Web search for Reasoner, Reporter, Contacts, Research, Investment |
+| `EXA_API_KEY` | No | - | Web search for Reasoner, Reporter, Research, Investment |
 | `PARALLEL_API_KEY` | No | - | Parallel web search |
 | `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
 | `FAL_KEY` | No | - | Image-to-image for Studio |

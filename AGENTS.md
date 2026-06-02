@@ -4,21 +4,19 @@ This file provides context for Codex when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (8 agents, 6 teams, 5 workflows, 3 multi-framework agents).
+AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 6 teams, 5 workflows, 3 multi-framework agents).
 
 ## Architecture
 
 ```
 AgentOS (app/main.py)
-├── Agents (8)
+├── Agents (6)
 │   ├── Docs (agents/docs/)                                      # LLMs.txt documentation agent
 │   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
 │   ├── Reasoner (agents/reasoner/)                              # Reasoning + multi-model + fallback
 │   ├── Reporter (agents/reporter/)                              # Structured output + file generation
-│   ├── Contacts (agents/contacts/)                              # Entity memory + relationships
 │   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
-│   ├── Taskboard (agents/taskboard/)                            # Session state + agentic state
-│   └── Craftsman (agents/craftsman/)                            # Skills system (LocalSkills)
+│   └── Taskboard (agents/taskboard/)                            # Session state + agentic state
 ├── Teams (6)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
 │   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
@@ -51,10 +49,8 @@ All agents share:
 | `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/reasoner/agent.py` | Reasoner - reasoning + multi-model + fallback |
 | `agents/reporter/agent.py` | Reporter - structured output + file generation |
-| `agents/contacts/agent.py` | Contacts - entity memory + relationships |
 | `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Taskboard - session state + agentic state demo |
-| `agents/craftsman/agent.py` | Craftsman - Skills system with LocalSkills loader |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Research Team (coordinate mode) |
 | `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |
@@ -282,10 +278,8 @@ from agents.docs import docs_agent
 from agents.helpdesk import helpdesk
 from agents.reasoner import reasoner
 from agents.reporter import reporter
-from agents.contacts import contacts
 from agents.studio import studio
 from agents.taskboard import taskboard
-from agents.craftsman import craftsman
 
 # Teams
 from agents.dash import dash
@@ -374,7 +368,7 @@ Optional (model providers — each enables registry models in Studio):
 - `MISTRAL_API_KEY` - Mistral Large
 
 Optional (tools & integrations):
-- `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter, Contacts
+- `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter
 - `PARALLEL_API_KEY` - Parallel web search
 - `ELEVEN_LABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
@@ -431,10 +425,7 @@ Optional (tools & integrations):
 | Model fallback | Reasoner |
 | Structured output (Pydantic) | Reporter |
 | File generation (CSV/JSON/PDF) | Reporter |
-| Entity memory | Contacts |
-| User profile | Contacts |
-| Session context + planning | Contacts |
-| Learning (LearningMachine) | Dash, Contacts, Investment |
+| Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
 | Coding tools | Repo Walkthrough |
 | Image generation (DALL-E) | Studio |
@@ -455,7 +446,6 @@ Optional (tools & integrations):
 | Workflow — router | Support Triage |
 | Workflow — condition | Support Triage |
 | Session state + agentic state | Taskboard |
-| Skills system (LocalSkills) | Craftsman |
 | Cross-modal chaining | Repo Walkthrough |
 
 ---

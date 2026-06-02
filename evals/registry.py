@@ -26,7 +26,7 @@ class Entity:
 
 ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
-    # Agents (8)
+    # Agents (6)
     # -------------------------------------------------------------------------
     "docs": Entity(
         id="docs",
@@ -53,12 +53,6 @@ ENTITIES: dict[str, Entity] = {
         definition_file="agents/reporter/agent.py",
         requires=["EXA_API_KEY"],
     ),
-    "contacts": Entity(
-        id="contacts",
-        type="agent",
-        instruction_file="agents/contacts/instructions.py",
-        definition_file="agents/contacts/agent.py",
-    ),
     "studio": Entity(
         id="studio",
         type="agent",
@@ -70,12 +64,6 @@ ENTITIES: dict[str, Entity] = {
         type="agent",
         instruction_file="agents/taskboard/instructions.py",
         definition_file="agents/taskboard/agent.py",
-    ),
-    "craftsman": Entity(
-        id="craftsman",
-        type="agent",
-        instruction_file="agents/craftsman/instructions.py",
-        definition_file="agents/craftsman/agent.py",
     ),
     # -------------------------------------------------------------------------
     # Teams (6)

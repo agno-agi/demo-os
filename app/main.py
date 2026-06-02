@@ -14,8 +14,6 @@ from pathlib import Path
 from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
 
-from agents.contacts import contacts
-from agents.craftsman import craftsman
 from agents.dash import dash, dash_knowledge, dash_learnings
 from agents.docs import docs_agent
 from agents.helpdesk import helpdesk
@@ -87,10 +85,8 @@ agent_os = AgentOS(
         helpdesk,
         reasoner,
         reporter,
-        contacts,
         studio,
         taskboard,
-        craftsman,
         claude_repo,  # type: ignore[list-item]
         langgraph_debate,  # type: ignore[list-item]
         dspy_math,  # type: ignore[list-item]

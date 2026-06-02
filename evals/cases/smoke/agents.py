@@ -138,20 +138,6 @@ AGENT_TESTS: list[SmokeTest] = [
         max_duration=45.0,
     ),
     # -------------------------------------------------------------------------
-    # Contacts (entity memory + relationships)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.8",
-        name="contacts — save contact",
-        entity_type="agent",
-        entity_id="contacts",
-        group="agents",
-        prompt="Sarah Chen is the CTO of Acme Corp",
-        response_matches=[r"(?i)(sarah|acme|noted|saved|remember|recorded)"],
-        response_not_contains=["Traceback"],
-        max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
     # Studio (multimodal media)
     # -------------------------------------------------------------------------
     SmokeTest(
@@ -211,62 +197,6 @@ AGENT_TESTS: list[SmokeTest] = [
         response_matches=[r"(?i)(complet|done|marked|finish)"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Craftsman (skills system)
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="a.14",
-        name="craftsman — code review skill",
-        entity_type="agent",
-        entity_id="craftsman",
-        group="agents",
-        prompt="Review this Python function: def add(a, b): return a + b",
-        response_matches=[r"(?i)(review|function|code|add)"],
-        response_not_contains=["Traceback", "failed to execute", "exec format error"],
-        max_duration=30.0,
-    ),
-    SmokeTest(
-        id="a.14.2",
-        name="craftsman — API design skill",
-        entity_type="agent",
-        entity_id="craftsman",
-        group="agents",
-        prompt="Design a REST API for a todo list app",
-        response_matches=[r"(?i)(api|endpoint|rest|todo|resource)"],
-        response_not_contains=["Traceback"],
-        max_duration=80.0,
-    ),
-    SmokeTest(
-        id="a.14.3",
-        name="craftsman — code-reviewer style script runs",
-        entity_type="agent",
-        entity_id="craftsman",
-        group="agents",
-        prompt=(
-            "Run `check_style.py` from the code-reviewer skill on this code and "
-            "quote the script's stdout verbatim before any analysis:\n"
-            "def f():\n"
-            "    # TODO: refactor this\n"
-            "    try:\n"
-            "        return 1\n"
-            "    except:\n"
-            "        pass"
-        ),
-        response_matches=[r"<input>:\d+ — (Bare except clause|TODO comment found|Tab indentation)"],
-        response_not_contains=["Traceback", "failed to execute", "exec format error"],
-        max_duration=60.0,
-    ),
-    SmokeTest(
-        id="a.14.4",
-        name="craftsman — prompt-engineer skill loads",
-        entity_type="agent",
-        entity_id="craftsman",
-        group="agents",
-        prompt="Help me write an effective prompt for summarizing legal contracts.",
-        response_matches=[r"(?i)(prompt|role|context|constraint|example|instruction)"],
-        response_not_contains=["Traceback", "no skill matches", "general assistance"],
-        max_duration=60.0,
     ),
     # -------------------------------------------------------------------------
     # Multi-Framework — Repo Explainer (Claude Agent SDK)
