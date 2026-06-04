@@ -25,9 +25,9 @@ GRACEFUL_TESTS: list[SmokeTest] = [
     ),
     SmokeTest(
         id="g.3",
-        name="reasoner — research without Exa",
+        name="reporter — research without Exa",
         entity_type="agent",
-        entity_id="reasoner",
+        entity_id="reporter",
         group="graceful",
         prompt="Research quantum computing",
         response_matches=[r"(?i)(quantum|comput)"],

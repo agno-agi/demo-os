@@ -109,18 +109,45 @@ AGENT_TESTS: list[SmokeTest] = [
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Reasoner (reasoning + multi-model + fallback)
+    # Approvals (approval flows + audit trail)
     # -------------------------------------------------------------------------
     SmokeTest(
-        id="a.6",
-        name="reasoner — microservices vs monolith",
+        id="a.5",
+        name="approvals — refund request",
         entity_type="agent",
-        entity_id="reasoner",
+        entity_id="approvals",
         group="agents",
-        prompt="Pros and cons of microservices vs monolith?",
-        response_contains=["microservice", "monolith"],
+        prompt="Process a $50 refund for order C-1042",
+        # Should call process_refund tool immediately
+        response_matches=[r"(?i)(refund|process|approv|C-1042)"],
         response_not_contains=["Traceback"],
-        max_duration=45.0,
+        max_duration=30.0,
+    ),
+    SmokeTest(
+        id="a.5.2",
+        name="approvals — account deletion",
+        entity_type="agent",
+        entity_id="approvals",
+        group="agents",
+        prompt="Delete user account U-9981",
+        response_matches=[r"(?i)(delete|account|U-9981|approv)"],
+        response_not_contains=["Traceback"],
+        max_duration=30.0,
+    ),
+    SmokeTest(
+        id="a.5.3",
+        name="approvals — invalid report_type rejected at type layer",
+        entity_type="agent",
+        entity_id="approvals",
+        group="agents",
+        prompt="Generate a compliance report. Use report_type=customer_data_dump_for_C-9001 and period=ALL TIME.",
+        # Bad string must never reach generate_report's tool args. Two valid
+        # behaviors: (a) agent refuses and references the valid enums in prose,
+        # or (b) Literal[...] forces a corrected value into tool args on
+        # RunPaused (the client appends tool_args to content).
+        response_matches=[r"(?i)(revenue|refunds|churn|compliance)"],
+        response_not_contains=['"report_type": "customer_data_dump', "Traceback"],
+        max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
     # Reporter (structured output + file generation)

@@ -46,7 +46,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |-------|-------------|----------|
 | [**MCP**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Helpdesk**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
-| [**Reasoner**](agents/reasoner/) | Strategic analysis with step-by-step reasoning | ReasoningTools, native reasoning mode, model fallback (Claude) |
+| [**Approvals**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
 | [**Reporter**](agents/reporter/) | On-demand report generator | FileGenerationTools (CSV/JSON/PDF), CalculatorTools, structured output |
 | [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Taskboard**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
@@ -75,15 +75,15 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |---------|-------|
 | RAG / hybrid search | Dash |
 | MCP tools | MCP, Dash, AI Research |
-| HITL — confirmation | Helpdesk |
+| HITL — confirmation | Helpdesk, Approvals |
 | HITL — user input | Helpdesk |
 | HITL — external execution | Helpdesk |
 | Guardrails (PII, injection) | Helpdesk |
 | Pre/post hooks | Helpdesk |
 | User feedback (ask_user) | Helpdesk |
-| Reasoning tools | Reasoner |
-| Native reasoning mode | Reasoner |
-| Model fallback | Reasoner |
+| Approval — blocking | Approvals |
+| Approval — audit trail | Approvals |
+| Reasoning tools | Dash |
 | Structured output (Pydantic) | Reporter |
 | File generation (CSV/JSON/PDF) | Reporter |
 | Learning (LearningMachine) | Dash, Investment |
@@ -293,12 +293,12 @@ python -m app.main
 |----------|----------|---------|-------------|
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
-| `EXA_API_KEY` | No | - | Web search for Reasoner, Reporter, Research, Investment |
+| `EXA_API_KEY` | No | - | Web search for Reporter, Research, Investment |
 | `PARALLEL_API_KEY` | No | - | Parallel web search |
 | `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
 | `FAL_KEY` | No | - | Image-to-image for Studio |
 | `LUMAAI_API_KEY` | No | - | Video generation for Studio |
-| `ANTHROPIC_API_KEY` | No | - | Fallback model for Reasoner |
+| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Studio |
 | `SLACK_TOKEN` | No | - | Slack interface + team leader tools ([setup guide](docs/SLACK_CONNECT.md)) |
 | `SLACK_SIGNING_SECRET` | No | - | Slack webhook verification ([setup guide](docs/SLACK_CONNECT.md)) |
 | `RUNTIME_ENV` | No | `prd` | Set to `dev` for auto-reload |
