@@ -19,7 +19,7 @@ manifest:
 
   approvals:
     description: "Compliance and finance agent with approval-gated and audit-trailed operations."
-    labels: ["approvals", "hitl", "audit"]
+    labels: ["hitl", "approvals", "audit"]
     quick_prompts:
       - "Process a $250 refund for customer C-1042 due to billing error"
       - "Export all data for customer C-3021 for a GDPR request"
