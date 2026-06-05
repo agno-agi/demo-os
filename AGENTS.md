@@ -13,7 +13,7 @@ AgentOS (app/main.py)
 ├── Agents (6)
 │   ├── MCP (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
-│   ├── Reasoner (agents/reasoner/)                              # Reasoning + multi-model + fallback
+│   ├── Approvals (agents/approvals/)                            # Approval flows + audit trail
 │   ├── Reporter (agents/reporter/)                              # Structured output + file generation
 │   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Taskboard (agents/taskboard/)                            # Session state + agentic state
@@ -47,7 +47,7 @@ All agents share:
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
 | `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
-| `agents/reasoner/agent.py` | Reasoner - reasoning + multi-model + fallback |
+| `agents/approvals/agent.py` | Approvals - approval flows + audit trail |
 | `agents/reporter/agent.py` | Reporter - structured output + file generation |
 | `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Taskboard - session state + agentic state demo |
@@ -276,7 +276,7 @@ from db import db_url, get_postgres_db, create_knowledge
 # Agents
 from agents.mcp import mcp_agent
 from agents.helpdesk import helpdesk
-from agents.reasoner import reasoner
+from agents.approvals import approvals
 from agents.reporter import reporter
 from agents.studio import studio
 from agents.taskboard import taskboard
@@ -360,7 +360,7 @@ Required:
 - `OPENAI_API_KEY`
 
 Optional (model providers — each enables registry models in Studio):
-- `ANTHROPIC_API_KEY` - Claude Opus 4.7, Sonnet 4.6, Haiku 4.5 + Reasoner fallback
+- `ANTHROPIC_API_KEY` - Claude Opus 4.7, Sonnet 4.6, Haiku 4.5
 - `GOOGLE_API_KEY` - Gemini 3 Flash, Gemini 2.5 Pro
 - `GROQ_API_KEY` - Llama 3.3 70B
 - `DEEPSEEK_API_KEY` - DeepSeek Chat, DeepSeek Reasoner
@@ -368,7 +368,7 @@ Optional (model providers — each enables registry models in Studio):
 - `MISTRAL_API_KEY` - Mistral Large
 
 Optional (tools & integrations):
-- `EXA_API_KEY` - Web search for Reasoner, AI Research, Reporter
+- `EXA_API_KEY` - Web search for Reporter, AI Research, Investment
 - `PARALLEL_API_KEY` - Parallel web search
 - `ELEVEN_LABS_API_KEY` - TTS for Studio, Repo Walkthrough
 - `FAL_KEY` - Image-to-image for Studio
@@ -412,16 +412,16 @@ Optional (tools & integrations):
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
 | MCP tools | MCP, Dash, AI Research, Investment |
-| HITL — confirmation | Helpdesk |
+| HITL — confirmation | Helpdesk, Approvals |
 | HITL — user input | Helpdesk |
 | HITL — external execution | Helpdesk |
 | Guardrails (moderation, PII, injection) | Helpdesk |
 | Output guardrails | Helpdesk |
 | Pre/post hooks | Helpdesk |
 | User feedback (ask_user) | Helpdesk |
-| Reasoning tools | Reasoner |
-| Native reasoning mode | Reasoner |
-| Model fallback | Reasoner |
+| Approval — blocking | Approvals |
+| Approval — audit trail | Approvals |
+| Reasoning tools | Dash |
 | Structured output (Pydantic) | Reporter |
 | File generation (CSV/JSON/PDF) | Reporter |
 | Learning (LearningMachine) | Dash, Investment |

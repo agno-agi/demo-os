@@ -54,4 +54,27 @@ HITL_TESTS: list[SmokeTest] = [
         response_contains=["ask_user"],
         max_duration=30.0,
     ),
+    # -------------------------------------------------------------------------
+    # Approvals — approval gates
+    # -------------------------------------------------------------------------
+    SmokeTest(
+        id="h.5",
+        name="approvals — refund requires approval",
+        entity_type="agent",
+        entity_id="approvals",
+        group="hitl",
+        prompt="Process a $50 refund for order C-1042",
+        response_contains=["process_refund"],
+        max_duration=30.0,
+    ),
+    SmokeTest(
+        id="h.6",
+        name="approvals — export requires approval",
+        entity_type="agent",
+        entity_id="approvals",
+        group="hitl",
+        prompt="Export all customer data for C-5500",
+        response_contains=["export_customer_data"],
+        max_duration=30.0,
+    ),
 ]

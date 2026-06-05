@@ -29,6 +29,27 @@ CASES: list[dict] = [
         "expected_tools": ["run_diagnostic"],
     },
     # -------------------------------------------------------------------------
+    # Approvals — approval gates
+    # -------------------------------------------------------------------------
+    {
+        "entity_type": "agent",
+        "entity_id": "approvals",
+        "input": "Process a $200 refund for order C-5001",
+        "expected_tools": ["process_refund"],
+    },
+    {
+        "entity_type": "agent",
+        "entity_id": "approvals",
+        "input": "Delete account for user U-1234",
+        "expected_tools": ["delete_user_account"],
+    },
+    {
+        "entity_type": "agent",
+        "entity_id": "approvals",
+        "input": "Export all customer data for compliance review",
+        "expected_tools": ["export_customer_data"],
+    },
+    # -------------------------------------------------------------------------
     # Taskboard — task management
     # -------------------------------------------------------------------------
     {

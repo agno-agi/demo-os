@@ -160,7 +160,7 @@ _full_members: list[Agent | Team] = [*_core_members, knowledge_agent, memo_write
 
 investment_coordinate = Team(
     id="investment-coordinate",
-    name="Investment Team (Coordinate)",
+    name="Investment Team",
     mode=TeamMode.coordinate,
     model=MODEL,
     members=_full_members,
@@ -180,7 +180,7 @@ investment_coordinate = Team(
 
 investment_route = Team(
     id="investment-route",
-    name="Investment Team (Route)",
+    name="Investment Team",
     mode=TeamMode.route,
     model=MODEL,
     members=[*_full_members, committee_chair],
@@ -198,7 +198,7 @@ investment_route = Team(
 
 investment_broadcast = Team(
     id="investment-broadcast",
-    name="Investment Team (Broadcast)",
+    name="Investment Team",
     mode=TeamMode.broadcast,
     model=MODEL,
     members=_core_members,
@@ -216,7 +216,7 @@ investment_broadcast = Team(
 
 investment_tasks = Team(
     id="investment-tasks",
-    name="Investment Team (Tasks)",
+    name="Investment Team",
     mode=TeamMode.tasks,
     model=MODEL,
     members=_full_members,

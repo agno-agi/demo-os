@@ -14,10 +14,10 @@ from pathlib import Path
 from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
 
+from agents.approvals import approvals
 from agents.dash import dash, dash_knowledge, dash_learnings
 from agents.helpdesk import helpdesk
 from agents.mcp import mcp_agent
-from agents.reasoner import reasoner
 from agents.reporter import reporter
 from agents.studio import studio
 from agents.taskboard import taskboard
@@ -83,7 +83,7 @@ agent_os = AgentOS(
     agents=[
         mcp_agent,
         helpdesk,
-        reasoner,
+        approvals,
         reporter,
         studio,
         taskboard,

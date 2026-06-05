@@ -55,7 +55,7 @@ members: list[Agent | Team] = [analyst, investigator, writer]
 # ---------------------------------------------------------------------------
 research_coordinate = Team(
     id="research-coordinate",
-    name="Research Team (Coordinate)",
+    name="Research Team",
     mode=TeamMode.coordinate,
     model=MODEL,
     members=members,

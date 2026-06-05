@@ -55,14 +55,4 @@ CASES: list[dict] = [
         "expected_output": "Valid JSON comparing Python and Go on multiple dimensions",
         "guidelines": "Must contain valid JSON structure. Must compare at least 3 dimensions.",
     },
-    # -------------------------------------------------------------------------
-    # Reasoner — balanced analysis
-    # -------------------------------------------------------------------------
-    {
-        "entity_type": "agent",
-        "entity_id": "reasoner",
-        "input": "Should a startup use microservices or a monolith?",
-        "expected_output": "Balanced analysis covering scalability, complexity, team size, and deployment tradeoffs",
-        "guidelines": "Must discuss both approaches. Must include at least 3 tradeoff dimensions. Not one-sided.",
-    },
 ]
