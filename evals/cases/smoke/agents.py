@@ -138,7 +138,7 @@ AGENT_TESTS: list[SmokeTest] = [
     ),
     SmokeTest(
         id="a.7.2",
-        name="reporter — calculator usage",
+        name="reporter — numeric computation",
         entity_type="agent",
         entity_id="reporter",
         group="agents",

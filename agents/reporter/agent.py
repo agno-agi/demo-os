@@ -1,5 +1,4 @@
 from agno.agent import Agent
-from agno.tools.calculator import CalculatorTools
 from agno.tools.file_generation import FileGenerationTools
 
 from agents.reporter.instructions import INSTRUCTIONS
@@ -14,7 +13,7 @@ reporter = Agent(
     name="Reporter",
     model=MODEL,
     db=agent_db,
-    tools=[FileGenerationTools(), CalculatorTools(), *get_exa_mcp_tools()],
+    tools=[FileGenerationTools(), *get_exa_mcp_tools()],
     instructions=INSTRUCTIONS,
     enable_agentic_memory=True,
     add_datetime_to_context=True,
