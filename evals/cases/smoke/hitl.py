@@ -42,16 +42,20 @@ HITL_TESTS: list[SmokeTest] = [
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Helpdesk — ask_user (structured question)
+    # Helpdesk — triages a vague service issue (diagnostics-first, may ask)
     # -------------------------------------------------------------------------
     SmokeTest(
         id="h.4",
-        name="helpdesk — asks structured question",
+        name="helpdesk — triages a vague service issue",
         entity_type="agent",
         entity_id="helpdesk",
         group="hitl",
         prompt="Something's wrong with one of our services but I'm not sure which — help me triage it.",
-        response_contains=["ask_user"],
+        # Helpdesk is instructed to run diagnostics first for a vague service issue
+        # (and only ask clarifying questions afterward), so accept either the
+        # diagnostic action or an ask_user clarification.
+        response_matches=[r"(?i)(run_diagnostic|ask_user)"],
+        response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
