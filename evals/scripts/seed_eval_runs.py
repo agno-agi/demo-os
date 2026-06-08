@@ -199,10 +199,7 @@ def seed_performance(db) -> int:
             "median_memory_usage": mm["median"],
             "p95_memory_usage": mm["p95"],
         },
-        "runs": [
-            {"runtime": runtime, "memory": mem}
-            for runtime, mem in zip(run_times, memory)
-        ],
+        "runs": [{"runtime": runtime, "memory": mem} for runtime, mem in zip(run_times, memory)],
     }
     log_eval_run(
         db=db,
