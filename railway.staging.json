@@ -7,7 +7,7 @@
   "deploy": {
     "runtime": "V2",
     "numReplicas": 2,
-    "preDeployCommand": "python -m agents.dash.scripts.load_data --drop && python -m agents.dash.scripts.load_knowledge --recreate && python -m evals.scripts.seed_eval_runs",
+    "preDeployCommand": "python -m agents.dash.scripts.load_data --drop ; python -m agents.dash.scripts.load_knowledge --recreate ; python -m evals.scripts.seed_eval_runs",
     "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port 8000",
     "sleepApplication": false,
     "useLegacyStacker": false,
