@@ -262,8 +262,7 @@ def _seeded_run_ids(db) -> list[str]:
     ids = []
     for r in runs:
         run_id = str(getattr(r, "run_id", ""))
-        name = getattr(r, "name", "") or ""
-        if run_id.startswith(SEED_PREFIX) in name:
+        if run_id.startswith(SEED_PREFIX):
             ids.append(r.run_id)
     return ids
 
