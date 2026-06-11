@@ -151,6 +151,14 @@ manifest:
       - "Write a social thread about our latest product launch"
       - "Draft an announcement email for our new feature"
 
+  content-generation-hitl:
+    description: "Content generation workflow with step-level user input for audience, tone, format, and length."
+    labels: ["hitl", "user-input", "content-creation", "workflow"]
+    quick_prompts:
+      - "Create a social thread announcing HITL workflow support"
+      - "Draft a launch email for our new analytics dashboard"
+      - "Write a technical blog intro about agent workflows"
+
   repo-walkthrough:
     description: "Turns a codebase into a narrated audio walkthrough — analyze, script, narrate."
     labels: ["cross-modal", "audio", "walkthrough"]

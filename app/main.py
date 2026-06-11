@@ -36,6 +36,7 @@ from teams.investment import (
 )
 from teams.research import research_coordinate
 from workflows.ai_research import ai_research
+from workflows.content_generation_hitl import content_generation_hitl
 from workflows.content_pipeline import content_pipeline
 from workflows.morning_brief import morning_brief
 from workflows.repo_walkthrough import repo_walkthrough
@@ -103,6 +104,7 @@ agent_os = AgentOS(
         morning_brief,
         ai_research,
         content_pipeline,
+        content_generation_hitl,
         repo_walkthrough,
         support_triage,
     ],
