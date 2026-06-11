@@ -74,7 +74,7 @@ python -m evals smoke --output --compare       # Save + compare to last run
 
 ```bash
 python -m evals reliability                    # All cases
-python -m evals reliability --entity helpdesk  # Single entity
+python -m evals reliability --entity glass     # Single entity
 python -m evals reliability --verbose          # Show expected vs actual tools
 ```
 
