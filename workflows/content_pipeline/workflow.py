@@ -68,7 +68,8 @@ def quality_check(outputs) -> bool:
 # ---------------------------------------------------------------------------
 content_pipeline = Workflow(
     id="content-pipeline",
-    name="Content Pipeline",
+    name="Press",
+    description="Content production pipeline with parallel research, a revision loop, and HITL.",
     steps=[
         Parallel(
             Step(name="Research", agent=researcher),  # type: ignore[arg-type]

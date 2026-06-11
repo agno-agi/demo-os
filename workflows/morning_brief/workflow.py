@@ -58,7 +58,8 @@ synthesizer = Agent(
 # ---------------------------------------------------------------------------
 morning_brief = Workflow(
     id="morning-brief",
-    name="Morning Brief",
+    name="Dawn",
+    description="Daily briefing — scans calendar, email, and news in parallel, then synthesizes.",
     steps=[
         Parallel(
             Step(name="Scan Calendar", agent=calendar_agent),  # type: ignore[arg-type]

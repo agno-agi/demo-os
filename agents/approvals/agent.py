@@ -19,7 +19,8 @@ from app.settings import MODEL, agent_db
 # ---------------------------------------------------------------------------
 approvals = Agent(
     id="approvals",
-    name="Approvals",
+    name="Ledger",
+    description="Compliance and finance agent with approval-gated, audit-trailed operations.",
     model=MODEL,
     db=agent_db,
     tools=[process_refund, delete_user_account, export_customer_data, generate_report],

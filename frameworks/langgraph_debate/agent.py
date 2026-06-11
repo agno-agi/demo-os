@@ -18,8 +18,8 @@ from frameworks.langgraph_debate.graph import build_graph
 # ---------------------------------------------------------------------------
 langgraph_debate = LangGraphAgent(
     id="langgraph-debate",
-    name="Debate Bot (LangGraph)",
-    description="Pro and Con argue in parallel, a Judge declares the winner.",
+    name="Forum",
+    description="LangGraph debate — Pro and Con argue in parallel, a Judge declares the winner.",
     db=agent_db,
     graph=build_graph(),
     markdown=True,

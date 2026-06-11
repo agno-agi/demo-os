@@ -31,8 +31,8 @@ for a deep dive. If the user asks about a private or non-existent repo, say so.
 
 claude_repo = ClaudeAgent(
     id="claude-repo",
-    name="Repo Explainer (Claude SDK)",
-    description="Explains public GitHub repos using Claude's native web tools.",
+    name="Probe",
+    description="Explains public GitHub repos using Claude Agent SDK's native web tools.",
     db=agent_db,
     system_prompt=SYSTEM_PROMPT,
     model="claude-sonnet-4-6",

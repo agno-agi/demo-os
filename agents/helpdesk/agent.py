@@ -51,7 +51,8 @@ def audit_log(run_output, agent):
 # ---------------------------------------------------------------------------
 helpdesk = Agent(
     id="helpdesk",
-    name="Helpdesk",
+    name="Glass",
+    description="Support agent with HITL approvals and moderation, PII, and prompt-injection guardrails.",
     model=MODEL,
     db=agent_db,
     tools=[restart_service, create_support_ticket, run_diagnostic, UserFeedbackTools()],

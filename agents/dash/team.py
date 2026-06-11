@@ -39,6 +39,7 @@ if SLACK_TOKEN:
 dash = Team(
     id="dash",
     name="Dash",
+    description="Self-learning data analyst team that runs SQL queries and schema operations over your warehouse.",
     mode=TeamMode.coordinate,
     model=MODEL,
     members=[analyst, engineer],
