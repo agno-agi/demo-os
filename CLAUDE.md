@@ -11,29 +11,29 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 ```
 AgentOS (app/main.py)
 ├── Agents (6)
-│   ├── MCP (agents/mcp/)                                        # Agno documentation agent via MCP
-│   ├── Helpdesk (agents/helpdesk/)                              # HITL + guardrails demo
-│   ├── Approvals (agents/approvals/)                            # Approval flows + audit trail
-│   ├── Reporter (agents/reporter/)                              # Structured output + file generation
-│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
-│   └── Taskboard (agents/taskboard/)                            # Session state + agentic state
+│   ├── Sage (agents/mcp/)                                        # Agno documentation agent via MCP
+│   ├── Glass (agents/helpdesk/)                              # HITL + guardrails demo
+│   ├── Ledger (agents/approvals/)                            # Approval flows + audit trail
+│   ├── Quill (agents/reporter/)                              # Structured output + file generation
+│   ├── Iris (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
+│   └── Pilot (agents/taskboard/)                            # Session state + agentic state
 ├── Multi-Framework Agents (3)
-│   ├── Repo Explainer (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
-│   ├── Debate Bot (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
-│   └── Math Solver (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
+│   ├── Probe (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
+│   ├── Forum (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
+│   └── Abacus (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
 ├── Teams (6)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team)
-│   ├── Research Coordinate (teams/research/)                    # Team coordinate mode
-│   ├── Investment Coordinate (teams/investment/)                # Investment team coordinate
-│   ├── Investment Route (teams/investment/)                     # Investment team route
-│   ├── Investment Broadcast (teams/investment/)                 # Investment team broadcast
-│   └── Investment Tasks (teams/investment/)                     # Investment team tasks
+│   ├── Atlas (teams/research/)                    # Team coordinate mode
+│   ├── Quorum (teams/investment/)                # Investment team coordinate
+│   ├── Switch (teams/investment/)                     # Investment team route
+│   ├── Chorus (teams/investment/)                 # Investment team broadcast
+│   └── Foreman (teams/investment/)                     # Investment team tasks
 └── Workflows (5)
-    ├── Morning Brief (workflows/morning_brief/)                 # Daily parallel briefing
-    ├── AI Research (workflows/ai_research/)                     # Daily parallel AI research
-    ├── Content Pipeline (workflows/content_pipeline/)           # Parallel + loop + condition
-    ├── Repo Walkthrough (workflows/repo_walkthrough/)           # Code → script → narrated audio
-    └── Support Triage (workflows/support_triage/)               # Router + condition + escalation
+    ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
+    ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
+    ├── Press (workflows/content_pipeline/)           # Parallel + loop + condition
+    ├── Echo (workflows/repo_walkthrough/)                 # Code → script → narrated audio
+    └── Beacon (workflows/support_triage/)               # Router + condition + escalation
 ```
 
 All agents share:
@@ -49,24 +49,24 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/mcp/agent.py` | MCP - Agno documentation agent via live MCP tools |
-| `agents/helpdesk/agent.py` | Helpdesk - HITL + guardrails (moderation, PII, injection, output) |
-| `agents/approvals/agent.py` | Approvals - approval flows + audit trail |
-| `agents/reporter/agent.py` | Reporter - structured output + file generation |
-| `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
-| `agents/taskboard/agent.py` | Taskboard - session state + agentic state demo |
-| `frameworks/claude_repo/agent.py` | Repo Explainer - Claude Agent SDK with WebSearch/WebFetch |
-| `frameworks/langgraph_debate/graph.py` | Debate Bot - LangGraph graph with parallel branches |
-| `frameworks/langgraph_debate/agent.py` | Debate Bot - LangGraphAgent wrapper |
-| `frameworks/dspy_math/agent.py` | Math Solver - DSPyAgent with typed ChainOfThought signature |
+| `agents/mcp/agent.py` | Sage - Agno documentation agent via live MCP tools |
+| `agents/helpdesk/agent.py` | Glass - HITL + guardrails (moderation, PII, injection, output) |
+| `agents/approvals/agent.py` | Ledger - approval flows + audit trail |
+| `agents/reporter/agent.py` | Quill - structured output + file generation |
+| `agents/studio/agent.py` | Iris - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
+| `agents/taskboard/agent.py` | Pilot - session state + agentic state demo |
+| `frameworks/claude_repo/agent.py` | Probe - Claude Agent SDK with WebSearch/WebFetch |
+| `frameworks/langgraph_debate/graph.py` | Forum - LangGraph graph with parallel branches |
+| `frameworks/langgraph_debate/agent.py` | Forum - LangGraphAgent wrapper |
+| `frameworks/dspy_math/agent.py` | Abacus - DSPyAgent with typed ChainOfThought signature |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
-| `teams/research/team.py` | Research Team (coordinate mode) |
-| `teams/investment/team.py` | Investment Team (4 modes, 7 agents, YFinance) |
-| `workflows/morning_brief/workflow.py` | Morning Brief (parallel gather → synthesize) |
-| `workflows/ai_research/workflow.py` | AI Research (4 parallel researchers → synthesize) |
-| `workflows/content_pipeline/workflow.py` | Content Pipeline (router, parallel, loop, HITL) |
-| `workflows/repo_walkthrough/workflow.py` | Repo Walkthrough (analyze → script → narrate) |
-| `workflows/support_triage/workflow.py` | Support Triage (classify → route → escalate) |
+| `teams/research/team.py` | Atlas (coordinate mode) |
+| `teams/investment/team.py` | Investment (4 modes: Quorum/Switch/Chorus/Foreman, 7 agents, YFinance) |
+| `workflows/morning_brief/workflow.py` | Dawn (parallel gather → synthesize) |
+| `workflows/ai_research/workflow.py` | Pulse (4 parallel researchers → synthesize) |
+| `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
+| `workflows/repo_walkthrough/workflow.py` | Echo (analyze → script → narrate) |
+| `workflows/support_triage/workflow.py` | Beacon (classify → route → escalate) |
 | `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
 | `db/url.py` | Builds database URL from environment |
 | `compose.yaml` | Local development with Docker |
@@ -367,7 +367,7 @@ python -m evals improve --entity docs --json
 Required:
 - `OPENAI_API_KEY`
 
-Optional (model providers — each enables registry models in Studio):
+Optional (model providers — each enables registry models in Iris):
 - `ANTHROPIC_API_KEY` - Claude Opus 4.7, Sonnet 4.6, Haiku 4.5
 - `GOOGLE_API_KEY` - Gemini 3 Flash, Gemini 2.5 Pro
 - `GROQ_API_KEY` - Llama 3.3 70B
@@ -376,11 +376,11 @@ Optional (model providers — each enables registry models in Studio):
 - `MISTRAL_API_KEY` - Mistral Large
 
 Optional (tools & integrations):
-- `EXA_API_KEY` - Web search for Reporter, AI Research, Investment
+- `EXA_API_KEY` - Web search for Quill, Pulse, Investment
 - `PARALLEL_API_KEY` - Parallel web search
-- `ELEVEN_LABS_API_KEY` - TTS for Studio, Repo Walkthrough
-- `FAL_KEY` - Image-to-image for Studio
-- `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
+- `ELEVEN_LABS_API_KEY` - TTS for Iris, Echo
+- `FAL_KEY` - Image-to-image for Iris
+- `LUMAAI_API_KEY` - Video generation for Iris (LumaLab)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
@@ -419,42 +419,42 @@ Optional (tools & integrations):
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
-| MCP tools | MCP, Dash, AI Research, Investment |
-| HITL — confirmation | Helpdesk, Approvals |
-| HITL — user input | Helpdesk |
-| HITL — external execution | Helpdesk |
-| Guardrails (moderation, PII, injection) | Helpdesk |
-| Output guardrails | Helpdesk |
-| Pre/post hooks | Helpdesk |
-| User feedback (ask_user) | Helpdesk |
-| Approval — blocking | Approvals |
-| Approval — audit trail | Approvals |
+| MCP tools | Sage, Dash, Pulse, Investment |
+| HITL — confirmation | Glass, Ledger |
+| HITL — user input | Glass |
+| HITL — external execution | Glass |
+| Guardrails (moderation, PII, injection) | Glass |
+| Output guardrails | Glass |
+| Pre/post hooks | Glass |
+| User feedback (ask_user) | Glass |
+| Approval — blocking | Ledger |
+| Approval — audit trail | Ledger |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Reporter |
-| File generation (CSV/JSON/PDF) | Reporter |
+| Structured output (Pydantic) | Quill |
+| File generation (CSV/JSON/PDF) | Quill |
 | Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
-| Coding tools | Repo Walkthrough |
-| Image generation (DALL-E) | Studio |
+| Coding tools | Echo |
+| Image generation (DALL-E) | Iris |
 | Image generation (Gemini NanoBanana) | Registry |
-| Image-to-image (FAL) | Studio |
-| Text-to-speech (ElevenLabs) | Studio, Repo Walkthrough |
-| Video generation (LumaLab) | Studio |
-| Sound effects | Studio |
+| Image-to-image (FAL) | Iris |
+| Text-to-speech (ElevenLabs) | Iris, Echo |
+| Video generation (LumaLab) | Iris |
+| Sound effects | Iris |
 | YFinance tools | Investment |
 | File tools (memos) | Investment |
-| Team — coordinate | Dash, Research, Investment |
-| Team — route | Investment |
-| Team — broadcast | Investment |
-| Team — tasks | Investment |
-| Workflow — parallel | Morning Brief, AI Research, Content Pipeline |
-| Workflow — loop | Content Pipeline |
-| Scheduling (cron) | Morning Brief, AI Research |
-| Parallel execution | Morning Brief, AI Research, Content Pipeline |
-| Workflow — router | Support Triage |
-| Workflow — condition | Support Triage |
-| Session state + agentic state | Taskboard |
-| Cross-modal chaining | Repo Walkthrough |
+| Team — coordinate | Dash, Atlas, Quorum |
+| Team — route | Switch |
+| Team — broadcast | Chorus |
+| Team — tasks | Foreman |
+| Workflow — parallel | Dawn, Pulse, Press |
+| Workflow — loop | Press |
+| Scheduling (cron) | Dawn, Pulse |
+| Parallel execution | Dawn, Pulse, Press |
+| Workflow — router | Beacon |
+| Workflow — condition | Beacon |
+| Session state + agentic state | Pilot |
+| Cross-modal chaining | Echo |
 
 ---
 
