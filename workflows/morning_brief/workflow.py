@@ -57,7 +57,7 @@ synthesizer = Agent(
 # Create Workflow
 # ---------------------------------------------------------------------------
 morning_brief = Workflow(
-    id="morning-brief",
+    id="dawn",
     name="Dawn",
     description="Daily briefing — scans calendar, email, and news in parallel, then synthesizes.",
     steps=[

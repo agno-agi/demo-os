@@ -17,7 +17,7 @@ from frameworks.langgraph_debate.graph import build_graph
 # Create Agent
 # ---------------------------------------------------------------------------
 langgraph_debate = LangGraphAgent(
-    id="langgraph-debate",
+    id="forum",
     name="Forum",
     description="LangGraph debate — Pro and Con argue in parallel, a Judge declares the winner.",
     db=agent_db,

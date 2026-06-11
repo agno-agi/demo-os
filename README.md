@@ -47,69 +47,69 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Agent | What it does | Features |
 |-------|-------------|----------|
-| [**MCP**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
-| [**Helpdesk**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
-| [**Approvals**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
-| [**Reporter**](agents/reporter/) | On-demand report generator | FileGenerationTools (CSV/JSON/PDF), structured output |
-| [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
-| [**Taskboard**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
+| [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
+| [**Glass**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
+| [**Ledger**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
+| [**Quill**](agents/reporter/) | On-demand report generator | FileGenerationTools (CSV/JSON/PDF), structured output |
+| [**Iris**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
+| [**Pilot**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
 
 ### Teams
 
 | Team | Mode | What it does | Features |
 |------|------|-------------|----------|
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
-| [**Research**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
-| [**Investment**](teams/investment/) | coordinate, route, broadcast, tasks | 7-agent investment committee using Gemini | Multi-model (Gemini), YFinanceTools, FileTools, LearningMachine |
+| [**Atlas**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
+| [**Quorum** / **Switch** / **Chorus** / **Foreman**](teams/investment/) | coordinate, route, broadcast, tasks | 7-agent investment committee using Gemini | Multi-model (Gemini), YFinanceTools, FileTools, LearningMachine |
 
 ### Workflows
 
 | Workflow | Schedule | What it does | Features |
 |----------|----------|-------------|----------|
-| [**Morning Brief**](workflows/morning_brief/) | Weekdays 8am ET | Parallel gather (calendar + email + news) then synthesize | Workflow, Step, Parallel, mock tools |
-| [**AI Research**](workflows/ai_research/) | Daily 7am UTC | 4 parallel researchers then synthesize | Workflow, Parallel, Exa MCP |
-| [**Content Pipeline**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
-| [**Repo Walkthrough**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
-| [**Support Triage**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
+| [**Dawn**](workflows/morning_brief/) | Weekdays 8am ET | Parallel gather (calendar + email + news) then synthesize | Workflow, Step, Parallel, mock tools |
+| [**Pulse**](workflows/ai_research/) | Daily 7am UTC | 4 parallel researchers then synthesize | Workflow, Parallel, Exa MCP |
+| [**Press**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
+| [**Echo**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
+| [**Beacon**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
 
 ### Feature Coverage
 
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash |
-| MCP tools | MCP, Dash, AI Research |
-| HITL — confirmation | Helpdesk, Approvals |
-| HITL — user input | Helpdesk |
-| HITL — external execution | Helpdesk |
-| Guardrails (PII, injection) | Helpdesk |
-| Pre/post hooks | Helpdesk |
-| User feedback (ask_user) | Helpdesk |
-| Approval — blocking | Approvals |
-| Approval — audit trail | Approvals |
+| MCP tools | Sage, Dash, Pulse |
+| HITL — confirmation | Glass, Ledger |
+| HITL — user input | Glass |
+| HITL — external execution | Glass |
+| Guardrails (PII, injection) | Glass |
+| Pre/post hooks | Glass |
+| User feedback (ask_user) | Glass |
+| Approval — blocking | Ledger |
+| Approval — audit trail | Ledger |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Reporter |
-| File generation (CSV/JSON/PDF) | Reporter |
+| Structured output (Pydantic) | Quill |
+| File generation (CSV/JSON/PDF) | Quill |
 | Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
-| Coding tools | Repo Walkthrough |
-| Image generation (DALL-E) | Studio |
-| Image-to-image (FAL) | Studio |
-| Text-to-speech (ElevenLabs) | Studio, Repo Walkthrough |
-| Video generation (LumaLab) | Studio |
+| Coding tools | Echo |
+| Image generation (DALL-E) | Iris |
+| Image-to-image (FAL) | Iris |
+| Text-to-speech (ElevenLabs) | Iris, Echo |
+| Video generation (LumaLab) | Iris |
 | Multi-model (Gemini) | Investment |
 | YFinance tools | Investment |
-| Session state + agentic state | Taskboard |
-| Team — coordinate | Dash, Research, Investment |
-| Team — route | Investment |
-| Team — broadcast | Investment |
-| Team — tasks | Investment |
-| Workflow — parallel | Morning Brief, AI Research, Content Pipeline |
-| Workflow — loop | Content Pipeline |
-| Workflow — router | Support Triage |
-| Workflow — condition | Support Triage |
-| Scheduling (cron) | Morning Brief, AI Research |
-| Parallel execution | Morning Brief, AI Research, Content Pipeline |
-| Cross-modal chaining | Repo Walkthrough |
+| Session state + agentic state | Pilot |
+| Team — coordinate | Dash, Atlas, Quorum |
+| Team — route | Switch |
+| Team — broadcast | Chorus |
+| Team — tasks | Foreman |
+| Workflow — parallel | Dawn, Pulse, Press |
+| Workflow — loop | Press |
+| Workflow — router | Beacon |
+| Workflow — condition | Beacon |
+| Scheduling (cron) | Dawn, Pulse |
+| Parallel execution | Dawn, Pulse, Press |
+| Cross-modal chaining | Echo |
 
 ## Deploy to Railway
 
@@ -296,12 +296,12 @@ python -m app.main
 |----------|----------|---------|-------------|
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
-| `EXA_API_KEY` | No | - | Web search for Reporter, Research, Investment |
+| `EXA_API_KEY` | No | - | Web search for Quill, Research, Investment |
 | `PARALLEL_API_KEY` | No | - | Parallel web search |
-| `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Repo Walkthrough |
-| `FAL_KEY` | No | - | Image-to-image for Studio |
-| `LUMAAI_API_KEY` | No | - | Video generation for Studio |
-| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Studio |
+| `ELEVEN_LABS_API_KEY` | No | - | TTS for Iris, Echo |
+| `FAL_KEY` | No | - | Image-to-image for Iris |
+| `LUMAAI_API_KEY` | No | - | Video generation for Iris |
+| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Iris |
 | `SLACK_TOKEN` | No | - | Slack interface + team leader tools ([setup guide](docs/SLACK_CONNECT.md)) |
 | `SLACK_SIGNING_SECRET` | No | - | Slack webhook verification ([setup guide](docs/SLACK_CONNECT.md)) |
 | `RUNTIME_ENV` | No | `prd` | Set to `dev` for auto-reload |

@@ -343,7 +343,7 @@ python -m evals smoke --output --compare
 
 # Run evals — reliability (tool call validation, no LLM cost)
 python -m evals reliability
-python -m evals reliability --entity helpdesk
+python -m evals reliability --entity glass
 
 # Run evals — Agno evals (AgentAsJudgeEval, AccuracyEval — LLM cost)
 python -m evals

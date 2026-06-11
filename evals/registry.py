@@ -28,39 +28,39 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Agents (6)
     # -------------------------------------------------------------------------
-    "mcp": Entity(
-        id="mcp",
+    "sage": Entity(
+        id="sage",
         type="agent",
         instruction_file="agents/mcp/instructions.py",
         definition_file="agents/mcp/agent.py",
     ),
-    "helpdesk": Entity(
-        id="helpdesk",
+    "glass": Entity(
+        id="glass",
         type="agent",
         instruction_file="agents/helpdesk/instructions.py",
         definition_file="agents/helpdesk/agent.py",
     ),
-    "approvals": Entity(
-        id="approvals",
+    "ledger": Entity(
+        id="ledger",
         type="agent",
         instruction_file="agents/approvals/instructions.py",
         definition_file="agents/approvals/agent.py",
     ),
-    "reporter": Entity(
-        id="reporter",
+    "quill": Entity(
+        id="quill",
         type="agent",
         instruction_file="agents/reporter/instructions.py",
         definition_file="agents/reporter/agent.py",
         requires=["EXA_API_KEY"],
     ),
-    "studio": Entity(
-        id="studio",
+    "iris": Entity(
+        id="iris",
         type="agent",
         instruction_file="agents/studio/instructions.py",
         definition_file="agents/studio/agent.py",
     ),
-    "taskboard": Entity(
-        id="taskboard",
+    "pilot": Entity(
+        id="pilot",
         type="agent",
         instruction_file="agents/taskboard/instructions.py",
         definition_file="agents/taskboard/agent.py",
@@ -74,36 +74,36 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="agents/dash/instructions.py",
         definition_file="agents/dash/team.py",
     ),
-    "research-coordinate": Entity(
-        id="research-coordinate",
+    "atlas": Entity(
+        id="atlas",
         type="team",
         instruction_file="teams/research/instructions.py",
         definition_file="teams/research/team.py",
         requires=["EXA_API_KEY"],
     ),
-    "investment-coordinate": Entity(
-        id="investment-coordinate",
+    "quorum": Entity(
+        id="quorum",
         type="team",
         instruction_file="teams/investment/instructions.py",
         definition_file="teams/investment/team.py",
         requires=["EXA_API_KEY"],
     ),
-    "investment-route": Entity(
-        id="investment-route",
+    "switch": Entity(
+        id="switch",
         type="team",
         instruction_file="teams/investment/instructions.py",
         definition_file="teams/investment/team.py",
         requires=["EXA_API_KEY"],
     ),
-    "investment-broadcast": Entity(
-        id="investment-broadcast",
+    "chorus": Entity(
+        id="chorus",
         type="team",
         instruction_file="teams/investment/instructions.py",
         definition_file="teams/investment/team.py",
         requires=["EXA_API_KEY"],
     ),
-    "investment-tasks": Entity(
-        id="investment-tasks",
+    "foreman": Entity(
+        id="foreman",
         type="team",
         instruction_file="teams/investment/instructions.py",
         definition_file="teams/investment/team.py",
@@ -112,33 +112,33 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Workflows (5)
     # -------------------------------------------------------------------------
-    "morning-brief": Entity(
-        id="morning-brief",
+    "dawn": Entity(
+        id="dawn",
         type="workflow",
         instruction_file="workflows/morning_brief/instructions.py",
         definition_file="workflows/morning_brief/workflow.py",
     ),
-    "ai-research": Entity(
-        id="ai-research",
+    "pulse": Entity(
+        id="pulse",
         type="workflow",
         instruction_file="workflows/ai_research/instructions.py",
         definition_file="workflows/ai_research/workflow.py",
         requires=["EXA_API_KEY"],
     ),
-    "content-pipeline": Entity(
-        id="content-pipeline",
+    "press": Entity(
+        id="press",
         type="workflow",
         instruction_file="workflows/content_pipeline/instructions.py",
         definition_file="workflows/content_pipeline/workflow.py",
     ),
-    "repo-walkthrough": Entity(
-        id="repo-walkthrough",
+    "echo": Entity(
+        id="echo",
         type="workflow",
         instruction_file="workflows/repo_walkthrough/instructions.py",
         definition_file="workflows/repo_walkthrough/workflow.py",
     ),
-    "support-triage": Entity(
-        id="support-triage",
+    "beacon": Entity(
+        id="beacon",
         type="workflow",
         instruction_file="workflows/support_triage/instructions.py",
         definition_file="workflows/support_triage/workflow.py",

@@ -12,19 +12,19 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "helpdesk",
+        "entity_id": "glass",
         "input": "Restart the auth service, it's down",
         "expected_tools": ["restart_service"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "helpdesk",
+        "entity_id": "glass",
         "input": "Create a P1 ticket for the payment gateway outage",
         "expected_tools": ["create_support_ticket"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "helpdesk",
+        "entity_id": "glass",
         "input": "Run diagnostics on the database cluster",
         "expected_tools": ["run_diagnostic"],
     },
@@ -33,19 +33,19 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "approvals",
+        "entity_id": "ledger",
         "input": "Process a $200 refund for order C-5001",
         "expected_tools": ["process_refund"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "approvals",
+        "entity_id": "ledger",
         "input": "Delete account for user U-1234",
         "expected_tools": ["delete_user_account"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "approvals",
+        "entity_id": "ledger",
         "input": "Export all customer data for compliance review",
         "expected_tools": ["export_customer_data"],
     },
@@ -54,13 +54,13 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "taskboard",
+        "entity_id": "pilot",
         "input": "Add a task: Write quarterly report, high priority, work category",
         "expected_tools": ["add_task"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "taskboard",
+        "entity_id": "pilot",
         "input": "Show me all my tasks",
         "expected_tools": ["list_tasks"],
     },

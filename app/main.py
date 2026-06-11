@@ -129,18 +129,18 @@ def _register_schedules() -> None:
 
     mgr = ScheduleManager(agent_db)
     mgr.create(
-        name="morning-brief",
+        name="dawn",
         cron="0 8 * * 1-5",
-        endpoint="/workflows/morning-brief/runs",
+        endpoint="/workflows/dawn/runs",
         payload={"message": "Generate my morning briefing."},
         timezone="America/New_York",
         description="Weekday morning briefing",
         if_exists="update",
     )
     mgr.create(
-        name="ai-research",
+        name="pulse",
         cron="0 7 * * *",
-        endpoint="/workflows/ai-research/runs",
+        endpoint="/workflows/pulse/runs",
         payload={"message": "Run the daily AI research brief."},
         timezone="UTC",
         description="Daily parallel AI research",

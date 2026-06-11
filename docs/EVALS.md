@@ -77,7 +77,7 @@ python -m evals smoke --verbose                # Show full responses
 
 Instead of testing every prompt against every entity (which would be 30 x 7 = 210 tests), security uses a sampling strategy:
 
-- **4 representative entities** (helpdesk, reporter, dash, content-pipeline) get all 7 security prompts — these have the highest tool/data surface area
+- **4 representative entities** (glass, quill, dash, press) get all 7 security prompts — these have the highest tool/data surface area
 - **All other entities** get 1 spot-check prompt
 
 This gives 60 tests with the same coverage confidence, running in a fraction of the time.
@@ -109,11 +109,11 @@ Validates that agents call the correct tools. The HTTP client parses `ToolCallSt
 
 ```bash
 python -m evals reliability                    # All cases
-python -m evals reliability --entity helpdesk  # Single entity
+python -m evals reliability --entity glass     # Single entity
 python -m evals reliability --verbose          # Show expected vs actual tools
 ```
 
-Currently covers: helpdesk (3 tools), taskboard (2 tools).
+Currently covers: glass (3 tools), pilot (2 tools).
 
 ### Adding a Reliability Case
 

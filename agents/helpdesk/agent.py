@@ -50,7 +50,7 @@ def audit_log(run_output, agent):
 # Create Agent
 # ---------------------------------------------------------------------------
 helpdesk = Agent(
-    id="helpdesk",
+    id="glass",
     name="Glass",
     description="Support agent with HITL approvals and moderation, PII, and prompt-injection guardrails.",
     model=MODEL,

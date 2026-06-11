@@ -9,7 +9,7 @@ from utils.exa import get_exa_mcp_tools
 # Create Agent
 # ---------------------------------------------------------------------------
 reporter = Agent(
-    id="reporter",
+    id="quill",
     name="Quill",
     description="Produces structured reports and generates CSV, JSON, and PDF files.",
     model=MODEL,

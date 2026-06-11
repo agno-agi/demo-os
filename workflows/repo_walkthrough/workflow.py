@@ -65,7 +65,7 @@ narrator = Agent(
 # Create Workflow
 # ---------------------------------------------------------------------------
 repo_walkthrough = Workflow(
-    id="repo-walkthrough",
+    id="echo",
     name="Echo",
     description="Turns a codebase into a narrated audio walkthrough — analyze, script, narrate.",
     steps=[

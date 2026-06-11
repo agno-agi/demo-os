@@ -23,5 +23,5 @@ CASES = [
 ]
 
 ENTITIES: list[tuple[str, str]] = [
-    ("team", "research-coordinate"),
+    ("team", "atlas"),
 ]
