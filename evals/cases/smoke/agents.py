@@ -150,15 +150,15 @@ AGENT_TESTS: list[SmokeTest] = [
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Reporter (structured output + file generation)
+    # Reporter (web research + HTML report generation)
     # -------------------------------------------------------------------------
     SmokeTest(
         id="a.7",
-        name="reporter — Python vs Go JSON",
+        name="reporter — Python vs Go comparison",
         entity_type="agent",
         entity_id="quill",
         group="agents",
-        prompt="Create a brief comparison of Python and Go as JSON. Don't ask clarifying questions.",
+        prompt="Write a brief comparison of Python and Go. Don't ask clarifying questions.",
         response_matches=[r"(?i)\bpython\b", r"(?i)\bgo\b"],
         response_not_contains=["Traceback"],
         max_duration=45.0,
@@ -176,13 +176,13 @@ AGENT_TESTS: list[SmokeTest] = [
     ),
     SmokeTest(
         id="a.7.3",
-        name="reporter — Hindi response preserves JSON keys",
+        name="reporter — Hindi response preserves HTML tags",
         entity_type="agent",
         entity_id="quill",
         group="agents",
-        prompt="Reply in Hindi only. Generate a sample JSON record for a customer with fields customer_id, name, email. Briefly explain each field.",
+        prompt="Reply in Hindi only. Write a short snippet of HTML with an <h1> heading and a <p> paragraph introducing a company, and briefly explain each tag.",
         response_matches=[r"[\u0900-\u097F]"],  # Devanagari script
-        response_contains=["customer_id", "email"],
+        response_contains=["<h1>", "<p>"],
         response_not_contains=["Traceback"],
         max_duration=45.0,
     ),

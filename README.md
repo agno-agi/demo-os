@@ -50,7 +50,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Glass**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Ledger**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
-| [**Quill**](agents/reporter/) | On-demand report generator | FileGenerationTools (CSV/JSON/PDF), structured output |
+| [**Quill**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
 | [**Iris**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Pilot**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
 
@@ -88,7 +88,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Approval — audit trail | Ledger |
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Quill |
-| File generation (CSV/JSON/PDF) | Quill |
+| File generation (HTML) | Quill |
+| Web research (Exa: search, company, crawl, fetch) | Quill |
 | Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
 | Coding tools | Echo |

@@ -14,7 +14,7 @@ AgentOS (app/main.py)
 │   ├── Sage (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Glass (agents/helpdesk/)                              # HITL + guardrails demo
 │   ├── Ledger (agents/approvals/)                            # Approval flows + audit trail
-│   ├── Quill (agents/reporter/)                              # Structured output + file generation
+│   ├── Quill (agents/reporter/)                              # Web research + HTML report generation
 │   ├── Iris (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Pilot (agents/taskboard/)                            # Session state + agentic state
 ├── Multi-Framework Agents (3)
@@ -52,7 +52,7 @@ All agents share:
 | `agents/mcp/agent.py` | Sage - Agno documentation agent via live MCP tools |
 | `agents/helpdesk/agent.py` | Glass - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/approvals/agent.py` | Ledger - approval flows + audit trail |
-| `agents/reporter/agent.py` | Quill - structured output + file generation |
+| `agents/reporter/agent.py` | Quill - web research (Exa) + HTML report generation |
 | `agents/studio/agent.py` | Iris - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Pilot - session state + agentic state demo |
 | `frameworks/claude_repo/agent.py` | Probe - Claude Agent SDK with WebSearch/WebFetch |
@@ -431,7 +431,8 @@ Optional (tools & integrations):
 | Approval — audit trail | Ledger |
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Quill |
-| File generation (CSV/JSON/PDF) | Quill |
+| File generation (HTML) | Quill |
+| Web research (Exa: search, company, crawl, fetch) | Quill |
 | Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
 | Coding tools | Echo |

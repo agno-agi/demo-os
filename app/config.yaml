@@ -26,12 +26,12 @@ manifest:
       - "Delete user account U-7788 per their closure request"
 
   quill:
-    description: "Structured output agent that produces reports and generates CSV, JSON, and PDF files."
-    labels: ["structured-output", "file-generation", "csv"]
+    description: "Research agent that searches the web and generates polished, self-contained HTML reports."
+    labels: ["research", "web-search", "html", "file-generation"]
     quick_prompts:
-      - "Generate a competitive analysis comparing Agno, LangChain, and CrewAI as structured JSON"
-      - "Create a CSV of the top 10 AI agent frameworks with features and pricing"
-      - "Produce a market sizing report for the AI agent platform market"
+      - "Write a one-page HTML brief on Anthropic — what they do and recent funding"
+      - "Find the latest AI agent platform market size and CAGR, and put it in a short HTML report"
+      - "Quick HTML one-pager comparing LangChain and CrewAI on 3 dimensions"
 
   iris:
     description: "Multimodal media agent that generates images, audio, and video."
@@ -42,12 +42,12 @@ manifest:
       - "Read this aloud: 'Welcome to Agno, the platform for building AI agents.'"
 
   pilot:
-    description: "Manages a task list using persistent session state and agentic state."
-    labels: ["session-state", "task-management", "agentic-state"]
+    description: "Personal work planner — captures tasks, plans your day, and remembers how you work."
+    labels: ["session-state", "memory", "planning", "task-management"]
     quick_prompts:
-      - "Add a task: Review Q2 roadmap, priority high, category work"
-      - "Show me all my tasks"
-      - "Mark T-001 as done and add a new task: prepare demo for Friday"
+      - "Add: finish the Q2 roadmap deck (deep work, due today) and reply to the vendor email"
+      - "What's overdue or due today?"
+      - "Plan my day. Remember I like deep work in the morning and batch admin at the end."
 
   # --- Multi-Framework Agents ---
 
