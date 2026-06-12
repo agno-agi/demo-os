@@ -29,9 +29,9 @@ manifest:
     description: "Research agent that searches the web and generates polished, self-contained HTML reports."
     labels: ["research", "web-search", "html", "file-generation"]
     quick_prompts:
-      - "Research the AI agent platform market and give me an HTML report"
-      - "Do company research on Anthropic and write up a one-page HTML brief"
-      - "Compare Agno, LangChain, and CrewAI on features and traction, then export it as HTML"
+      - "Write a one-page HTML brief on Anthropic — what they do and recent funding"
+      - "Find the latest AI agent platform market size and CAGR, and put it in a short HTML report"
+      - "Quick HTML one-pager comparing LangChain and CrewAI on 3 dimensions"
 
   iris:
     description: "Multimodal media agent that generates images, audio, and video."
