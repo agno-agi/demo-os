@@ -67,7 +67,7 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "team",
-        "entity_id": "quorum",
+        "entity_id": "chorus",
         "input": "Analyze AAPL as an investment",
         "expected_output": "Investment analysis with fundamentals, technicals, and risk assessment",
         "guidelines": "Must include a valuation metric. Must discuss risk. Must give a recommendation.",

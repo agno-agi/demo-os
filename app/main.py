@@ -28,11 +28,8 @@ from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
 from teams.investment import (
     investment_broadcast,
-    investment_coordinate,
     investment_knowledge,
     investment_learnings,
-    investment_route,
-    investment_tasks,
 )
 from teams.research import research_coordinate
 from workflows.ai_research import ai_research
@@ -94,10 +91,7 @@ agent_os = AgentOS(
     teams=[
         dash,
         research_coordinate,
-        investment_coordinate,
-        investment_route,
         investment_broadcast,
-        investment_tasks,
     ],
     workflows=[
         morning_brief,

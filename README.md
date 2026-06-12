@@ -60,7 +60,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |------|------|-------------|----------|
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
 | [**Atlas**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
-| [**Quorum** / **Switch** / **Chorus** / **Foreman**](teams/investment/) | coordinate, route, broadcast, tasks | 7-agent investment committee using Gemini | Multi-model (Gemini), YFinanceTools, FileTools, LearningMachine |
+| [**Chorus**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
 
 ### Workflows
 
@@ -100,10 +100,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Multi-model (Gemini) | Investment |
 | YFinance tools | Investment |
 | Session state + agentic state | Pilot |
-| Team — coordinate | Dash, Atlas, Quorum |
-| Team — route | Switch |
+| Team — coordinate | Dash, Atlas |
 | Team — broadcast | Chorus |
-| Team — tasks | Foreman |
 | Workflow — parallel | Dawn, Pulse, Press |
 | Workflow — loop | Press |
 | Workflow — router | Beacon |

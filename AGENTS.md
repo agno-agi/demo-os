@@ -4,7 +4,7 @@ This file provides context for Codex when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 6 teams, 5 workflows, 3 multi-framework agents).
+AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 3 teams, 5 workflows, 3 multi-framework agents).
 
 ## Architecture
 
@@ -17,13 +17,10 @@ AgentOS (app/main.py)
 │   ├── Quill (agents/reporter/)                              # Structured output + file generation
 │   ├── Iris (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Pilot (agents/taskboard/)                            # Session state + agentic state
-├── Teams (6)
-│   ├── Dash (agents/dash/)                                      # Data analyst (team)
-│   ├── Atlas (teams/research/)                    # Team coordinate mode
-│   ├── Quorum (teams/investment/)                # Investment team coordinate
-│   ├── Switch (teams/investment/)                     # Investment team route
-│   ├── Chorus (teams/investment/)                 # Investment team broadcast
-│   └── Foreman (teams/investment/)                     # Investment team tasks
+├── Teams (3)
+│   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
+│   ├── Atlas (teams/research/)                    # Research team (coordinate mode)
+│   └── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
 └── Workflows (5)
     ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
     ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
@@ -53,7 +50,7 @@ All agents share:
 | `agents/taskboard/agent.py` | Pilot - session state + agentic state demo |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Atlas (coordinate mode) |
-| `teams/investment/team.py` | Investment (4 modes: Quorum/Switch/Chorus/Foreman, 7 agents, YFinance) |
+| `teams/investment/team.py` | Chorus — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `workflows/morning_brief/workflow.py` | Dawn (parallel gather → synthesize) |
 | `workflows/ai_research/workflow.py` | Pulse (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
@@ -284,7 +281,7 @@ from agents.taskboard import taskboard
 # Teams
 from agents.dash import dash
 from teams.research import research_coordinate
-from teams.investment import investment_coordinate, investment_route, investment_broadcast, investment_tasks
+from teams.investment import investment_broadcast
 
 # Workflows
 from workflows.morning_brief import morning_brief
@@ -433,11 +430,8 @@ Optional (tools & integrations):
 | Video generation (LumaLab) | Iris |
 | Sound effects | Iris |
 | YFinance tools | Investment |
-| File tools (memos) | Investment |
-| Team — coordinate | Dash, Atlas, Quorum |
-| Team — route | Switch |
+| Team — coordinate | Dash, Atlas |
 | Team — broadcast | Chorus |
-| Team — tasks | Foreman |
 | Workflow — parallel | Dawn, Pulse, Press |
 | Workflow — loop | Press |
 | Scheduling (cron) | Dawn, Pulse |

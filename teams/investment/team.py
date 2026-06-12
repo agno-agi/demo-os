@@ -1,28 +1,20 @@
-"""Investment Team — 7 agents across 4 team modes."""
+"""Investment Team (Chorus) — 4 analysts assess a target in parallel (broadcast mode)."""
 
 from os import getenv
-from pathlib import Path
 from typing import Any  # noqa: UP035 — used for dict[str, Any] unpacking
 
 from agno.agent import Agent
 from agno.learn import LearnedKnowledgeConfig, LearningMachine, LearningMode
 from agno.team import Team, TeamMode
-from agno.tools.file import FileTools
 from agno.tools.yfinance import YFinanceTools
 
 from app.settings import MODEL, agent_db
 from db import create_knowledge
 from teams.investment.instructions import (
     BROADCAST_INSTRUCTIONS,
-    COMMITTEE_CHAIR_INSTRUCTIONS,
-    COORDINATE_INSTRUCTIONS,
     FINANCIAL_ANALYST_INSTRUCTIONS,
-    KNOWLEDGE_AGENT_INSTRUCTIONS,
     MARKET_ANALYST_INSTRUCTIONS,
-    MEMO_WRITER_INSTRUCTIONS,
     RISK_OFFICER_INSTRUCTIONS,
-    ROUTE_INSTRUCTIONS,
-    TASKS_INSTRUCTIONS,
     TECHNICAL_ANALYST_INSTRUCTIONS,
 )
 from utils.exa import get_exa_mcp_tools
@@ -33,8 +25,6 @@ from utils.exa import get_exa_mcp_tools
 
 investment_knowledge = create_knowledge("Investment Knowledge", "investment_knowledge")
 investment_learnings = create_knowledge("Investment Learnings", "investment_learnings")
-
-MEMOS_DIR = Path(__file__).parent / "memos"
 
 _learning = LearningMachine(
     knowledge=investment_learnings,
@@ -105,128 +95,21 @@ risk_officer = Agent(
     **_common,
 )
 
-knowledge_agent = Agent(
-    id="investment-knowledge-agent",
-    name="Knowledge Agent",
-    role="Team librarian — research RAG and memo archive navigation",
-    model=MODEL,
-    tools=[
-        FileTools(
-            base_dir=MEMOS_DIR,
-            enable_read_file=True,
-            enable_list_files=True,
-            enable_search_files=True,
-            enable_save_file=False,
-            enable_delete_file=False,
-        )
-    ],
-    instructions=KNOWLEDGE_AGENT_INSTRUCTIONS,
-    **_common,
-)
-
-memo_writer = Agent(
-    id="investment-memo-writer",
-    name="Memo Writer",
-    role="Synthesize analyst inputs into formal investment memos",
-    model=MODEL,
-    tools=[
-        FileTools(
-            base_dir=MEMOS_DIR,
-            enable_save_file=True,
-            enable_read_file=True,
-            enable_list_files=True,
-            enable_search_files=True,
-            enable_delete_file=False,
-        )
-    ],
-    instructions=MEMO_WRITER_INSTRUCTIONS,
-    **_common,
-)
-
-committee_chair = Agent(
-    id="investment-committee-chair",
-    name="Committee Chair",
-    role="Final decision-maker and capital allocator",
-    model=MODEL,
-    instructions=COMMITTEE_CHAIR_INSTRUCTIONS,
-    **_common,
-)
-
 # ---------------------------------------------------------------------------
-# Teams (4 modes)
+# Team (broadcast mode)
 # ---------------------------------------------------------------------------
 _core_members: list[Agent | Team] = [market_analyst, financial_analyst, technical_analyst, risk_officer]
-_full_members: list[Agent | Team] = [*_core_members, knowledge_agent, memo_writer]
-
-investment_coordinate = Team(
-    id="quorum",
-    name="Quorum",
-    description="Investment committee in coordinate mode — analysts collaborate on a recommendation.",
-    mode=TeamMode.coordinate,
-    model=MODEL,
-    members=_full_members,
-    db=agent_db,
-    learning=_learning,
-    instructions=COORDINATE_INSTRUCTIONS,
-    share_member_interactions=True,
-    enable_agentic_memory=True,
-    search_past_sessions=True,
-    num_past_sessions_to_search=5,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    read_chat_history=True,
-    num_history_runs=5,
-    markdown=True,
-)
-
-investment_route = Team(
-    id="switch",
-    name="Switch",
-    description="Investment team in route mode — routes each question to the right specialist.",
-    mode=TeamMode.route,
-    model=MODEL,
-    members=[*_full_members, committee_chair],
-    db=agent_db,
-    learning=_learning,
-    instructions=ROUTE_INSTRUCTIONS,
-    share_member_interactions=True,
-    enable_agentic_memory=True,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    read_chat_history=True,
-    num_history_runs=5,
-    markdown=True,
-)
 
 investment_broadcast = Team(
     id="chorus",
     name="Chorus",
-    description="Investment team in broadcast mode — all analysts assess the same target in parallel.",
+    description="Investment committee in broadcast mode — all analysts assess the same target in parallel.",
     mode=TeamMode.broadcast,
     model=MODEL,
     members=_core_members,
     db=agent_db,
     learning=_learning,
     instructions=BROADCAST_INSTRUCTIONS,
-    share_member_interactions=True,
-    enable_agentic_memory=True,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    read_chat_history=True,
-    num_history_runs=5,
-    markdown=True,
-)
-
-investment_tasks = Team(
-    id="foreman",
-    name="Foreman",
-    description="Investment team in tasks mode — decomposes portfolio goals into delegated tasks.",
-    mode=TeamMode.tasks,
-    model=MODEL,
-    members=_full_members,
-    db=agent_db,
-    learning=_learning,
-    instructions=TASKS_INSTRUCTIONS,
     share_member_interactions=True,
     enable_agentic_memory=True,
     search_past_sessions=True,

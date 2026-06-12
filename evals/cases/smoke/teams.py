@@ -55,53 +55,6 @@ TEAM_TESTS: list[SmokeTest] = [
         max_duration=360.0,
     ),
     # -------------------------------------------------------------------------
-    # Investment — coordinate mode
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.8",
-        name="investment-coordinate — recommendation includes risk and dollar allocation",
-        entity_type="team",
-        entity_id="quorum",
-        group="teams",
-        prompt="Evaluate NVIDIA for inclusion in the fund and propose a position size.",
-        response_matches=[
-            r"(?i)(nvidia|nvda)",
-            r"(?i)(buy|hold|pass)",
-            r"\$[\d,.]+\s*(M|million|K|thousand)?",
-            r"(?i)(risk|drawdown|beta|volatility|position\s+limit)",
-        ],
-        response_not_contains=["Traceback"],
-        requires=["EXA_API_KEY"],
-        max_duration=240.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Investment — route mode
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.9",
-        name="investment-route — AAPL P/E",
-        entity_type="team",
-        entity_id="switch",
-        group="teams",
-        prompt="What's AAPL's P/E ratio?",
-        response_matches=[r"(?i)(apple|aapl|p.e|ratio|earnings)"],
-        response_not_contains=["Traceback"],
-        requires=["EXA_API_KEY"],
-        max_duration=60.0,
-    ),
-    SmokeTest(
-        id="t.9.2",
-        name="investment-route — chart/momentum question reaches Technical Analyst",
-        entity_type="team",
-        entity_id="switch",
-        group="teams",
-        prompt="What does TSLA's 50-day vs 200-day moving average look like right now?",
-        response_matches=[r"(?i)(tsla|tesla|moving\s+average|50.day|200.day|sma|trend)"],
-        response_not_contains=["Traceback"],
-        requires=["EXA_API_KEY"],
-        max_duration=90.0,
-    ),
-    # -------------------------------------------------------------------------
     # Investment — broadcast mode
     # -------------------------------------------------------------------------
     SmokeTest(
@@ -115,20 +68,5 @@ TEAM_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback"],
         requires=["EXA_API_KEY"],
         max_duration=110.0,
-    ),
-    # -------------------------------------------------------------------------
-    # Investment — tasks mode
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.11",
-        name="investment-tasks — tech portfolio",
-        entity_type="team",
-        entity_id="foreman",
-        group="teams",
-        prompt="Build a diversified tech portfolio",
-        response_matches=[r"(?i)(portfolio|diversif|stock|allocation)"],
-        response_not_contains=["Traceback"],
-        requires=["EXA_API_KEY"],
-        max_duration=250.0,
     ),
 ]

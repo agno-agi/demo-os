@@ -1,11 +1,15 @@
 """
-Approvals - Approval Flows Demo Agent
-======================================
+Approvals - Policy-Gated Approval Flows Demo Agent
+==================================================
 
-A compliance and finance agent demonstrating Agno's approval patterns:
+A compliance and finance agent demonstrating Agno's approval patterns, with a realistic
+policy layer: each action's required sign-off level scales with amount/risk (auto /
+manager / VP / CFO / compliance) rather than blanket-gating everything.
+
 - @approval decorator: blocking approval before execution
 - @approval(type="audit"): audit trail logging
 - requires_confirmation=True: HITL confirmation
+- policy ladder (agents/approvals/tools.py): amount/risk → approval level
 """
 
 from agno.agent import Agent
@@ -20,7 +24,7 @@ from app.settings import MODEL, agent_db
 approvals = Agent(
     id="ledger",
     name="Ledger",
-    description="Compliance and finance agent with approval-gated, audit-trailed operations.",
+    description="Compliance and finance agent with policy-driven, risk-tiered approvals and an audit trail.",
     model=MODEL,
     db=agent_db,
     tools=[process_refund, delete_user_account, export_customer_data, generate_report],
