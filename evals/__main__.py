@@ -16,7 +16,7 @@ Usage:
 
     # Reliability — tool call validation
     python -m evals reliability                    # All cases
-    python -m evals reliability --entity helpdesk  # Single entity
+    python -m evals reliability --entity voyager  # Single entity
 
     # Performance — latency baselines
     python -m evals perf                           # Compare against baselines

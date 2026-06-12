@@ -8,25 +8,25 @@ tool names that MUST be called for the response to be correct.
 
 CASES: list[dict] = [
     # -------------------------------------------------------------------------
-    # Helpdesk — HITL tools
+    # Voyager — HITL tools
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "glass",
-        "input": "Restart the auth service, it's down",
-        "expected_tools": ["restart_service"],
+        "entity_id": "voyager",
+        "input": "Find flights from Chicago to Miami on 2026-09-10",
+        "expected_tools": ["search_flights"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "glass",
-        "input": "Create a P1 ticket for the payment gateway outage",
-        "expected_tools": ["create_support_ticket"],
+        "entity_id": "voyager",
+        "input": "Book flight FL-4821 for Jordan Lee at USD 420",
+        "expected_tools": ["book_flight"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "glass",
-        "input": "Run diagnostics on the database cluster",
-        "expected_tools": ["run_diagnostic"],
+        "entity_id": "voyager",
+        "input": "Charge booking BK-04821 for USD 420 to issue the ticket",
+        "expected_tools": ["charge_payment"],
     },
     # -------------------------------------------------------------------------
     # Approvals — approval gates

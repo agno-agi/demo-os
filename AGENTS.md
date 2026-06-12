@@ -12,7 +12,7 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 AgentOS (app/main.py)
 ├── Agents (6)
 │   ├── Sage (agents/mcp/)                                        # Agno documentation agent via MCP
-│   ├── Glass (agents/helpdesk/)                              # HITL + guardrails demo
+│   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Ledger (agents/approvals/)                            # Approval flows + audit trail
 │   ├── Quill (agents/reporter/)                              # Structured output + file generation
 │   ├── Iris (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
@@ -43,7 +43,7 @@ All agents share:
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/mcp/agent.py` | Sage - Agno documentation agent via live MCP tools |
-| `agents/helpdesk/agent.py` | Glass - HITL + guardrails (moderation, PII, injection, output) |
+| `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/approvals/agent.py` | Ledger - approval flows + audit trail |
 | `agents/reporter/agent.py` | Quill - structured output + file generation |
 | `agents/studio/agent.py` | Iris - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
@@ -272,7 +272,7 @@ from db import db_url, get_postgres_db, create_knowledge
 
 # Agents
 from agents.mcp import mcp_agent
-from agents.helpdesk import helpdesk
+from agents.travel import travel
 from agents.approvals import approvals
 from agents.reporter import reporter
 from agents.studio import studio
@@ -332,7 +332,7 @@ python -m evals smoke --output --compare
 
 # Run evals — reliability (tool call validation, no LLM cost)
 python -m evals reliability
-python -m evals reliability --entity glass
+python -m evals reliability --entity voyager
 
 # Run evals — Agno evals (AgentAsJudgeEval, AccuracyEval — LLM cost)
 python -m evals
@@ -409,13 +409,13 @@ Optional (tools & integrations):
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
 | MCP tools | Sage, Dash, Pulse, Investment |
-| HITL — confirmation | Glass, Ledger |
-| HITL — user input | Glass |
-| HITL — external execution | Glass |
-| Guardrails (moderation, PII, injection) | Glass |
-| Output guardrails | Glass |
-| Pre/post hooks | Glass |
-| User feedback (ask_user) | Glass |
+| HITL — confirmation | Voyager, Ledger |
+| HITL — user input | Voyager |
+| HITL — external execution | Voyager |
+| Guardrails (moderation, PII, injection) | Voyager |
+| Output guardrails | Voyager |
+| Pre/post hooks | Voyager |
+| User feedback (ask_user) | Voyager |
 | Approval — blocking | Ledger |
 | Approval — audit trail | Ledger |
 | Reasoning tools | Dash |

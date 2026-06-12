@@ -9,52 +9,49 @@ from evals.cases.smoke import SmokeTest
 
 HITL_TESTS: list[SmokeTest] = [
     # -------------------------------------------------------------------------
-    # Helpdesk — 3 HITL patterns
+    # Voyager — 3 HITL patterns in one booking flow
     # -------------------------------------------------------------------------
     SmokeTest(
-        id="h.1",
-        name="helpdesk — restart requires confirmation",
+        id="h.2",
+        name="voyager — booking details require user input",
         entity_type="agent",
-        entity_id="glass",
+        entity_id="voyager",
         group="hitl",
-        prompt="Restart the auth service",
-        response_contains=["restart_service"],
+        prompt="I'd like to book flight FL-4821",
+        response_contains=["select_flight_details"],
         max_duration=30.0,
     ),
     SmokeTest(
-        id="h.2",
-        name="helpdesk — ticket requires user input",
+        id="h.1",
+        name="voyager — booking requires confirmation",
         entity_type="agent",
-        entity_id="glass",
+        entity_id="voyager",
         group="hitl",
-        prompt="Create a support ticket for slow API responses",
-        response_contains=["create_support_ticket"],
+        prompt="Book flight FL-4821 for Jordan Lee at USD 420",
+        response_contains=["book_flight"],
         max_duration=30.0,
     ),
     SmokeTest(
         id="h.3",
-        name="helpdesk — diagnostic external execution",
+        name="voyager — live fare runs as external execution",
         entity_type="agent",
-        entity_id="glass",
+        entity_id="voyager",
         group="hitl",
-        prompt="Run diagnostics on the database cluster",
-        response_contains=["run_diagnostic"],
+        prompt="What's the live fare right now on flight FL-4821?",
+        response_contains=["check_live_fare"],
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Helpdesk — triages a vague service issue (diagnostics-first, may ask)
+    # Voyager — search starts the flow (no gate)
     # -------------------------------------------------------------------------
     SmokeTest(
         id="h.4",
-        name="helpdesk — triages a vague service issue",
+        name="voyager — searches flights for a trip",
         entity_type="agent",
-        entity_id="glass",
+        entity_id="voyager",
         group="hitl",
-        prompt="Something's wrong with one of our services but I'm not sure which — help me triage it.",
-        # Helpdesk is instructed to run diagnostics first for a vague service issue
-        # (and only ask clarifying questions afterward), so accept either the
-        # diagnostic action or an ask_user clarification.
-        response_matches=[r"(?i)(run_diagnostic|ask_user)"],
+        prompt="Find me flights from San Francisco to New York on 2026-07-15",
+        response_matches=[r"(?i)(search_flights|FL-|flight|fare)"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),

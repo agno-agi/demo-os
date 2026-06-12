@@ -1,25 +1,35 @@
 """
-Helpdesk - HITL + Guardrails Demo Agent
-========================================
+Voyager - Travel Booking Concierge (HITL + Guardrails)
+======================================================
 
-An IT operations helpdesk agent that demonstrates:
-- All three HITL patterns (confirmation, user input, external execution)
-- PIIDetectionGuardrail as a pre-hook to detect personal information
-- PromptInjectionGuardrail as a pre-hook to detect adversarial prompts
-- Post-hook audit logging for compliance
+A travel concierge that books a trip end-to-end, with a human in the loop at
+every consequential step. One real task threads all three HITL patterns:
+- requires_user_input    (select_flight_details)— traveler supplies flight, seat, and passenger name
+- requires_confirmation  (book_flight)          — approve before money is spent
+- external_execution     (check_live_fare)       — live fare comes from the airline's pricing service
+
+Plus guardrails:
+- OpenAIModerationGuardrail / PIIDetectionGuardrail / PromptInjectionGuardrail (pre-hooks)
+- Output guardrail + audit log (post-hooks)
 """
 
 from agno.agent import Agent
 from agno.guardrails import OpenAIModerationGuardrail, PIIDetectionGuardrail, PromptInjectionGuardrail
 from agno.tools.user_feedback import UserFeedbackTools
 
-from agents.helpdesk.instructions import INSTRUCTIONS
-from agents.helpdesk.tools import create_support_ticket, restart_service, run_diagnostic
+from agents.travel.instructions import INSTRUCTIONS
+from agents.travel.tools import (
+    book_flight,
+    charge_payment,
+    check_live_fare,
+    search_flights,
+    select_flight_details,
+)
 from app.settings import MODEL, agent_db
 
 
 # ---------------------------------------------------------------------------
-# Post-hook: audit trail
+# Post-hooks: output guardrail + audit trail
 # ---------------------------------------------------------------------------
 def output_guardrail(run_output, agent):
     """Post-hook: block responses that accidentally leak sensitive data patterns."""
@@ -31,12 +41,13 @@ def output_guardrail(run_output, agent):
         r"postgres://[^\s]+",  # Connection strings
         r"OPENAI_API_KEY\s*=",  # Env var assignments
         r"\b\d{3}-\d{2}-\d{4}\b",  # SSN patterns
+        r"\b(?:\d[ -]*?){13,16}\b",  # Card-number-like sequences
     ]
     for pattern in sensitive_patterns:
         if re.search(pattern, content):
             run_output.content = (
-                "I'm unable to provide that information as it may contain sensitive data. "
-                "Please contact your system administrator directly."
+                "I'm unable to include that information as it may contain sensitive data. "
+                "Card details are handled securely by the payment service and never shown here."
             )
             return
 
@@ -49,13 +60,20 @@ def audit_log(run_output, agent):
 # ---------------------------------------------------------------------------
 # Create Agent
 # ---------------------------------------------------------------------------
-helpdesk = Agent(
-    id="glass",
-    name="Glass",
-    description="Support agent with HITL approvals and moderation, PII, and prompt-injection guardrails.",
+travel = Agent(
+    id="voyager",
+    name="Voyager",
+    description="Travel concierge that books trips end-to-end with human-in-the-loop approvals and guardrails.",
     model=MODEL,
     db=agent_db,
-    tools=[restart_service, create_support_ticket, run_diagnostic, UserFeedbackTools()],
+    tools=[
+        search_flights,
+        check_live_fare,
+        select_flight_details,
+        book_flight,
+        charge_payment,
+        UserFeedbackTools(),
+    ],
     instructions=INSTRUCTIONS,
     pre_hooks=[
         OpenAIModerationGuardrail(),

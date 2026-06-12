@@ -34,11 +34,11 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="agents/mcp/instructions.py",
         definition_file="agents/mcp/agent.py",
     ),
-    "glass": Entity(
-        id="glass",
+    "voyager": Entity(
+        id="voyager",
         type="agent",
-        instruction_file="agents/helpdesk/instructions.py",
-        definition_file="agents/helpdesk/agent.py",
+        instruction_file="agents/travel/instructions.py",
+        definition_file="agents/travel/agent.py",
     ),
     "ledger": Entity(
         id="ledger",

@@ -7,7 +7,7 @@ Client-side tool call validation. Compares actual tool calls
 
 Usage:
     python -m evals reliability
-    python -m evals reliability --entity helpdesk
+    python -m evals reliability --entity voyager
 """
 
 from __future__ import annotations

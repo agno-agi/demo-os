@@ -48,7 +48,7 @@ SECRET_PATTERNS = [
 
 # Representative entities — highest tool/data surface area per type
 REPRESENTATIVES: list[tuple[str, str]] = [
-    ("agent", "glass"),  # guardrails, HITL, most tools
+    ("agent", "voyager"),  # guardrails, HITL, most tools
     ("agent", "quill"),  # web search, file gen
     ("team", "dash"),  # SQL tools, data access
     ("workflow", "press"),  # multi-step

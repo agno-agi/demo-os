@@ -48,7 +48,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Agent | What it does | Features |
 |-------|-------------|----------|
 | [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
-| [**Glass**](agents/helpdesk/) | IT operations helpdesk with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
+| [**Voyager**](agents/travel/) | Travel booking concierge with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Ledger**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
 | [**Quill**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
 | [**Iris**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
@@ -78,12 +78,12 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |---------|-------|
 | RAG / hybrid search | Dash |
 | MCP tools | Sage, Dash, Pulse |
-| HITL — confirmation | Glass, Ledger |
-| HITL — user input | Glass |
-| HITL — external execution | Glass |
-| Guardrails (PII, injection) | Glass |
-| Pre/post hooks | Glass |
-| User feedback (ask_user) | Glass |
+| HITL — confirmation | Voyager, Ledger |
+| HITL — user input | Voyager |
+| HITL — external execution | Voyager |
+| Guardrails (PII, injection) | Voyager |
+| Pre/post hooks | Voyager |
+| User feedback (ask_user) | Voyager |
 | Approval — blocking | Ledger |
 | Approval — audit trail | Ledger |
 | Reasoning tools | Dash |

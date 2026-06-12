@@ -16,11 +16,11 @@ from agno.os.config import AuthorizationConfig
 
 from agents.approvals import approvals
 from agents.dash import dash, dash_knowledge, dash_learnings
-from agents.helpdesk import helpdesk
 from agents.mcp import mcp_agent
 from agents.reporter import reporter
 from agents.studio import studio
 from agents.taskboard import taskboard
+from agents.travel import travel
 from app.registry import registry
 from app.settings import RUNTIME_ENV, SCHEDULER_BASE_URL, SLACK_SIGNING_SECRET, SLACK_TOKEN, agent_db
 from frameworks.claude_repo import claude_repo
@@ -79,7 +79,7 @@ agent_os = AgentOS(
     db=agent_db,
     agents=[
         mcp_agent,
-        helpdesk,
+        travel,
         approvals,
         reporter,
         studio,
