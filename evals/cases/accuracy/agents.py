@@ -46,13 +46,13 @@ CASES: list[dict] = [
         "guidelines": "Must discuss error or failure behavior. Not vague.",
     },
     # -------------------------------------------------------------------------
-    # Reporter — structured output
+    # Reporter — researched, structured report
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
         "entity_id": "quill",
-        "input": "Create a brief comparison of Python and Go as JSON",
-        "expected_output": "Valid JSON comparing Python and Go on multiple dimensions",
-        "guidelines": "Must contain valid JSON structure. Must compare at least 3 dimensions.",
+        "input": "Write a brief comparison of Python and Go",
+        "expected_output": "A structured report comparing Python and Go on multiple dimensions",
+        "guidelines": "Must compare at least 3 dimensions with clear structure (headings or sections).",
     },
 ]
