@@ -4,9 +4,10 @@ Voyager - Travel Booking Concierge (HITL + Guardrails)
 
 A travel concierge that books a trip end-to-end, with a human in the loop at
 every consequential step. One real task threads all three HITL patterns:
-- requires_user_input    (select_flight_details)— traveler supplies flight, seat, and passenger name
-- requires_confirmation  (book_flight)          — approve before money is spent
-- external_execution     (check_live_fare)       — live fare comes from the airline's pricing service
+- ask_user (UserFeedbackTools)        — structured multiple-choice HITL: traveler picks flight + seat
+- requires_user_input (set_passenger_name) — free-text HITL fill for the name, only when not given
+- requires_confirmation (book_flight)      — approve before money is spent
+- external_execution    (check_live_fare)  — live fare comes from the airline's pricing service
 
 Plus guardrails:
 - OpenAIModerationGuardrail / PIIDetectionGuardrail / PromptInjectionGuardrail (pre-hooks)
@@ -23,7 +24,7 @@ from agents.travel.tools import (
     charge_payment,
     check_live_fare,
     search_flights,
-    select_flight_details,
+    set_passenger_name,
 )
 from app.settings import MODEL, agent_db
 
@@ -69,10 +70,10 @@ travel = Agent(
     tools=[
         search_flights,
         check_live_fare,
-        select_flight_details,
+        UserFeedbackTools(),
+        set_passenger_name,
         book_flight,
         charge_payment,
-        UserFeedbackTools(),
     ],
     instructions=INSTRUCTIONS,
     pre_hooks=[

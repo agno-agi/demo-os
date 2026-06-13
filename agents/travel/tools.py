@@ -1,9 +1,11 @@
 """
 Voyager - Travel booking concierge tools.
 
-Demonstrates all three HITL patterns in Agno, anchored to one real booking task:
-1. requires_user_input    - Traveler supplies the values only they can (flight, seat, passenger name)
-2. requires_confirmation  - Operator approves before money is spent on the booking
+Demonstrates the HITL patterns in Agno, anchored to one real booking task. Structured
+multiple-choice input (flight + seat) is collected via `ask_user` from UserFeedbackTools
+(wired up in agent.py); these tools cover the rest:
+1. requires_user_input    - Free-text fill for the passenger name when missing (set_passenger_name)
+2. requires_confirmation  - Operator approves before money is spent on the booking (book_flight)
 3. external_execution     - Live fare is pulled from the airline's pricing service (check_live_fare)
 
 All tools return simulated responses for demo purposes. Flight search returns a
@@ -68,55 +70,46 @@ def check_live_fare(flight_id: str) -> str:
     return f"Live fare for {flight_id}: USD {fare} (held for 10 minutes)."
 
 
-@tool(
-    requires_user_input=True,
-    user_input_fields=["flight_id", "seat_preference", "passenger_name"],
-)
-def select_flight_details(flight_id: str = "", seat_preference: str = "", passenger_name: str = "") -> str:
-    """Collect the traveler's booking details. Prompts for the values only the traveler can provide.
+@tool(requires_user_input=True, user_input_fields=["passenger_name"])
+def set_passenger_name(passenger_name: str = "") -> str:
+    """Ask the traveler for the passenger name (free text) when it wasn't already provided.
 
-    All three fields are gathered through a single human-in-the-loop prompt rather than chat
-    questions: which flight, the seat preference, and the passenger name on the ticket.
+    Only use this when no name has been given in the conversation — it pauses and prompts the
+    traveler to type the name exactly as it should appear on the ticket.
 
     Args:
-        flight_id: The flight the traveler chose (e.g. 'FL-4821').
-        seat_preference: window, aisle, middle, or extra-legroom.
-        passenger_name: Full name exactly as it should appear on the ticket.
+        passenger_name: Full name for the ticket.
 
     Returns:
-        The assigned seat and the details to confirm before booking.
+        Confirmation of the captured name.
     """
-    pref = (seat_preference or "any").lower()
-    row = (abs(hash(flight_id)) % 28) + 6
-    letter = {"window": "A", "aisle": "C", "middle": "B", "extra-legroom": "D"}.get(pref, "A")
-    seat = f"{row}{letter}"
-    return (
-        f"Booking details captured for {flight_id}:\n"
-        f"  Passenger: {passenger_name or '(not provided)'}\n"
-        f"  Seat preference: {seat_preference or 'no preference'}\n"
-        f"  Seat: {seat}\n"
-        f"  Next: I'll confirm with you before purchasing the ticket."
-    )
+    return f"Passenger name set to: {passenger_name or '(not provided)'}"
 
 
 @tool(requires_confirmation=True)
-def book_flight(flight_id: str, passenger_name: str, fare_usd: float) -> str:
+def book_flight(flight_id: str, passenger_name: str, fare_usd: float, seat_preference: str = "") -> str:
     """Book a flight and hold the reservation. Requires traveler confirmation before purchasing.
 
     Args:
         flight_id: The flight to book (e.g. 'FL-4821').
         passenger_name: Name the ticket is issued to.
         fare_usd: The fare to be charged, in USD.
+        seat_preference: Seat choice the traveler picked (window, aisle, middle, or extra-legroom).
 
     Returns:
         A held booking reference, pending payment.
     """
+    pref = (seat_preference or "any").lower()
+    row = (abs(hash(flight_id)) % 28) + 6
+    letter = {"window": "A", "aisle": "C", "middle": "B", "extra-legroom": "D"}.get(pref, "A")
+    seat = f"{row}{letter}"
     booking_ref = f"BK-{abs(hash(flight_id + passenger_name)) % 100000:05d}"
     return (
         f"Booking held (payment pending):\n"
         f"  Reference: {booking_ref}\n"
         f"  Flight: {flight_id}\n"
         f"  Passenger: {passenger_name}\n"
+        f"  Seat: {seat} ({seat_preference or 'no preference'})\n"
         f"  Fare: USD {fare_usd:,.2f}\n"
         f"  Next: the card charge runs securely in the payment service to issue the ticket."
     )

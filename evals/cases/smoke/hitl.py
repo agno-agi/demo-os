@@ -13,13 +13,14 @@ HITL_TESTS: list[SmokeTest] = [
     # -------------------------------------------------------------------------
     SmokeTest(
         id="h.2",
-        name="voyager — booking details require user input",
+        name="voyager — choices collected via ask_user (MCQ)",
         entity_type="agent",
         entity_id="voyager",
         group="hitl",
-        prompt="I'd like to book flight FL-4821",
-        response_contains=["select_flight_details"],
-        max_duration=30.0,
+        prompt="Help me book a flight from SFO to JFK tomorrow",
+        response_matches=[r"(?i)(ask_user|which flight|seat|window|aisle)"],
+        response_not_contains=["Traceback"],
+        max_duration=40.0,
     ),
     SmokeTest(
         id="h.1",

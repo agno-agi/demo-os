@@ -61,7 +61,7 @@ Tests are organized into groups:
 | `teams` | 12 | Team behavior, mode differentiation (coordinate vs route vs broadcast vs tasks) |
 | `workflows` | 6 | End-to-end workflow execution (morning brief, content pipeline, support triage, etc.) |
 | `security` | 60 | Secret leakage checks — 21 patterns across representative entities + spot checks |
-| `hitl` | 6 | HITL pause/resume — verifies agents pause with the correct tool (book_flight, select_flight_details, process_refund, etc.) |
+| `hitl` | 6 | HITL pause/resume — verifies agents pause with the correct tool (book_flight, ask_user, process_refund, etc.) |
 | `graceful` | 3 | Graceful degradation when optional API keys are missing |
 
 ```bash
