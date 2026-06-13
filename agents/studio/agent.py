@@ -1,7 +1,7 @@
 from os import getenv
 
 from agno.agent import Agent
-from agno.tools.dalle import DalleTools
+from agno.tools.openai import OpenAITools
 
 from agents.studio.instructions import INSTRUCTIONS
 from app.settings import MODEL, agent_db
@@ -9,7 +9,14 @@ from app.settings import MODEL, agent_db
 # ---------------------------------------------------------------------------
 # Tools
 # ---------------------------------------------------------------------------
-tools: list = [DalleTools(model="dall-e-3", size="1024x1024", quality="standard")]
+tools: list = [
+    OpenAITools(
+        image_model="gpt-image-1",
+        image_size="1024x1024",
+        enable_transcription=False,
+        enable_speech_generation=False,
+    )
+]
 
 if getenv("FAL_KEY"):
     from agno.tools.fal import FalTools
