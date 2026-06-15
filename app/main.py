@@ -26,6 +26,7 @@ from app.settings import RUNTIME_ENV, SCHEDULER_BASE_URL, SLACK_SIGNING_SECRET, 
 from frameworks.claude_repo import claude_repo
 from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
+from teams.clinic import clinic, clinic_knowledge
 from teams.investment import (
     investment_broadcast,
     investment_knowledge,
@@ -92,6 +93,7 @@ agent_os = AgentOS(
         dash,
         research_coordinate,
         investment_broadcast,
+        clinic,
     ],
     workflows=[
         morning_brief,
@@ -105,6 +107,7 @@ agent_os = AgentOS(
         dash_learnings,
         investment_knowledge,
         investment_learnings,
+        clinic_knowledge,
     ],
     interfaces=interfaces,
     registry=registry,

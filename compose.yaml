@@ -47,6 +47,7 @@ services:
       - PARALLEL_API_KEY=${PARALLEL_API_KEY:-}
       - ELEVEN_LABS_API_KEY=${ELEVEN_LABS_API_KEY:-}
       - FAL_KEY=${FAL_KEY:-}
+      - LUMAAI_API_KEY=${LUMAAI_API_KEY:-}
       # Slack (optional)
       - SLACK_TOKEN=${SLACK_TOKEN:-}
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}

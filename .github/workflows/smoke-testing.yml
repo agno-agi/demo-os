@@ -82,6 +82,12 @@ jobs:
       - name: Populate Dash knowledge base
         run: uv run python -m agents.dash.scripts.load_knowledge --recreate
 
+      - name: Seed Clinic operational data
+        run: uv run python -m teams.clinic.scripts.seed_clinic --drop
+
+      - name: Populate Clinic patient records
+        run: uv run python -m teams.clinic.scripts.load_records --recreate
+
       - name: Start AgentOS server
         run: |
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 > server.log 2>&1 &

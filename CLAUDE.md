@@ -4,7 +4,7 @@ This file provides context for Claude Code when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 3 teams, 5 workflows, 3 multi-framework agents).
+AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 4 teams, 5 workflows, 3 multi-framework agents).
 
 ## Architecture
 
@@ -21,10 +21,11 @@ AgentOS (app/main.py)
 │   ├── Probe (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
 │   ├── Forum (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
 │   └── Abacus (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
-├── Teams (3)
+├── Teams (4)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
 │   ├── Atlas (teams/research/)                    # Research team (coordinate mode)
-│   └── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
+│   ├── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
+│   └── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
 └── Workflows (5)
     ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
     ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
@@ -59,6 +60,7 @@ All agents share:
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Atlas (coordinate mode) |
 | `teams/investment/team.py` | Chorus — investment committee (broadcast mode, 4 analysts, YFinance) |
+| `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, followups, fallback) |
 | `workflows/morning_brief/workflow.py` | Dawn (parallel gather → synthesize) |
 | `workflows/ai_research/workflow.py` | Pulse (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
@@ -290,6 +292,7 @@ from agents.taskboard import taskboard
 from agents.dash import dash
 from teams.research import research_coordinate
 from teams.investment import investment_broadcast
+from teams.clinic import clinic
 
 # Workflows
 from workflows.morning_brief import morning_brief
@@ -325,6 +328,10 @@ docker compose up -d --build
 
 # Load knowledge for Dash
 python -m agents.dash.scripts.load_knowledge
+
+# Seed the Clinic team data (operational DB + patient records)
+python -m teams.clinic.scripts.seed_clinic
+python -m teams.clinic.scripts.load_records
 
 # Format & validation (run from activated venv)
 ./scripts/format.sh
@@ -442,6 +449,10 @@ Optional (tools & integrations):
 | YFinance tools | Investment |
 | Team — coordinate | Dash, Atlas |
 | Team — broadcast | Chorus |
+| Context provider (live DB) | Clinic |
+| Knowledge filtering (per-patient) | Clinic |
+| Followups (suggested questions) | Clinic |
+| Fallback models | Clinic |
 | Workflow — parallel | Dawn, Pulse, Press |
 | Workflow — loop | Press |
 | Scheduling (cron) | Dawn, Pulse |

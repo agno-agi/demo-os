@@ -61,6 +61,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
 | [**Atlas**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
 | [**Chorus**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
+| [**Clinic**](teams/clinic/) | coordinate | Patient assistant — live schedule + patient-scoped records | Context provider (live DB), knowledge filtering, followups, fallback models |
 
 ### Workflows
 
@@ -102,6 +103,10 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Session state + agentic state | Pilot |
 | Team — coordinate | Dash, Atlas |
 | Team — broadcast | Chorus |
+| Context provider (live DB) | Clinic |
+| Knowledge filtering (per-patient) | Clinic |
+| Followups (suggested questions) | Clinic |
+| Fallback models | Clinic |
 | Workflow — parallel | Dawn, Pulse, Press |
 | Workflow — loop | Press |
 | Workflow — router | Beacon |

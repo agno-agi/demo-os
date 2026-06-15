@@ -93,6 +93,14 @@ manifest:
       - "All analysts: assess NVDA for our portfolio"
       - "Committee vote: should we invest in META?"
 
+  clinic:
+    description: "Patient assistant — live clinic schedule with patient-scoped records."
+    labels: ["context-provider", "knowledge-filter", "followups", "fallback"]
+    quick_prompts:
+      - "When is my next appointment?"
+      - "What did my recent bloodwork show?"
+      - "Is Dr. Lee free on Thursday, and is Ozempic covered?"
+
   atlas:
     description: "Research team in coordinate mode — analyst, investigator, and writer produce a report."
     labels: ["coordinate", "research", "analysis"]

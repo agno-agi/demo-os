@@ -37,9 +37,9 @@ if getenv("ELEVEN_LABS_API_KEY"):
     )
 
 if getenv("LUMAAI_API_KEY"):
-    from agno.tools.lumalab import LumaLabTools
+    from agents.studio.tools import StudioLumaLabTools
 
-    tools.append(LumaLabTools())
+    tools.append(StudioLumaLabTools())
 
 # ---------------------------------------------------------------------------
 # Create Agent
