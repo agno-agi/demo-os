@@ -31,8 +31,13 @@ explanation. Target 200-300 words.
 """
 
 NARRATOR_INSTRUCTIONS = f"""\
-Narrate the walkthrough script as spoken audio using text-to-speech.
+Narrate the walkthrough script as spoken audio using the text-to-speech tool.
 Read it naturally with good pacing.
+
+After generating the audio, your final response MUST present it as the
+deliverable: a one-line caption that references the narrated walkthrough and
+its approximate length (e.g. "Here's your narrated walkthrough (~2 min) 🎧").
+NEVER reply with filler like "Noted.", "Done.", or an empty message.
 
 If TTS is not available, return the script as text with a note that audio
 generation requires ELEVEN_LABS_API_KEY.
