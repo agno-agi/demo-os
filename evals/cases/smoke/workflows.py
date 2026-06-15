@@ -110,4 +110,18 @@ WORKFLOW_TESTS: list[SmokeTest] = [
         response_not_contains=["Traceback", "ESC-", "CRITICAL"],
         max_duration=120.0,
     ),
+    # -------------------------------------------------------------------------
+    # Support Bot (step-level HITL — pauses to collect environment)
+    # -------------------------------------------------------------------------
+    SmokeTest(
+        id="w.6",
+        name="support-bot — pauses to collect environment (step-level HITL)",
+        entity_type="workflow",
+        entity_id="support-bot",
+        group="workflows",
+        prompt="ModuleNotFoundError: No module named 'agno.workflow.types'",
+        response_matches=[r"(?i)(agno_version|python_version|environment|setup|version)"],
+        response_not_contains=["Traceback"],
+        max_duration=90.0,
+    ),
 ]

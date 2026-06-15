@@ -72,6 +72,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Press**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
 | [**Echo**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
 | [**Beacon**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
+| [**Support Bot**](workflows/support_bot/) | On demand | Take an error, collect environment via step-level HITL, search docs/web/GitHub for a fix | Workflow, step-level HITL (user input), HITL output review, MCP + web search |
 
 ### Feature Coverage
 
@@ -111,6 +112,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Workflow — loop | Press |
 | Workflow — router | Beacon |
 | Workflow — condition | Beacon |
+| Workflow — step-level HITL (user input) | Support Bot |
+| Workflow — HITL output review | Support Bot |
 | Scheduling (cron) | Dawn, Pulse |
 | Parallel execution | Dawn, Pulse, Press |
 | Cross-modal chaining | Echo |

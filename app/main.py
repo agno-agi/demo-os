@@ -37,6 +37,7 @@ from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.morning_brief import morning_brief
 from workflows.repo_walkthrough import repo_walkthrough
+from workflows.support_bot import support_bot
 from workflows.support_triage import support_triage
 
 # ---------------------------------------------------------------------------
@@ -92,8 +93,8 @@ agent_os = AgentOS(
     teams=[
         dash,
         research_coordinate,
-        investment_broadcast,
         clinic,
+        investment_broadcast,
     ],
     workflows=[
         morning_brief,
@@ -101,6 +102,7 @@ agent_os = AgentOS(
         content_pipeline,
         repo_walkthrough,
         support_triage,
+        support_bot,
     ],
     knowledge=[
         dash_knowledge,

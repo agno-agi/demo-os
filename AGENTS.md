@@ -4,7 +4,7 @@ This file provides context for Codex when working with this repository.
 
 ## Project Overview
 
-AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 4 teams, 5 workflows, 3 multi-framework agents).
+AgentOS - A multi-agent demo system built by Agno showcasing Agno framework features (6 agents, 4 teams, 6 workflows, 3 multi-framework agents).
 
 ## Architecture
 
@@ -22,12 +22,13 @@ AgentOS (app/main.py)
 │   ├── Atlas (teams/research/)                    # Research team (coordinate mode)
 │   ├── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
 │   └── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
-└── Workflows (5)
+└── Workflows (6)
     ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
     ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
     ├── Press (workflows/content_pipeline/)           # Parallel + loop + condition
     ├── Echo (workflows/repo_walkthrough/)                 # Code → script → narrated audio
-    └── Beacon (workflows/support_triage/)               # Router + condition + escalation
+    ├── Beacon (workflows/support_triage/)               # Router + condition + escalation
+    └── Support Bot (workflows/support_bot/)             # Step-level HITL troubleshooting
 ```
 
 All agents share:
@@ -58,6 +59,7 @@ All agents share:
 | `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
 | `workflows/repo_walkthrough/workflow.py` | Echo (analyze → script → narrate) |
 | `workflows/support_triage/workflow.py` | Beacon (classify → route → escalate) |
+| `workflows/support_bot/workflow.py` | Support Bot (capture error → step-level HITL env → search docs/web/GitHub) |
 | `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
 | `db/url.py` | Builds database URL from environment |
 | `compose.yaml` | Local development with Docker |
@@ -292,6 +294,7 @@ from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.repo_walkthrough import repo_walkthrough
 from workflows.support_triage import support_triage
+from workflows.support_bot import support_bot
 ```
 
 ## Adding a New Agent
@@ -449,6 +452,8 @@ Optional (tools & integrations):
 | Parallel execution | Dawn, Pulse, Press |
 | Workflow — router | Beacon |
 | Workflow — condition | Beacon |
+| Workflow — step-level HITL (user input) | Support Bot |
+| Workflow — HITL output review | Support Bot |
 | Session state + agentic state | Pilot |
 | Cross-modal chaining | Echo |
 

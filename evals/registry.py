@@ -128,6 +128,12 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="workflows/support_triage/instructions.py",
         definition_file="workflows/support_triage/workflow.py",
     ),
+    "support-bot": Entity(
+        id="support-bot",
+        type="workflow",
+        instruction_file="workflows/support_bot/instructions.py",
+        definition_file="workflows/support_bot/workflow.py",
+    ),
 }
 
 

@@ -150,3 +150,11 @@ manifest:
       - "I can't log into my account, it says my password is wrong"
       - "I was charged twice for my subscription last month"
       - "The API is returning 500 errors when I try to upload files larger than 10MB"
+
+  support-bot:
+    description: "Agno troubleshooting bot — collects your environment via step-level HITL, then searches docs, web, and GitHub for a fix."
+    labels: ["hitl", "user-input", "support", "workflow"]
+    quick_prompts:
+      - "ModuleNotFoundError: No module named 'agno.workflow.types'"
+      - "My Agent ignores requires_confirmation and never pauses for HITL"
+      - "TypeError: Knowledge.search() got an unexpected keyword argument 'limit'"
