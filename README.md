@@ -29,6 +29,10 @@ docker compose up -d --build
 docker exec -it demo-os-api python -m agents.dash.scripts.load_data
 docker exec -it demo-os-api python -m agents.dash.scripts.load_knowledge
 
+# Seed Clinic data (operational schedule DB + patient records)
+docker exec -it demo-os-api python -m teams.clinic.scripts.seed_clinic
+docker exec -it demo-os-api python -m teams.clinic.scripts.load_records
+
 # Seed demo eval data for the Evals page
 docker exec -it demo-os-api python -m evals.scripts.seed_eval_runs
 ```
