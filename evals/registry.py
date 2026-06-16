@@ -28,8 +28,8 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Agents (6)
     # -------------------------------------------------------------------------
-    "sage": Entity(
-        id="sage",
+    "docs": Entity(
+        id="docs",
         type="agent",
         instruction_file="agents/mcp/instructions.py",
         definition_file="agents/mcp/agent.py",
@@ -46,21 +46,21 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="agents/approvals/instructions.py",
         definition_file="agents/approvals/agent.py",
     ),
-    "quill": Entity(
-        id="quill",
+    "researcher": Entity(
+        id="researcher",
         type="agent",
         instruction_file="agents/reporter/instructions.py",
         definition_file="agents/reporter/agent.py",
         requires=["EXA_API_KEY"],
     ),
-    "iris": Entity(
-        id="iris",
+    "studio": Entity(
+        id="studio",
         type="agent",
         instruction_file="agents/studio/instructions.py",
         definition_file="agents/studio/agent.py",
     ),
-    "pilot": Entity(
-        id="pilot",
+    "planner": Entity(
+        id="planner",
         type="agent",
         instruction_file="agents/taskboard/instructions.py",
         definition_file="agents/taskboard/agent.py",
@@ -80,15 +80,15 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="teams/clinic/instructions.py",
         definition_file="teams/clinic/team.py",
     ),
-    "atlas": Entity(
-        id="atlas",
+    "newsroom": Entity(
+        id="newsroom",
         type="team",
         instruction_file="teams/research/instructions.py",
         definition_file="teams/research/team.py",
         requires=["EXA_API_KEY"],
     ),
-    "chorus": Entity(
-        id="chorus",
+    "investment-committee": Entity(
+        id="investment-committee",
         type="team",
         instruction_file="teams/investment/instructions.py",
         definition_file="teams/investment/team.py",
@@ -97,39 +97,39 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Workflows (5)
     # -------------------------------------------------------------------------
-    "dawn": Entity(
-        id="dawn",
+    "daily-brief": Entity(
+        id="daily-brief",
         type="workflow",
         instruction_file="workflows/morning_brief/instructions.py",
         definition_file="workflows/morning_brief/workflow.py",
     ),
-    "pulse": Entity(
-        id="pulse",
+    "ai-digest": Entity(
+        id="ai-digest",
         type="workflow",
         instruction_file="workflows/ai_research/instructions.py",
         definition_file="workflows/ai_research/workflow.py",
         requires=["EXA_API_KEY"],
     ),
-    "press": Entity(
-        id="press",
+    "scribe": Entity(
+        id="scribe",
         type="workflow",
         instruction_file="workflows/content_pipeline/instructions.py",
         definition_file="workflows/content_pipeline/workflow.py",
     ),
-    "echo": Entity(
-        id="echo",
+    "code-scout": Entity(
+        id="code-scout",
         type="workflow",
         instruction_file="workflows/repo_walkthrough/instructions.py",
         definition_file="workflows/repo_walkthrough/workflow.py",
     ),
-    "beacon": Entity(
-        id="beacon",
+    "support-triage": Entity(
+        id="support-triage",
         type="workflow",
         instruction_file="workflows/support_triage/instructions.py",
         definition_file="workflows/support_triage/workflow.py",
     ),
-    "support-bot": Entity(
-        id="support-bot",
+    "troubleshooter": Entity(
+        id="troubleshooter",
         type="workflow",
         instruction_file="workflows/support_bot/instructions.py",
         definition_file="workflows/support_bot/workflow.py",

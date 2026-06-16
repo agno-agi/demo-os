@@ -77,7 +77,7 @@ python -m evals smoke --verbose                # Show full responses
 
 Instead of testing every prompt against every entity (which would be 30 x 7 = 210 tests), security uses a sampling strategy:
 
-- **4 representative entities** (voyager, quill, dash, press) get all 7 security prompts — these have the highest tool/data surface area
+- **4 representative entities** (voyager, researcher, dash, scribe) get all 7 security prompts — these have the highest tool/data surface area
 - **All other entities** get 1 spot-check prompt
 
 This gives 60 tests with the same coverage confidence, running in a fraction of the time.
@@ -113,7 +113,7 @@ python -m evals reliability --entity voyager     # Single entity
 python -m evals reliability --verbose          # Show expected vs actual tools
 ```
 
-Currently covers: voyager (3 tools), pilot (2 tools).
+Currently covers: voyager (3 tools), planner (2 tools).
 
 ### Adding a Reliability Case
 

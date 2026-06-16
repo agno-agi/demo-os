@@ -66,8 +66,8 @@ synthesizer = Agent(
 # Create Workflow
 # ---------------------------------------------------------------------------
 ai_research = Workflow(
-    id="pulse",
-    name="Pulse",
+    id="ai-digest",
+    name="AI Digest",
     description="Daily AI research — four researchers run in parallel, then synthesize a brief.",
     steps=[
         Parallel(

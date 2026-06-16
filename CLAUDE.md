@@ -11,28 +11,28 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 ```
 AgentOS (app/main.py)
 ├── Agents (6)
-│   ├── Sage (agents/mcp/)                                        # Agno documentation agent via MCP
+│   ├── Docs (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Ledger (agents/approvals/)                            # Approval flows + audit trail
-│   ├── Quill (agents/reporter/)                              # Web research + HTML report generation
-│   ├── Iris (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
-│   └── Pilot (agents/taskboard/)                            # Session state + agentic state
+│   ├── Researcher (agents/reporter/)                              # Web research + HTML report generation
+│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
+│   └── Planner (agents/taskboard/)                            # Session state + agentic state
 ├── Multi-Framework Agents (3)
-│   ├── Probe (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
+│   ├── Repo Explainer (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
 │   ├── Forum (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
 │   └── Abacus (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
 ├── Teams (4)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
-│   ├── Atlas (teams/research/)                    # Research team (coordinate mode)
-│   ├── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
+│   ├── Newsroom (teams/research/)                    # Research team (coordinate mode)
+│   ├── Investment Committee (teams/investment/)                 # Investment committee (broadcast mode)
 │   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
 │   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
-    ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
-    ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
-    ├── Press (workflows/content_pipeline/)           # Parallel + loop + condition
-    ├── Echo (workflows/repo_walkthrough/)                 # Code → script → narrated audio
-    ├── Beacon (workflows/support_triage/)               # Router + condition + escalation
+    ├── Daily Brief (workflows/morning_brief/)                 # Daily parallel briefing
+    ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research
+    ├── Scribe (workflows/content_pipeline/)           # Parallel + loop + condition
+    ├── Code Scout (workflows/repo_walkthrough/)                 # Code → script → narrated audio
+    ├── Support Triage (workflows/support_triage/)               # Router + condition + escalation
     └── Support Bot (workflows/support_bot/)             # Step-level HITL troubleshooting
 ```
 
@@ -49,26 +49,26 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/mcp/agent.py` | Sage - Agno documentation agent via live MCP tools |
+| `agents/mcp/agent.py` | Docs - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/approvals/agent.py` | Ledger - approval flows + audit trail |
-| `agents/reporter/agent.py` | Quill - web research (Exa) + HTML report generation |
-| `agents/studio/agent.py` | Iris - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
-| `agents/taskboard/agent.py` | Pilot - session state + agentic state demo |
-| `frameworks/claude_repo/agent.py` | Probe - Claude Agent SDK with WebSearch/WebFetch |
+| `agents/reporter/agent.py` | Researcher - web research (Exa) + HTML report generation |
+| `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
+| `agents/taskboard/agent.py` | Planner - session state + agentic state demo |
+| `frameworks/claude_repo/agent.py` | Repo Explainer - Claude Agent SDK with WebSearch/WebFetch |
 | `frameworks/langgraph_debate/graph.py` | Forum - LangGraph graph with parallel branches |
 | `frameworks/langgraph_debate/agent.py` | Forum - LangGraphAgent wrapper |
 | `frameworks/dspy_math/agent.py` | Abacus - DSPyAgent with typed ChainOfThought signature |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
-| `teams/research/team.py` | Atlas (coordinate mode) |
-| `teams/investment/team.py` | Chorus — investment committee (broadcast mode, 4 analysts, YFinance) |
+| `teams/research/team.py` | Newsroom (coordinate mode) |
+| `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
 | `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
-| `workflows/morning_brief/workflow.py` | Dawn (parallel gather → synthesize) |
-| `workflows/ai_research/workflow.py` | Pulse (4 parallel researchers → synthesize) |
-| `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
-| `workflows/repo_walkthrough/workflow.py` | Echo (analyze → script → narrate) |
-| `workflows/support_triage/workflow.py` | Beacon (classify → route → escalate) |
+| `workflows/morning_brief/workflow.py` | Daily Brief (parallel gather → synthesize) |
+| `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
+| `workflows/content_pipeline/workflow.py` | Scribe (router, parallel, loop, HITL) |
+| `workflows/repo_walkthrough/workflow.py` | Code Scout (analyze → script → narrate) |
+| `workflows/support_triage/workflow.py` | Support Triage (classify → route → escalate) |
 | `workflows/support_bot/workflow.py` | Support Bot (capture error → step-level HITL env → search docs/web/GitHub) |
 | `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
 | `db/url.py` | Builds database URL from environment |
@@ -377,7 +377,7 @@ python -m evals improve --entity docs --json
 Required:
 - `OPENAI_API_KEY`
 
-Optional (model providers — each enables registry models in Iris):
+Optional (model providers — each enables registry models in Studio):
 - `ANTHROPIC_API_KEY` - Claude Opus 4.7, Sonnet 4.6, Haiku 4.5
 - `GOOGLE_API_KEY` - Gemini 3 Flash, Gemini 2.5 Pro
 - `GROQ_API_KEY` - Llama 3.3 70B
@@ -386,11 +386,11 @@ Optional (model providers — each enables registry models in Iris):
 - `MISTRAL_API_KEY` - Mistral Large
 
 Optional (tools & integrations):
-- `EXA_API_KEY` - Web search for Quill, Pulse, Investment
+- `EXA_API_KEY` - Web search for Researcher, AI Digest, Investment
 - `PARALLEL_API_KEY` - Parallel web search
-- `ELEVEN_LABS_API_KEY` - TTS for Iris, Echo
-- `FAL_KEY` - Image-to-image for Iris
-- `LUMAAI_API_KEY` - Video generation for Iris (LumaLab)
+- `ELEVEN_LABS_API_KEY` - TTS for Studio, Code Scout
+- `FAL_KEY` - Image-to-image for Studio
+- `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
@@ -429,7 +429,7 @@ Optional (tools & integrations):
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
-| MCP tools | Sage, Dash, Pulse, Investment |
+| MCP tools | Docs, Dash, AI Digest, Investment |
 | HITL — confirmation | Voyager, Ledger |
 | HITL — user input | Voyager |
 | HITL — external execution | Voyager |
@@ -440,39 +440,39 @@ Optional (tools & integrations):
 | Approval — blocking | Ledger |
 | Approval — audit trail | Ledger |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Quill |
-| File generation (HTML) | Quill |
-| Web research (Exa: search, company, crawl, fetch) | Quill |
+| Structured output (Pydantic) | Researcher |
+| File generation (HTML) | Researcher |
+| Web research (Exa: search, company, crawl, fetch) | Researcher |
 | Learning (LearningMachine) | Dash, Investment, Mentor |
 | Learning — user profile + memory | Mentor |
 | Learning — session context | Mentor |
 | Learning — learned knowledge (playbooks) | Mentor, Dash, Investment |
 | Learning — decision log | Mentor |
 | SQL tools | Dash |
-| Coding tools | Echo |
-| Image generation (DALL-E) | Iris |
+| Coding tools | Code Scout |
+| Image generation (DALL-E) | Studio |
 | Image generation (Gemini NanoBanana) | Registry |
-| Image-to-image (FAL) | Iris |
-| Text-to-speech (ElevenLabs) | Iris, Echo |
-| Video generation (LumaLab) | Iris |
-| Sound effects | Iris |
+| Image-to-image (FAL) | Studio |
+| Text-to-speech (ElevenLabs) | Studio, Code Scout |
+| Video generation (LumaLab) | Studio |
+| Sound effects | Studio |
 | YFinance tools | Investment |
-| Team — coordinate | Dash, Atlas |
-| Team — broadcast | Chorus |
+| Team — coordinate | Dash, Newsroom |
+| Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
 | Followups (suggested questions) | Mentor |
 | Fallback models | Clinic |
-| Workflow — parallel | Dawn, Pulse, Press |
-| Workflow — loop | Press |
-| Scheduling (cron) | Dawn, Pulse |
-| Parallel execution | Dawn, Pulse, Press |
-| Workflow — router | Beacon |
-| Workflow — condition | Beacon |
+| Workflow — parallel | Daily Brief, AI Digest, Scribe |
+| Workflow — loop | Scribe |
+| Scheduling (cron) | Daily Brief, AI Digest |
+| Parallel execution | Daily Brief, AI Digest, Scribe |
+| Workflow — router | Support Triage |
+| Workflow — condition | Support Triage |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
-| Session state + agentic state | Pilot |
-| Cross-modal chaining | Echo |
+| Session state + agentic state | Planner |
+| Cross-modal chaining | Code Scout |
 
 ---
 

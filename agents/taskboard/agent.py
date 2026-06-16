@@ -41,8 +41,8 @@ from app.settings import MODEL, agent_db
 # Create Agent
 # ---------------------------------------------------------------------------
 taskboard = Agent(
-    id="pilot",
-    name="Pilot",
+    id="planner",
+    name="Planner",
     description="Personal work planner — captures tasks, plans your day, and remembers how you work.",
     model=MODEL,
     db=agent_db,

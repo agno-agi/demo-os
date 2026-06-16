@@ -16,8 +16,8 @@ from app.settings import MODEL, agent_db
 # Create Agent
 # ---------------------------------------------------------------------------
 mcp_agent = Agent(
-    id="sage",
-    name="Sage",
+    id="docs",
+    name="Docs",
     description="Answers questions about Agno using live documentation via MCP tools.",
     model=MODEL,
     db=agent_db,

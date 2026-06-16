@@ -1,4 +1,4 @@
-"""Investment Team (Chorus) — 4 analysts assess a target in parallel (broadcast mode)."""
+"""Investment Committee — 4 analysts assess a target in parallel (broadcast mode)."""
 
 from os import getenv
 from typing import Any  # noqa: UP035 — used for dict[str, Any] unpacking
@@ -101,8 +101,8 @@ risk_officer = Agent(
 _core_members: list[Agent | Team] = [market_analyst, financial_analyst, technical_analyst, risk_officer]
 
 investment_broadcast = Team(
-    id="chorus",
-    name="Chorus",
+    id="investment-committee",
+    name="Investment Committee",
     description="Investment committee in broadcast mode — all analysts assess the same target in parallel.",
     mode=TeamMode.broadcast,
     model=MODEL,

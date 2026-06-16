@@ -1,7 +1,7 @@
 manifest:
   # --- Agents ---
 
-  sage:
+  docs:
     description: "Agno MCP docs agent"
     labels: ["mcp", "docs", "memory"]
     quick_prompts:
@@ -25,7 +25,7 @@ manifest:
       - "Refund $6,500 to customer C-2207 for a service outage"
       - "Delete user account U-7788 per their closure request"
 
-  quill:
+  researcher:
     description: "Research agent that searches the web and generates polished, self-contained HTML reports."
     labels: ["research", "web-search", "html", "file-generation"]
     quick_prompts:
@@ -33,7 +33,7 @@ manifest:
       - "Find the latest AI agent platform market size and CAGR, and put it in a short HTML report"
       - "Quick HTML one-pager comparing LangChain and CrewAI on 3 dimensions"
 
-  iris:
+  studio:
     description: "Multimodal media agent that generates images, audio, and video."
     labels: ["multimodal", "media", "image", "audio", "video"]
     quick_prompts:
@@ -41,7 +41,7 @@ manifest:
       - "Generate a 5-second video of waves crashing on a beach at sunset"
       - "Read this aloud: 'Welcome to Agno, the platform for building AI agents.'"
 
-  pilot:
+  planner:
     description: "Personal work planner — captures tasks, plans your day, and remembers how you work."
     labels: ["session-state", "memory", "planning", "task-management"]
     quick_prompts:
@@ -51,7 +51,7 @@ manifest:
 
   # --- Multi-Framework Agents ---
 
-  probe:
+  repo-explainer:
     description: "Explains public GitHub repos using Claude's native web tools."
     labels: ["claude-sdk", "web-search"]
     quick_prompts:
@@ -85,7 +85,7 @@ manifest:
       - "Break down our MRR by plan"
       - "Show me the revenue trend by month"
 
-  chorus:
+  investment-committee:
     description: "Investment committee in broadcast mode — all analysts assess the same target in parallel."
     labels: ["broadcast", "finance", "investment-analysis"]
     quick_prompts:
@@ -101,7 +101,7 @@ manifest:
       - "What did my recent bloodwork show?"
       - "Is Dr. Lee free on Thursday, and is Ozempic covered?"
 
-  atlas:
+  newsroom:
     description: "Research team in coordinate mode — analyst, investigator, and writer produce a report."
     labels: ["coordinate", "research", "analysis"]
     quick_prompts:
@@ -119,7 +119,7 @@ manifest:
 
   # --- Workflows ---
 
-  dawn:
+  daily-brief:
     description: "Daily briefing — scans calendar, email, and news in parallel, then synthesizes."
     labels: ["parallel", "scheduled", "briefing"]
     quick_prompts:
@@ -127,7 +127,7 @@ manifest:
       - "What's on my calendar today and any important emails?"
       - "Brief me on today's priorities"
 
-  pulse:
+  ai-digest:
     description: "Daily AI research — four researchers run in parallel, then synthesize a brief."
     labels: ["parallel", "scheduled", "research"]
     quick_prompts:
@@ -135,7 +135,7 @@ manifest:
       - "What's happening in AI today?"
       - "Research the latest developments in AI agents"
 
-  press:
+  scribe:
     description: "Content production pipeline with parallel research, a revision loop, and HITL."
     labels: ["parallel", "loop", "hitl", "content-creation"]
     quick_prompts:
@@ -143,7 +143,7 @@ manifest:
       - "Write a social thread about our latest product launch"
       - "Draft an announcement email for our new feature"
 
-  echo:
+  code-scout:
     description: "Turns a codebase into a narrated audio walkthrough — analyze, script, narrate."
     labels: ["cross-modal", "audio", "walkthrough"]
     quick_prompts:
@@ -151,7 +151,7 @@ manifest:
       - "Explain how Dash works as a 2-minute walkthrough"
       - "Generate a narrated overview of the Agno repo"
 
-  beacon:
+  support-triage:
     description: "Routes support tickets to a specialist and escalates by condition."
     labels: ["router", "condition", "support"]
     quick_prompts:
@@ -159,7 +159,7 @@ manifest:
       - "I was charged twice for my subscription last month"
       - "The API is returning 500 errors when I try to upload files larger than 10MB"
 
-  support-bot:
+  troubleshooter:
     description: "Agno troubleshooting bot — collects your environment via step-level HITL, then searches docs, web, and GitHub for a fix."
     labels: ["hitl", "user-input", "support", "workflow"]
     quick_prompts:

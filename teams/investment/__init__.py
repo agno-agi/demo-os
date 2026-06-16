@@ -1,4 +1,4 @@
-"""Investment Team (Chorus) - broadcast-mode committee demo."""
+"""Investment Committee - broadcast-mode committee demo."""
 
 from teams.investment.team import (
     investment_broadcast,

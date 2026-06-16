@@ -30,8 +30,8 @@ for a deep dive. If the user asks about a private or non-existent repo, say so.
 """
 
 claude_repo = ClaudeAgent(
-    id="probe",
-    name="Probe",
+    id="repo-explainer",
+    name="Repo Explainer",
     description="Explains public GitHub repos using Claude Agent SDK's native web tools.",
     db=agent_db,
     system_prompt=SYSTEM_PROMPT,

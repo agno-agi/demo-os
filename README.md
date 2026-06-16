@@ -51,20 +51,20 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Agent | What it does | Features |
 |-------|-------------|----------|
-| [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
+| [**Docs**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Voyager**](agents/travel/) | Travel booking concierge with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Ledger**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
-| [**Quill**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
-| [**Iris**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
-| [**Pilot**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
+| [**Researcher**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
+| [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
+| [**Planner**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
 
 ### Teams
 
 | Team | Mode | What it does | Features |
 |------|------|-------------|----------|
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
-| [**Atlas**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
-| [**Chorus**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
+| [**Newsroom**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
+| [**Investment Committee**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
 | [**Clinic**](teams/clinic/) | coordinate | Patient assistant — live schedule + patient-scoped records | Context provider (live DB), knowledge filtering, fallback models |
 | [**Mentor**](teams/coach/) | coordinate | Learning coach (Mentor + Curator) that gets better at helping you over time | LearningMachine (user profile, memory, session context, learned knowledge, decision log), followups |
 
@@ -72,11 +72,11 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Workflow | Schedule | What it does | Features |
 |----------|----------|-------------|----------|
-| [**Dawn**](workflows/morning_brief/) | Weekdays 8am ET | Parallel gather (calendar + email + news) then synthesize | Workflow, Step, Parallel, mock tools |
-| [**Pulse**](workflows/ai_research/) | Daily 7am UTC | 4 parallel researchers then synthesize | Workflow, Parallel, Exa MCP |
-| [**Press**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
-| [**Echo**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
-| [**Beacon**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
+| [**Daily Brief**](workflows/morning_brief/) | Weekdays 8am ET | Parallel gather (calendar + email + news) then synthesize | Workflow, Step, Parallel, mock tools |
+| [**AI Digest**](workflows/ai_research/) | Daily 7am UTC | 4 parallel researchers then synthesize | Workflow, Parallel, Exa MCP |
+| [**Scribe**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
+| [**Code Scout**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
+| [**Support Triage**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
 | [**Support Bot**](workflows/support_bot/) | On demand | Take an error, collect environment via step-level HITL, search docs/web/GitHub for a fix | Workflow, step-level HITL (user input), HITL output review, MCP + web search |
 
 ### Feature Coverage
@@ -84,7 +84,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash |
-| MCP tools | Sage, Dash, Pulse |
+| MCP tools | Docs, Dash, AI Digest |
 | HITL — confirmation | Voyager, Ledger |
 | HITL — user input | Voyager |
 | HITL — external execution | Voyager |
@@ -94,37 +94,37 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Approval — blocking | Ledger |
 | Approval — audit trail | Ledger |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Quill |
-| File generation (HTML) | Quill |
-| Web research (Exa: search, company, crawl, fetch) | Quill |
+| Structured output (Pydantic) | Researcher |
+| File generation (HTML) | Researcher |
+| Web research (Exa: search, company, crawl, fetch) | Researcher |
 | Learning (LearningMachine) | Dash, Investment, Mentor |
 | Learning — user profile + memory | Mentor |
 | Learning — session context | Mentor |
 | Learning — decision log | Mentor |
 | SQL tools | Dash |
-| Coding tools | Echo |
-| Image generation (DALL-E) | Iris |
-| Image-to-image (FAL) | Iris |
-| Text-to-speech (ElevenLabs) | Iris, Echo |
-| Video generation (LumaLab) | Iris |
+| Coding tools | Code Scout |
+| Image generation (DALL-E) | Studio |
+| Image-to-image (FAL) | Studio |
+| Text-to-speech (ElevenLabs) | Studio, Code Scout |
+| Video generation (LumaLab) | Studio |
 | Multi-model (Gemini) | Investment |
 | YFinance tools | Investment |
-| Session state + agentic state | Pilot |
-| Team — coordinate | Dash, Atlas, Mentor |
-| Team — broadcast | Chorus |
+| Session state + agentic state | Planner |
+| Team — coordinate | Dash, Newsroom, Mentor |
+| Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
 | Followups (suggested questions) | Mentor |
 | Fallback models | Clinic |
-| Workflow — parallel | Dawn, Pulse, Press |
-| Workflow — loop | Press |
-| Workflow — router | Beacon |
-| Workflow — condition | Beacon |
+| Workflow — parallel | Daily Brief, AI Digest, Scribe |
+| Workflow — loop | Scribe |
+| Workflow — router | Support Triage |
+| Workflow — condition | Support Triage |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
-| Scheduling (cron) | Dawn, Pulse |
-| Parallel execution | Dawn, Pulse, Press |
-| Cross-modal chaining | Echo |
+| Scheduling (cron) | Daily Brief, AI Digest |
+| Parallel execution | Daily Brief, AI Digest, Scribe |
+| Cross-modal chaining | Code Scout |
 
 ## Deploy to Railway
 
@@ -311,12 +311,12 @@ python -m app.main
 |----------|----------|---------|-------------|
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
-| `EXA_API_KEY` | No | - | Web search for Quill, Research, Investment |
+| `EXA_API_KEY` | No | - | Web search for Researcher, Research, Investment |
 | `PARALLEL_API_KEY` | No | - | Parallel web search |
-| `ELEVEN_LABS_API_KEY` | No | - | TTS for Iris, Echo |
-| `FAL_KEY` | No | - | Image-to-image for Iris |
-| `LUMAAI_API_KEY` | No | - | Video generation for Iris |
-| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Iris |
+| `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Code Scout |
+| `FAL_KEY` | No | - | Image-to-image for Studio |
+| `LUMAAI_API_KEY` | No | - | Video generation for Studio |
+| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Studio |
 | `SLACK_TOKEN` | No | - | Slack interface + team leader tools ([setup guide](docs/SLACK_CONNECT.md)) |
 | `SLACK_SIGNING_SECRET` | No | - | Slack webhook verification ([setup guide](docs/SLACK_CONNECT.md)) |
 | `RUNTIME_ENV` | No | `prd` | Set to `dev` for auto-reload |

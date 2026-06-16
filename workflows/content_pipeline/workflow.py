@@ -67,8 +67,8 @@ def quality_check(outputs) -> bool:
 # Create Workflow
 # ---------------------------------------------------------------------------
 content_pipeline = Workflow(
-    id="press",
-    name="Press",
+    id="scribe",
+    name="Scribe",
     description="Content production pipeline with parallel research, a revision loop, and HITL.",
     steps=[
         Parallel(

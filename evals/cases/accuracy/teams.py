@@ -57,7 +57,7 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "team",
-        "entity_id": "atlas",
+        "entity_id": "newsroom",
         "input": "Research the current state of AI agent frameworks",
         "expected_output": "Comprehensive overview naming specific frameworks with market analysis",
         "guidelines": "Must name at least 3 specific frameworks. Must include market context.",
@@ -67,7 +67,7 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "team",
-        "entity_id": "chorus",
+        "entity_id": "investment-committee",
         "input": "Analyze AAPL as an investment",
         "expected_output": "Investment analysis with fundamentals, technicals, and risk assessment",
         "guidelines": "Must include a valuation metric. Must discuss risk. Must give a recommendation.",

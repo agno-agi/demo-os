@@ -1,4 +1,4 @@
-"""Agno Support Bot - step-level HITL troubleshooting workflow.
+"""Troubleshooter - Agno step-level HITL troubleshooting workflow.
 
 Takes an error as input, pauses to collect the user's environment via a step-level
 HITL prompt, then searches the Agno docs, the web, and GitHub for a fix.
@@ -83,8 +83,8 @@ def format_solution(step_input: StepInput) -> StepOutput:
 # Create Workflow
 # ---------------------------------------------------------------------------
 support_bot = Workflow(
-    id="support-bot",
-    name="Support Bot",
+    id="troubleshooter",
+    name="Troubleshooter",
     description=(
         "Agno troubleshooting bot — captures an error, collects your environment via step-level HITL, "
         "then searches docs, the web, and GitHub for a fix."

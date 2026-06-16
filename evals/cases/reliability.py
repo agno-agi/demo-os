@@ -54,25 +54,25 @@ CASES: list[dict] = [
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "pilot",
+        "entity_id": "planner",
         "input": "Add a task: Write quarterly report, high priority, work category",
         "expected_tools": ["add_task"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "pilot",
+        "entity_id": "planner",
         "input": "Show me all my tasks",
         "expected_tools": ["list_tasks"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "pilot",
+        "entity_id": "planner",
         "input": "What's overdue or due today?",
         "expected_tools": ["agenda"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "pilot",
+        "entity_id": "planner",
         "input": "Plan my day — what should I focus on?",
         "expected_tools": ["plan_my_day"],
     },

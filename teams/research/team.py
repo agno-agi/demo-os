@@ -54,8 +54,8 @@ members: list[Agent | Team] = [analyst, investigator, writer]
 # Create Teams
 # ---------------------------------------------------------------------------
 research_coordinate = Team(
-    id="atlas",
-    name="Atlas",
+    id="newsroom",
+    name="Newsroom",
     description="Research team in coordinate mode — analyst, investigator, and writer produce a report.",
     mode=TeamMode.coordinate,
     model=MODEL,

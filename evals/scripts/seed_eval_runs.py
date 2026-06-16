@@ -99,7 +99,7 @@ def seed_accuracy(db) -> int:
         model_provider=MODEL_PROVIDER,
         name=name,
         evaluated_component_name=name,
-        **_component("agent", "sage"),
+        **_component("agent", "docs"),
     )
     return 1
 
@@ -111,7 +111,7 @@ def seed_accuracy(db) -> int:
 JUDGE_CASES = [
     (
         "agent",
-        "iris",
+        "studio",
         "Response quality",
         "Describe an image prompt for a serene mountain lake at dawn.",
         "A glassy alpine lake at dawn, mirror-still water reflecting snow-capped "
@@ -211,7 +211,7 @@ def seed_performance(db) -> int:
         model_provider=MODEL_PROVIDER,
         name=name,
         evaluated_component_name=name,
-        **_component("agent", "sage"),
+        **_component("agent", "docs"),
     )
     return 1
 
@@ -240,7 +240,7 @@ def seed_reliability(db) -> int:
         model_provider=MODEL_PROVIDER,
         name=name,
         evaluated_component_name=name,
-        **_component("agent", "pilot"),
+        **_component("agent", "planner"),
     )
     return 1
 
