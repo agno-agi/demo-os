@@ -11,7 +11,7 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 ```
 AgentOS (app/main.py)
 ├── Agents (6)
-│   ├── Docs (agents/mcp/)                                        # Agno documentation agent via MCP
+│   ├── Sage (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Ledger (agents/approvals/)                            # Approval flows + audit trail
 │   ├── Researcher (agents/reporter/)                              # Web research + HTML report generation
@@ -49,7 +49,7 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/mcp/agent.py` | Docs - Agno documentation agent via live MCP tools |
+| `agents/mcp/agent.py` | Sage - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/approvals/agent.py` | Ledger - approval flows + audit trail |
 | `agents/reporter/agent.py` | Researcher - web research (Exa) + HTML report generation |
@@ -348,7 +348,7 @@ python -m evals smoke
 python -m evals smoke --group agents
 python -m evals smoke --group security
 python -m evals smoke --group hitl
-python -m evals smoke --entity docs
+python -m evals smoke --entity sage
 python -m evals smoke --output --compare
 
 # Run evals — reliability (tool call validation, no LLM cost)
@@ -367,9 +367,9 @@ python -m evals perf --update-baselines
 python -m evals perf
 
 # Auto-improvement loop (see docs/EVALS.md for full workflow)
-python -m evals improve --entity docs
+python -m evals improve --entity sage
 python -m evals improve --failures
-python -m evals improve --entity docs --json
+python -m evals improve --entity sage --json
 ```
 
 ## Environment Variables
@@ -429,7 +429,7 @@ Optional (tools & integrations):
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
-| MCP tools | Docs, Dash, AI Digest, Investment |
+| MCP tools | Sage, Dash, AI Digest, Investment |
 | HITL — confirmation | Voyager, Ledger |
 | HITL — user input | Voyager |
 | HITL — external execution | Voyager |

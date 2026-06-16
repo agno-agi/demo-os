@@ -28,8 +28,8 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Agents (6)
     # -------------------------------------------------------------------------
-    "docs": Entity(
-        id="docs",
+    "sage": Entity(
+        id="sage",
         type="agent",
         instruction_file="agents/mcp/instructions.py",
         definition_file="agents/mcp/agent.py",
