@@ -25,7 +25,8 @@ AgentOS (app/main.py)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
 │   ├── Atlas (teams/research/)                    # Research team (coordinate mode)
 │   ├── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
-│   └── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
+│   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
+│   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
     ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
     ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
@@ -61,7 +62,8 @@ All agents share:
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Atlas (coordinate mode) |
 | `teams/investment/team.py` | Chorus — investment committee (broadcast mode, 4 analysts, YFinance) |
-| `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, followups, fallback) |
+| `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
+| `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
 | `workflows/morning_brief/workflow.py` | Dawn (parallel gather → synthesize) |
 | `workflows/ai_research/workflow.py` | Pulse (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
@@ -295,6 +297,7 @@ from agents.dash import dash
 from teams.research import research_coordinate
 from teams.investment import investment_broadcast
 from teams.clinic import clinic
+from teams.coach import coach_team
 
 # Workflows
 from workflows.morning_brief import morning_brief
@@ -440,7 +443,11 @@ Optional (tools & integrations):
 | Structured output (Pydantic) | Quill |
 | File generation (HTML) | Quill |
 | Web research (Exa: search, company, crawl, fetch) | Quill |
-| Learning (LearningMachine) | Dash, Investment |
+| Learning (LearningMachine) | Dash, Investment, Mentor |
+| Learning — user profile + memory | Mentor |
+| Learning — session context | Mentor |
+| Learning — learned knowledge (playbooks) | Mentor, Dash, Investment |
+| Learning — decision log | Mentor |
 | SQL tools | Dash |
 | Coding tools | Echo |
 | Image generation (DALL-E) | Iris |
@@ -454,7 +461,7 @@ Optional (tools & integrations):
 | Team — broadcast | Chorus |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
-| Followups (suggested questions) | Clinic |
+| Followups (suggested questions) | Mentor |
 | Fallback models | Clinic |
 | Workflow — parallel | Dawn, Pulse, Press |
 | Workflow — loop | Press |
