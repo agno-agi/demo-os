@@ -110,8 +110,8 @@ manifest:
       - "Write a competitive analysis report on the AI agent framework market"
 
   mentor:
-    description: "Learning-focused coach that gets better at helping you over time — profile, memories, learned playbooks, and decision log via the LearningMachine."
-    labels: ["learning-machine", "memory", "followups"]
+    description: "Learning-focused coach that gets better at helping you over time — profile, memories, session context, learned playbooks, and decision log via the LearningMachine."
+    labels: ["learning-machine", "memory", "session-context", "followups"]
     quick_prompts:
       - "I'm a backend engineer new to Rust. I prefer concise, example-first answers. Where should I start?"
       - "We decided to use Postgres over SQLite for the new service — remember that and the reasoning."

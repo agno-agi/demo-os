@@ -93,10 +93,10 @@ agent_os = AgentOS(
     ],
     teams=[
         dash,
-        research_coordinate,
+        coach_team,
         clinic,
         investment_broadcast,
-        coach_team,
+        research_coordinate,
     ],
     workflows=[
         morning_brief,

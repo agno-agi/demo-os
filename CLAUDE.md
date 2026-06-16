@@ -26,7 +26,7 @@ AgentOS (app/main.py)
 │   ├── Atlas (teams/research/)                    # Research team (coordinate mode)
 │   ├── Chorus (teams/investment/)                 # Investment committee (broadcast mode)
 │   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
-│   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, knowledge, decisions; followups)
+│   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
     ├── Dawn (workflows/morning_brief/)                 # Daily parallel briefing
     ├── Pulse (workflows/ai_research/)                     # Daily parallel AI research
@@ -63,7 +63,7 @@ All agents share:
 | `teams/research/team.py` | Atlas (coordinate mode) |
 | `teams/investment/team.py` | Chorus — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
-| `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, learned knowledge, decision log; followups) |
+| `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
 | `workflows/morning_brief/workflow.py` | Dawn (parallel gather → synthesize) |
 | `workflows/ai_research/workflow.py` | Pulse (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Press (router, parallel, loop, HITL) |
@@ -445,6 +445,7 @@ Optional (tools & integrations):
 | Web research (Exa: search, company, crawl, fetch) | Quill |
 | Learning (LearningMachine) | Dash, Investment, Mentor |
 | Learning — user profile + memory | Mentor |
+| Learning — session context | Mentor |
 | Learning — learned knowledge (playbooks) | Mentor, Dash, Investment |
 | Learning — decision log | Mentor |
 | SQL tools | Dash |

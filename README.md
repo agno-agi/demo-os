@@ -62,7 +62,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Atlas**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
 | [**Chorus**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
 | [**Clinic**](teams/clinic/) | coordinate | Patient assistant — live schedule + patient-scoped records | Context provider (live DB), knowledge filtering, fallback models |
-| [**Mentor**](teams/coach/) | coordinate | Learning coach (Mentor + Curator) that gets better at helping you over time | LearningMachine (user profile, memory, learned knowledge, decision log), followups |
+| [**Mentor**](teams/coach/) | coordinate | Learning coach (Mentor + Curator) that gets better at helping you over time | LearningMachine (user profile, memory, session context, learned knowledge, decision log), followups |
 
 ### Workflows
 
@@ -95,6 +95,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Web research (Exa: search, company, crawl, fetch) | Quill |
 | Learning (LearningMachine) | Dash, Investment, Mentor |
 | Learning — user profile + memory | Mentor |
+| Learning — session context | Mentor |
 | Learning — decision log | Mentor |
 | SQL tools | Dash |
 | Coding tools | Echo |

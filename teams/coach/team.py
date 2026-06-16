@@ -1,11 +1,12 @@
 """Coach Team (Mentor) — a learning-focused assistant that improves over time.
 
 This team is the showcase for Agno's LearningMachine. Where
-other teams use a single learning store, Mentor turns on four at once so the team
+other teams use a single learning store, Mentor turns on five at once so the team
 visibly gets better — and more personalized — the more it works with the user:
 
 - ``user_profile``      — who the user is (role, goals, stack)
 - ``user_memory``       — durable preferences and facts
+- ``session_context``   — the current task/goal within this conversation
 - ``learned_knowledge`` — reusable lessons and playbooks distilled across sessions
 - ``decision_log``      — decisions made, with their rationale
 
@@ -23,6 +24,7 @@ from agno.learn import (
     LearnedKnowledgeConfig,
     LearningMachine,
     LearningMode,
+    SessionContextConfig,
     UserMemoryConfig,
     UserProfileConfig,
 )
@@ -41,14 +43,17 @@ from teams.coach.instructions import (
 # ---------------------------------------------------------------------------
 coach_learnings = create_knowledge("Coach Learnings", "coach_learnings")
 
-# A LearningMachine with four stores enabled. learned_knowledge is AGENTIC (the
-# model decides when a reusable lesson is worth keeping); profile, memories, and
-# the decision log default to ALWAYS so durable signal is captured as it appears.
+# A LearningMachine with five stores enabled. learned_knowledge is AGENTIC (the
+# model decides when a reusable lesson is worth keeping); profile, memories,
+# session context, and the decision log run ALWAYS so signal is captured as it
+# appears. session_context tracks the *here-and-now* of the active conversation
+# (the current task/goal), complementing the cross-session stores.
 _learning = LearningMachine(
     db=agent_db,
     knowledge=coach_learnings,
     user_profile=UserProfileConfig(mode=LearningMode.ALWAYS),
     user_memory=UserMemoryConfig(mode=LearningMode.ALWAYS),
+    session_context=SessionContextConfig(mode=LearningMode.ALWAYS),
     learned_knowledge=LearnedKnowledgeConfig(
         mode=LearningMode.AGENTIC,
         namespace="global",
