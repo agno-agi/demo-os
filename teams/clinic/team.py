@@ -1,12 +1,11 @@
 """
 Clinic Team — multi-tenant patient assistant.
 
-Showcases four Agno features in one realistic flow:
+Showcases three Agno features in one realistic flow:
 - Context Provider     — a `dependencies` callable runs live SQL on the operational clinic DB
                          and injects the patient's appointment snapshot into the prompt
 - Knowledge Filtering  — clinical documents are retrieved scoped to the current patient_id
                          (the filter is a privacy boundary, not just relevance)
-- Followups            — the team suggests sensible next questions after each answer
 - Fallback Models      — if the primary model errors, the team falls back across providers
 """
 
@@ -107,8 +106,6 @@ clinic = Team(
     instructions=TEAM_INSTRUCTIONS,
     dependencies=_dependencies,
     add_dependencies_to_context=True,
-    followups=True,
-    num_followups=3,
     share_member_interactions=True,
     add_datetime_to_context=True,
     add_history_to_context=True,

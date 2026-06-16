@@ -61,7 +61,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
 | [**Atlas**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
 | [**Chorus**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
-| [**Clinic**](teams/clinic/) | coordinate | Patient assistant — live schedule + patient-scoped records | Context provider (live DB), knowledge filtering, followups, fallback models |
+| [**Clinic**](teams/clinic/) | coordinate | Patient assistant — live schedule + patient-scoped records | Context provider (live DB), knowledge filtering, fallback models |
+| [**Mentor**](teams/coach/) | coordinate | Learning coach (Mentor + Curator) that gets better at helping you over time | LearningMachine (user profile, memory, learned knowledge, decision log), followups |
 
 ### Workflows
 
@@ -92,7 +93,9 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Structured output (Pydantic) | Quill |
 | File generation (HTML) | Quill |
 | Web research (Exa: search, company, crawl, fetch) | Quill |
-| Learning (LearningMachine) | Dash, Investment |
+| Learning (LearningMachine) | Dash, Investment, Mentor |
+| Learning — user profile + memory | Mentor |
+| Learning — decision log | Mentor |
 | SQL tools | Dash |
 | Coding tools | Echo |
 | Image generation (DALL-E) | Iris |
@@ -102,11 +105,11 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Multi-model (Gemini) | Investment |
 | YFinance tools | Investment |
 | Session state + agentic state | Pilot |
-| Team — coordinate | Dash, Atlas |
+| Team — coordinate | Dash, Atlas, Mentor |
 | Team — broadcast | Chorus |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
-| Followups (suggested questions) | Clinic |
+| Followups (suggested questions) | Mentor |
 | Fallback models | Clinic |
 | Workflow — parallel | Dawn, Pulse, Press |
 | Workflow — loop | Press |

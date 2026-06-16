@@ -27,6 +27,7 @@ from frameworks.claude_repo import claude_repo
 from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
 from teams.clinic import clinic, clinic_knowledge
+from teams.coach import coach_learnings, coach_team
 from teams.investment import (
     investment_broadcast,
     investment_knowledge,
@@ -95,6 +96,7 @@ agent_os = AgentOS(
         research_coordinate,
         clinic,
         investment_broadcast,
+        coach_team,
     ],
     workflows=[
         morning_brief,
@@ -110,6 +112,7 @@ agent_os = AgentOS(
         investment_knowledge,
         investment_learnings,
         clinic_knowledge,
+        coach_learnings,
     ],
     interfaces=interfaces,
     registry=registry,

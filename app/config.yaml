@@ -95,7 +95,7 @@ manifest:
 
   clinic:
     description: "Patient assistant — live clinic schedule with patient-scoped records."
-    labels: ["context-provider", "knowledge-filter", "followups", "fallback"]
+    labels: ["context-provider", "knowledge-filter", "fallback"]
     quick_prompts:
       - "When is my next appointment?"
       - "What did my recent bloodwork show?"
@@ -108,6 +108,14 @@ manifest:
       - "Size the AI agent platform market and its growth rate"
       - "Profile the top 3 AI agent startups: funding, team, and strategy"
       - "Write a competitive analysis report on the AI agent framework market"
+
+  mentor:
+    description: "Learning-focused coach that gets better at helping you over time — profile, memories, learned playbooks, and decision log via the LearningMachine."
+    labels: ["learning-machine", "memory", "onboarding", "followups"]
+    quick_prompts:
+      - "I'm a backend engineer new to Rust. I prefer concise, example-first answers. Where should I start?"
+      - "We decided to use Postgres over SQLite for the new service — remember that and the reasoning."
+      - "Based on what you know about me, suggest my next learning goal."
 
   # --- Workflows ---
 
