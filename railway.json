@@ -8,7 +8,7 @@
     "runtime": "V2",
     "numReplicas": 3,
     "preDeployCommand": "bash -lc 'python -m evals.scripts.seed_eval_runs; python -m agents.dash.scripts.load_data --drop; python -m agents.dash.scripts.load_knowledge --recreate; python -m teams.clinic.scripts.seed_clinic --drop; python -m teams.clinic.scripts.load_records --recreate'",
-    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4",
     "sleepApplication": false,
     "useLegacyStacker": false,
     "limits": {
