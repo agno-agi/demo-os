@@ -123,6 +123,29 @@ app = agent_os.get_app()
 
 
 # ---------------------------------------------------------------------------
+# Health check
+# ---------------------------------------------------------------------------
+# Register a lightweight /health route that bypasses the main database
+# connection pool entirely.  WebSocket connections to /workflows/ws can hold
+# pool slots open for minutes; if the pool is exhausted the default AgentOS
+# health endpoint hangs waiting for a connection and the load-balancer marks
+# the instance unhealthy.  This override returns 200 immediately — if the
+# process is alive and accepting requests, it is healthy.
+#
+# The route is inserted at the front of the router's route list so it takes
+# precedence over any /health route that AgentOS may have already registered.
+@app.get("/health", include_in_schema=False, tags=["ops"])
+async def health_check() -> dict[str, str]:
+    """Lightweight liveness probe — never touches the database."""
+    return {"status": "ok"}
+
+
+# Move the route we just appended to position 0 so it shadows any previously
+# registered /health handler (FastAPI matches routes in registration order).
+app.routes.insert(0, app.routes.pop())
+
+
+# ---------------------------------------------------------------------------
 # Schedules
 # ---------------------------------------------------------------------------
 def _register_schedules() -> None:
