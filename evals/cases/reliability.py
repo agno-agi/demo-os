@@ -25,8 +25,8 @@ CASES: list[dict] = [
     {
         "entity_type": "agent",
         "entity_id": "voyager",
-        "input": "Charge booking BK-04821 for USD 420 to issue the ticket",
-        "expected_tools": ["charge_payment"],
+        "input": "Email the confirmed itinerary for booking BK-04821 to jordan@example.com",
+        "expected_tools": ["send_email"],
     },
     # -------------------------------------------------------------------------
     # Approvals — approval gates

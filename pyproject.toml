@@ -31,7 +31,10 @@ dependencies = [
   "psycopg[binary]",
   "PyGithub",
   "pypdf",
+  "python-docx",
   "reportlab",
+  "requests",
+  "resend",
   "slack-sdk",
   "sqlalchemy",
   "wikipedia",
@@ -64,7 +67,7 @@ plugins = ["pydantic.mypy"]
 exclude = [".venv*"]
 
 [[tool.mypy.overrides]]
-module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "yaml.*", "parallel.*", "sqlalchemy.*", "dspy.*"]
+module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "requests.*", "yaml.*", "parallel.*", "sqlalchemy.*", "dspy.*"]
 ignore_missing_imports = true
 
 [tool.uv.pip]

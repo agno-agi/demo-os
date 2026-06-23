@@ -10,8 +10,8 @@ manifest:
       - "Summarize the key features of Agno"
 
   voyager:
-    description: "Books flights with human-in-the-loop steps and moderation, PII, and injection guardrails."
-    labels: ["hitl", "guardrails", "pre-post-hooks"]
+    description: "Searches live flights, books with human-in-the-loop steps, and emails the itinerary via Resend, with moderation, PII, and injection guardrails."
+    labels: ["hitl", "guardrails", "flight-search", "email"]
     quick_prompts:
       - "Help me book a flight from San Francisco to New York for tomorrow"
       - "Find flights from Boston to Seattle next Friday for Jordan Lee"

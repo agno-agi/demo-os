@@ -391,6 +391,9 @@ Optional (tools & integrations):
 - `ELEVEN_LABS_API_KEY` - TTS for Studio, Code Scout
 - `FAL_KEY` - Image-to-image for Studio
 - `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
+- `DUFFEL_API_TOKEN` - Live flight search for Voyager (falls back to sample data if unset)
+- `RESEND_API_KEY` - Itinerary email for Voyager
+- `VOYAGER_FROM_EMAIL` - Sender address for Voyager's itinerary email (verified Resend domain; default `onboarding@resend.dev`)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
@@ -457,6 +460,8 @@ Optional (tools & integrations):
 | Video generation (LumaLab) | Studio |
 | Sound effects | Studio |
 | YFinance tools | Investment |
+| Flight search (Duffel) | Voyager |
+| Email (Resend) | Voyager |
 | Team — coordinate | Dash, Newsroom |
 | Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |

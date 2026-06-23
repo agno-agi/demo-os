@@ -130,6 +130,7 @@ pynacl==1.6.2
 pyparsing==3.3.2
 pypdf==6.10.1
 python-dateutil==2.9.0.post0
+python-docx==1.2.0
 python-dotenv==1.2.2
 python-multipart==0.0.26
 pytz==2026.1.post1
@@ -140,6 +141,7 @@ reportlab==4.4.10
 requests==2.33.1
 requests-oauthlib==2.0.0
 requests-toolbelt==1.0.0
+resend==2.32.2
 rich==15.0.0
 rich-toolkit==0.19.7
 rignore==0.7.6
