@@ -51,7 +51,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Agent | What it does | Features |
 |-------|-------------|----------|
-| [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
+| [**Docs**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Voyager**](agents/travel/) | Travel booking concierge with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Operator**](agents/infra/) | Infrastructure change agent — drafts a typed, risk-scored plan, gets human approval, then executes | @approval decorator (blocking), Skills (LocalSkills), structured output (Pydantic ChangePlan) |
 | [**Researcher**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
@@ -84,7 +84,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash |
-| MCP tools | Sage, Dash, AI Digest |
+| MCP tools | Docs, Dash, AI Digest |
 | HITL — confirmation | Voyager, Operator |
 | HITL — user input | Voyager |
 | HITL — external execution | Voyager |
@@ -334,7 +334,7 @@ The eval framework tests all 30 entities across multiple dimensions: basic funct
 # Smoke tests (fast, free)
 python -m evals smoke                          # All entities
 python -m evals smoke --group agents           # By group
-python -m evals smoke --entity sage       # Single entity
+python -m evals smoke --entity docs       # Single entity
 
 # Tool call validation (fast, free)
 python -m evals reliability
@@ -348,7 +348,7 @@ python -m evals perf --update-baselines        # Establish baselines
 python -m evals perf                           # Compare against baselines
 
 # Improvement loop
-python -m evals improve --entity sage     # Debug a failing entity
+python -m evals improve --entity docs     # Debug a failing entity
 python -m evals improve --failures             # Debug all failures
 ```
 

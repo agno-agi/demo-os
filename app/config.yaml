@@ -1,7 +1,7 @@
 manifest:
   # --- Agents ---
 
-  sage:
+  docs:
     description: "Answers Agno questions from the live documentation using MCP tools."
     labels: ["mcp", "documentation"]
     quick_prompts:
