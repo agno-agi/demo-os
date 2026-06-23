@@ -10,10 +10,11 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 
 ```
 AgentOS (app/main.py)
-├── Agents (6)
+├── Agents (7)
 │   ├── Docs (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
+│   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
 │   ├── Researcher (agents/reporter/)                              # Web research + HTML report generation
 │   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
@@ -21,8 +22,9 @@ AgentOS (app/main.py)
 │   ├── Repo Explainer (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
 │   ├── Forum (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
 │   └── Abacus (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
-├── Teams (4)
+├── Teams (5)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
+│   ├── Builder (teams/builder/)                    # Builds you an assistant from a conversation (StudioTool + HITL + session state)
 │   ├── Newsroom (teams/research/)                    # Research team (coordinate mode)
 │   ├── Investment Committee (teams/investment/)                 # Investment committee (broadcast mode)
 │   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
@@ -60,6 +62,7 @@ All agents share:
 | `frameworks/langgraph_debate/agent.py` | Forum - LangGraphAgent wrapper |
 | `frameworks/dspy_math/agent.py` | Abacus - DSPyAgent with typed ChainOfThought signature |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
+| `teams/builder/team.py` | Builder — builds an assistant from a conversation (StudioTool, HITL, session state) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
 | `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
@@ -434,14 +437,15 @@ Optional (tools & integrations):
 | RAG / hybrid search | Dash, Investment |
 | MCP tools | Docs, Dash, AI Digest, Investment |
 | HITL — confirmation | Voyager, Operator |
-| HITL — user input | Voyager |
+| HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
 | Guardrails (moderation, PII, injection) | Voyager |
 | Output guardrails | Voyager |
 | Pre/post hooks | Voyager |
-| User feedback (ask_user) | Voyager |
-| Approval — blocking | Operator |
+| User feedback (ask_user) | Voyager, Builder |
+| Approval — blocking | Operator, Builder |
 | Skills (LocalSkills, SKILL.md) | Operator |
+| Agent composition (StudioTool) | Builder |
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |
@@ -462,7 +466,7 @@ Optional (tools & integrations):
 | YFinance tools | Investment |
 | Flight search (Duffel) | Voyager |
 | Email (Resend) | Voyager |
-| Team — coordinate | Dash, Newsroom |
+| Team — coordinate | Dash, Newsroom, Builder |
 | Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
@@ -476,7 +480,7 @@ Optional (tools & integrations):
 | Workflow — condition | Support Triage |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
-| Session state + agentic state | Planner |
+| Session state + agentic state | Planner, Builder |
 | Cross-modal chaining | Code Scout |
 
 ---

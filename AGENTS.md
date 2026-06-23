@@ -10,10 +10,11 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 
 ```
 AgentOS (app/main.py)
-├── Agents (6)
+├── Agents (7)
 │   ├── Docs (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
+│   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
 │   ├── Researcher (agents/reporter/)                              # Structured output + file generation
 │   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
@@ -50,6 +51,7 @@ All agents share:
 | `agents/reporter/agent.py` | Researcher - structured output + file generation |
 | `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Planner - session state + agentic state demo |
+| `agents/builder/agent.py` | Builder - builds an assistant from a conversation (StudioTool + HITL) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
 | `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
@@ -420,14 +422,15 @@ Optional (tools & integrations):
 | RAG / hybrid search | Dash, Investment |
 | MCP tools | Docs, Dash, AI Digest, Investment |
 | HITL — confirmation | Voyager, Operator |
-| HITL — user input | Voyager |
+| HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
 | Guardrails (moderation, PII, injection) | Voyager |
 | Output guardrails | Voyager |
 | Pre/post hooks | Voyager |
-| User feedback (ask_user) | Voyager |
-| Approval — blocking | Operator |
+| User feedback (ask_user) | Voyager, Builder |
+| Approval — blocking | Operator, Builder |
 | Skills (LocalSkills, SKILL.md) | Operator |
+| Agent composition (StudioTool) | Builder |
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (CSV/JSON/PDF) | Researcher |
@@ -440,6 +443,7 @@ Optional (tools & integrations):
 | Video generation (LumaLab) | Studio |
 | Sound effects | Studio |
 | YFinance tools | Investment |
+| Session state + agentic state | Planner |
 | Team — coordinate | Dash, Newsroom |
 | Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |

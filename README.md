@@ -57,6 +57,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Researcher**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
 | [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Planner**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
+| [**Builder**](agents/builder/) | Builds you a personalized assistant from a conversation | StudioTool (list/create/run/edit/publish agents against the registry), HITL (UserControlFlow + UserFeedback), blocking confirmation |
 
 ### Teams
 
@@ -86,13 +87,14 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | RAG / hybrid search | Dash |
 | MCP tools | Docs, Dash, AI Digest |
 | HITL — confirmation | Voyager, Operator |
-| HITL — user input | Voyager |
+| HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
 | Guardrails (PII, injection) | Voyager |
 | Pre/post hooks | Voyager |
-| User feedback (ask_user) | Voyager |
-| Approval — blocking | Operator |
+| User feedback (ask_user) | Voyager, Builder |
+| Approval — blocking | Operator, Builder |
 | Skills (LocalSkills, SKILL.md) | Operator |
+| Agent composition (StudioTool) | Builder |
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |

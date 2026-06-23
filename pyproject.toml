@@ -7,7 +7,7 @@ license = { file = "LICENSE" }
 authors = [{ name = "Agno", email = "hello@agno.com" }]
 
 dependencies = [
-  "agno[os]",
+  "agno[os]==2.6.19",
   "anthropic",
   "arxiv",
   "claude-agent-sdk",

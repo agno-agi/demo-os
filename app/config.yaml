@@ -49,6 +49,14 @@ manifest:
       - "What's overdue or due today?"
       - "Plan my day. Remember I like deep work in the morning and batch admin at the end."
 
+  builder:
+    description: "Describe your job and Builder composes a personalized assistant — interviewed, built behind approval, trial-run, and published live in the OS."
+    labels: ["studio-tools", "hitl", "agent-builder"]
+    quick_prompts:
+      - "I'm a financial analyst — build me an assistant that tracks stocks and writes up the numbers"
+      - "I review research papers all day — build me an assistant that finds and summarizes them"
+      - "I turn YouTube talks into written briefs — build me an assistant for that"
+
   # --- Multi-Framework Agents ---
 
   repo-explainer:
