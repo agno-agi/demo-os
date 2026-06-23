@@ -14,8 +14,8 @@ from pathlib import Path
 from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
 
-from agents.approvals import approvals
 from agents.dash import dash, dash_knowledge, dash_learnings
+from agents.infra import infra
 from agents.mcp import mcp_agent
 from agents.reporter import reporter
 from agents.studio import studio
@@ -83,7 +83,7 @@ agent_os = AgentOS(
     agents=[
         mcp_agent,
         travel,
-        approvals,
+        infra,
         reporter,
         studio,
         taskboard,

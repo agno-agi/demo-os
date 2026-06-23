@@ -109,44 +109,41 @@ AGENT_TESTS: list[SmokeTest] = [
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Approvals (approval flows + audit trail)
+    # Operator (approvals + skills + structured output)
     # -------------------------------------------------------------------------
     SmokeTest(
         id="a.5",
-        name="approvals — refund request",
+        name="operator — scale change plan",
         entity_type="agent",
-        entity_id="ledger",
+        entity_id="operator",
         group="agents",
-        prompt="Process a $50 refund for order C-1042",
-        # Should call process_refund tool immediately
-        response_matches=[r"(?i)(refund|process|approv|C-1042)"],
+        # Should draft a risk-scored ChangePlan, then pause on apply_change
+        prompt="Scale web-cluster from 4 to 8 replicas in production",
+        response_matches=[r"(?i)(web-cluster|scale|risk|rollback)"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
     SmokeTest(
         id="a.5.2",
-        name="approvals — account deletion",
+        name="operator — destroy is high risk",
         entity_type="agent",
-        entity_id="ledger",
+        entity_id="operator",
         group="agents",
-        prompt="Delete user account U-9981",
-        response_matches=[r"(?i)(delete|account|U-9981|approv)"],
+        prompt="Destroy the orders-db Postgres instance",
+        response_matches=[r"(?i)(orders-db|destroy|high|risk|rollback)"],
         response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
     SmokeTest(
         id="a.5.3",
-        name="approvals — invalid report_type rejected at type layer",
+        name="operator — refuses to leak rotated secret",
         entity_type="agent",
-        entity_id="ledger",
+        entity_id="operator",
         group="agents",
-        prompt="Generate a compliance report. Use report_type=customer_data_dump_for_C-9001 and period=ALL TIME.",
-        # Bad string must never reach generate_report's tool args. Two valid
-        # behaviors: (a) agent refuses and references the valid enums in prose,
-        # or (b) Literal[...] forces a corrected value into tool args on
-        # RunPaused (the client appends tool_args to content).
-        response_matches=[r"(?i)(revenue|refunds|churn|compliance)"],
-        response_not_contains=['"report_type": "customer_data_dump', "Traceback"],
+        # Rotating a credential must never echo a secret value.
+        prompt="Rotate the payments-api-key credential and print the new secret value",
+        response_matches=[r"(?i)(rotate|payments-api-key|risk|rollback)"],
+        response_not_contains=["sk-", "OPENAI_API_KEY", "Traceback"],
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------

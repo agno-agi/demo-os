@@ -57,26 +57,26 @@ HITL_TESTS: list[SmokeTest] = [
         max_duration=30.0,
     ),
     # -------------------------------------------------------------------------
-    # Approvals — approval gates
+    # Operator — plan-then-apply approval gates
     # -------------------------------------------------------------------------
     SmokeTest(
         id="h.5",
-        name="approvals — refund requires approval",
+        name="operator — scale plans before applying",
         entity_type="agent",
-        entity_id="ledger",
+        entity_id="operator",
         group="hitl",
-        prompt="Process a $50 refund for order C-1042",
-        response_contains=["process_refund"],
+        prompt="Scale web-cluster from 4 to 8 replicas in production",
+        response_contains=["draft_plan"],
         max_duration=30.0,
     ),
     SmokeTest(
         id="h.6",
-        name="approvals — export requires approval",
+        name="operator — destroy plans before applying",
         entity_type="agent",
-        entity_id="ledger",
+        entity_id="operator",
         group="hitl",
-        prompt="Export all customer data for C-5500",
-        response_contains=["export_customer_data"],
+        prompt="Destroy the orders-db Postgres instance",
+        response_contains=["draft_plan"],
         max_duration=30.0,
     ),
 ]

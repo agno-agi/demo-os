@@ -53,7 +53,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |-------|-------------|----------|
 | [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Voyager**](agents/travel/) | Travel booking concierge with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
-| [**Ledger**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
+| [**Operator**](agents/infra/) | Infrastructure change agent — drafts a typed, risk-scored plan, gets human approval, then executes | @approval decorator (blocking), Skills (LocalSkills), structured output (Pydantic ChangePlan) |
 | [**Researcher**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
 | [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Planner**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
@@ -85,16 +85,16 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |---------|-------|
 | RAG / hybrid search | Dash |
 | MCP tools | Sage, Dash, AI Digest |
-| HITL — confirmation | Voyager, Ledger |
+| HITL — confirmation | Voyager, Operator |
 | HITL — user input | Voyager |
 | HITL — external execution | Voyager |
 | Guardrails (PII, injection) | Voyager |
 | Pre/post hooks | Voyager |
 | User feedback (ask_user) | Voyager |
-| Approval — blocking | Ledger |
-| Approval — audit trail | Ledger |
+| Approval — blocking | Operator |
+| Skills (LocalSkills, SKILL.md) | Operator |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Researcher |
+| Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |
 | Web research (Exa: search, company, crawl, fetch) | Researcher |
 | Learning (LearningMachine) | Dash, Investment, Mentor |

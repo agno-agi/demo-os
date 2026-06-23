@@ -29,25 +29,25 @@ CASES: list[dict] = [
         "expected_tools": ["send_email"],
     },
     # -------------------------------------------------------------------------
-    # Approvals — approval gates
+    # Operator — plan-then-apply approval gates
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "ledger",
-        "input": "Process a $200 refund for order C-5001",
-        "expected_tools": ["process_refund"],
+        "entity_id": "operator",
+        "input": "Scale web-cluster from 4 to 8 replicas in production",
+        "expected_tools": ["draft_plan"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "ledger",
-        "input": "Delete account for user U-1234",
-        "expected_tools": ["delete_user_account"],
+        "entity_id": "operator",
+        "input": "Destroy the orders-db Postgres instance",
+        "expected_tools": ["draft_plan"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "ledger",
-        "input": "Export all customer data for compliance review",
-        "expected_tools": ["export_customer_data"],
+        "entity_id": "operator",
+        "input": "Rotate the payments-api-key credential in production",
+        "expected_tools": ["draft_plan"],
     },
     # -------------------------------------------------------------------------
     # Taskboard — task management
