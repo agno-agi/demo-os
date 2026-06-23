@@ -12,6 +12,7 @@ dependencies = [
   "arxiv",
   "claude-agent-sdk",
   "ddgs",
+  "docling",
   "dspy",
   "elevenlabs",
   "exa-py",

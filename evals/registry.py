@@ -122,11 +122,11 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="workflows/repo_walkthrough/instructions.py",
         definition_file="workflows/repo_walkthrough/workflow.py",
     ),
-    "support-triage": Entity(
-        id="support-triage",
+    "classifier": Entity(
+        id="classifier",
         type="workflow",
-        instruction_file="workflows/support_triage/instructions.py",
-        definition_file="workflows/support_triage/workflow.py",
+        instruction_file="workflows/classifier/instructions.py",
+        definition_file="workflows/classifier/workflow.py",
     ),
     "troubleshooter": Entity(
         id="troubleshooter",

@@ -34,7 +34,7 @@ AgentOS (app/main.py)
     ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research
     ├── Scribe (workflows/content_pipeline/)           # Parallel + loop + condition
     ├── Code Scout (workflows/repo_walkthrough/)                 # Code → script → narrated audio
-    ├── Support Triage (workflows/support_triage/)               # Router + condition + escalation
+    ├── Classifier (workflows/classifier/)                       # Router + condition + multi-source intake
     └── Support Bot (workflows/support_bot/)             # Step-level HITL troubleshooting
 ```
 
@@ -71,7 +71,7 @@ All agents share:
 | `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Scribe (router, parallel, loop, HITL) |
 | `workflows/repo_walkthrough/workflow.py` | Code Scout (analyze → script → narrate) |
-| `workflows/support_triage/workflow.py` | Support Triage (classify → route → escalate) |
+| `workflows/classifier/workflow.py` | Classifier (classify source → route to specialist → deep-dive) |
 | `workflows/support_bot/workflow.py` | Support Bot (capture error → step-level HITL env → search docs/web/GitHub) |
 | `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
 | `db/url.py` | Builds database URL from environment |
@@ -307,7 +307,7 @@ from workflows.morning_brief import morning_brief
 from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.repo_walkthrough import repo_walkthrough
-from workflows.support_triage import support_triage
+from workflows.classifier import classifier
 from workflows.support_bot import support_bot
 ```
 
@@ -476,8 +476,9 @@ Optional (tools & integrations):
 | Workflow — loop | Scribe |
 | Scheduling (cron) | Daily Brief, AI Digest |
 | Parallel execution | Daily Brief, AI Digest, Scribe |
-| Workflow — router | Support Triage |
-| Workflow — condition | Support Triage |
+| Workflow — router | Classifier |
+| Workflow — condition | Classifier |
+| Document parsing (Docling) | Classifier |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
 | Session state + agentic state | Planner, Builder |

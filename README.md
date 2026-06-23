@@ -77,7 +77,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**AI Digest**](workflows/ai_research/) | Daily 7am UTC | 4 parallel researchers then synthesize | Workflow, Parallel, Exa MCP |
 | [**Scribe**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
 | [**Code Scout**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
-| [**Support Triage**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
+| [**Classifier**](workflows/classifier/) | On demand | Classify any source (paper, PDF, video, article, topic), route to a real-tool specialist, deep-dive dense ones | Workflow, Router, Condition, Docling, real read-only tools |
 | [**Support Bot**](workflows/support_bot/) | On demand | Take an error, collect environment via step-level HITL, search docs/web/GitHub for a fix | Workflow, step-level HITL (user input), HITL output review, MCP + web search |
 
 ### Feature Coverage
@@ -120,8 +120,9 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Fallback models | Clinic |
 | Workflow — parallel | Daily Brief, AI Digest, Scribe |
 | Workflow — loop | Scribe |
-| Workflow — router | Support Triage |
-| Workflow — condition | Support Triage |
+| Workflow — router | Classifier |
+| Workflow — condition | Classifier |
+| Document parsing (Docling) | Classifier |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
 | Scheduling (cron) | Daily Brief, AI Digest |

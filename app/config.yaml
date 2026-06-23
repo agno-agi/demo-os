@@ -159,13 +159,13 @@ manifest:
       - "Explain how Dash works as a 2-minute walkthrough"
       - "Generate a narrated overview of the Agno repo"
 
-  support-triage:
-    description: "Classifies a ticket, routes it to a specialist, and escalates critical cases by condition."
-    labels: ["router", "condition"]
+  classifier:
+    description: "Classifies any source — paper, PDF, video, article, or topic — routes it to a specialist that reads it with real tools and deep-dives dense ones."
+    labels: ["router", "condition", "multi-source"]
     quick_prompts:
-      - "I can't log into my account, it says my password is wrong"
-      - "I was charged twice for my subscription last month"
-      - "The API is returning 500 errors when I try to upload files larger than 10MB"
+      - "Summarize this paper: arxiv.org/abs/1706.03762"
+      - "Digest this video: https://youtu.be/XN6dSSx6Ehg"
+      - "Parse and summarize this PDF: https://www.berkshirehathaway.com/letters/2023ltr.pdf"
 
   troubleshooter:
     description: "Agno support bot that collects your environment via step-level HITL, then searches docs, web, and GitHub for a fix."
