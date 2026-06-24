@@ -21,11 +21,28 @@ ENV PYTHONUNBUFFERED=1 \
 RUN groupadd -r app && useradd -r -g app -m -s /bin/bash app
 
 # ---------------------------------------------------------------------------
+# System libraries
+# ---------------------------------------------------------------------------
+# docling pulls in opencv, which needs a few native shared libs not present in
+# the slim base image (otherwise: "libxcb.so.1: cannot open shared object file").
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libgl1 \
+        libglib2.0-0 \
+        libxcb1 \
+        libxext6 \
+        libsm6 \
+        libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---------------------------------------------------------------------------
 # Application code
 # ---------------------------------------------------------------------------
 WORKDIR /app
 COPY requirements.txt .
-RUN uv pip sync requirements.txt --system
+RUN uv pip sync requirements.txt --system \
+    --extra-index-url https://download.pytorch.org/whl/cpu \
+    --index-strategy unsafe-best-match
 COPY . .
 
 # ---------------------------------------------------------------------------

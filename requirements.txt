@@ -38,6 +38,7 @@ docling-parse==7.0.0
 docling-slim==2.106.0
 docstring-parser==0.18.0
 dspy==3.2.0
+easyocr==1.7.2
 elevenlabs==2.43.0
 email-validator==2.3.0
 et-xmlfile==2.0.0
@@ -77,6 +78,7 @@ httpx-sse==0.4.3
 huggingface-hub==1.12.2
 hyperframe==6.1.0
 idna==3.11
+imageio==2.37.3
 importlib-metadata==8.7.1
 jinja2==3.1.6
 jiter==0.14.0
@@ -96,6 +98,7 @@ langgraph-prebuilt==1.0.13
 langgraph-sdk==0.3.13
 langsmith==0.7.38
 latex2mathml==3.81.0
+lazy-loader==0.5
 litellm==1.82.6
 lumaai==1.21.0
 lxml==6.0.4
@@ -112,11 +115,13 @@ multidict==6.7.1
 multiprocess==0.70.19
 multitasking==0.0.12
 networkx==3.6.1
+ninja==1.13.0
 numpy==2.4.4
 oauthlib==3.3.1
 omegaconf==2.3.1
 openai==2.31.0
 opencv-python==4.13.0.92
+opencv-python-headless==4.13.0.92
 openinference-instrumentation==0.1.46
 openinference-instrumentation-agno==0.1.30
 openinference-semantic-conventions==0.1.28
@@ -159,6 +164,7 @@ pynacl==1.6.2
 pyparsing==3.3.2
 pypdf==6.10.1
 pypdfium2==5.10.1
+python-bidi==0.6.10
 python-dateutil==2.9.0.post0
 python-docx==1.2.0
 python-dotenv==1.2.2
@@ -180,6 +186,7 @@ rignore==0.7.6
 rpds-py==0.30.0
 rtree==1.4.1
 safetensors==0.8.0
+scikit-image==0.26.0
 scipy==1.18.0
 semchunk==3.2.5
 sentry-sdk==2.58.0
@@ -198,6 +205,7 @@ starlette==1.0.0
 sympy==1.14.0
 tabulate==0.10.0
 tenacity==9.1.4
+tifffile==2026.6.1
 tiktoken==0.12.0
 tokenizers==0.22.2
 torch==2.12.1
