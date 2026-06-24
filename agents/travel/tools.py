@@ -24,6 +24,11 @@ from agno.tools import tool
 # Carriers used by the deterministic fallback catalogue (when DUFFEL_API_TOKEN is unset).
 _CARRIERS = ["SkyLine", "AeroNova", "BlueJet"]
 
+# Maps the friendly flight id shown to the traveler (e.g. "BA-117") to the real Duffel
+# offer id (e.g. "off_0000A...") from the last search, so check_live_fare can re-price the
+# actual offer. Populated by _search_duffel; a miss just means we can't live-re-price it.
+_OFFER_IDS: dict[str, str] = {}
+
 # Map common city names to IATA codes for the real Duffel search. The API needs IATA
 # codes; if a value already looks like a 3-letter code we pass it through unchanged.
 _CITY_TO_IATA = {
@@ -121,6 +126,10 @@ def _search_duffel(origin: str, destination: str, date: str) -> list[tuple] | No
             stops = "nonstop" if len(segments) == 1 else f"{len(segments) - 1} stop"
             fare = f"{float(offer['total_amount']):.0f}"
             currency = offer.get("total_currency") or "USD"
+            # Remember the real Duffel offer id so check_live_fare can re-price this flight.
+            offer_id = offer.get("id")
+            if offer_id:
+                _OFFER_IDS[fid] = offer_id
             options.append((fid, carrier_name, depart, arrive, stops, fare, currency))
         except (KeyError, IndexError, ValueError, TypeError):
             continue
@@ -160,21 +169,61 @@ def search_flights(origin: str, destination: str, date: str) -> str:
     return _render_table(origin, destination, date, options)
 
 
+def _reprice_duffel(flight_id: str) -> str | None:
+    """Re-price a flight via Duffel's Get-Offer endpoint. Returns a message, or None to fall back.
+
+    Looks up the real Duffel offer id captured during search, then calls GET /air/offers/{id}
+    for the up-to-the-second price and expiry. Returns None when there's no token or no cached
+    offer id (e.g. the flight came from the sample catalogue), so the caller can fall back.
+    """
+    token = getenv("DUFFEL_API_TOKEN")
+    offer_id = _OFFER_IDS.get(flight_id)
+    if not (token and offer_id):
+        return None
+
+    import requests
+
+    try:
+        response = requests.get(
+            f"https://api.duffel.com/air/offers/{offer_id}",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Duffel-Version": "v2",
+                "Accept": "application/json",
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+        offer = response.json().get("data") or {}
+        fare = f"{float(offer['total_amount']):.2f}"
+        currency = offer.get("total_currency") or "USD"
+    except Exception:  # noqa: BLE001 - any API/network failure → fall back to sample re-price
+        return None
+
+    expires = offer.get("expires_at")
+    held = f" (held until {expires[11:16]} UTC)" if expires and len(expires) >= 16 else ""
+    return f"Live fare for {flight_id}: {currency} {fare}{held}."
+
+
 @tool(external_execution=True)
 def check_live_fare(flight_id: str) -> str:
     """Pull the current live fare for a flight from the airline's pricing system.
 
     This runs outside the agent, against the live fares service (external execution) — fares
-    move in real time, so the up-to-the-second price comes from the airline, not the agent.
+    move in real time, so the up-to-the-second price comes from the airline (Duffel), not the
+    agent. Falls back to a stable estimate when the flight isn't a live Duffel offer.
 
     Args:
-        flight_id: The flight to re-price (e.g. 'FL-4821').
+        flight_id: The flight to re-price (e.g. 'BA-117'), as shown by search_flights.
 
     Returns:
         The current live fare for the flight.
     """
+    real = _reprice_duffel(flight_id)
+    if real is not None:
+        return real
     fare = 180 + (abs(hash(flight_id)) % 240)
-    return f"Live fare for {flight_id}: USD {fare} (held for 10 minutes)."
+    return f"Live fare for {flight_id}: USD {fare} (estimated)."
 
 
 @tool(requires_user_input=True, user_input_fields=["passenger_name"])
@@ -211,10 +260,14 @@ def set_recipient_email(recipient_email: str = "") -> str:
 
 @tool(requires_confirmation=True)
 def book_flight(flight_id: str, passenger_name: str, fare_usd: float, seat_preference: str = "") -> str:
-    """Book a flight and hold the reservation. Requires traveler confirmation before booking.
+    """Confirm the booking and assign a seat. Requires traveler confirmation before booking.
+
+    Search and live fares are real (Duffel); placing a real airline order requires full
+    passenger/payment details, so this step records a held reservation reference rather than
+    issuing a real PNR. The confirmed details are what gets emailed to the traveler.
 
     Args:
-        flight_id: The flight to book (e.g. 'FL-4821').
+        flight_id: The flight to book (e.g. 'BA-117').
         passenger_name: Name the ticket is issued to.
         fare_usd: The fare for the booking, in USD.
         seat_preference: Seat choice the traveler picked (window, aisle, middle, or extra-legroom).
