@@ -55,7 +55,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**Voyager**](agents/travel/) | Travel booking concierge with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
 | [**Operator**](agents/infra/) | Infrastructure change agent — drafts a typed, risk-scored plan, gets human approval, then executes | @approval decorator (blocking), Skills (LocalSkills), structured output (Pydantic ChangePlan) |
 | [**Researcher**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
-| [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
+| [**Media Lab**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Planner**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
 | [**Builder**](agents/builder/) | Builds you a personalized assistant from a conversation | StudioTool (list/create/run/edit/publish agents against the registry), HITL (UserControlFlow + UserFeedback), blocking confirmation |
 
@@ -105,10 +105,10 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Learning — decision log | Mentor |
 | SQL tools | Dash |
 | Coding tools | Code Scout |
-| Image generation (DALL-E) | Studio |
-| Image-to-image (FAL) | Studio |
-| Text-to-speech (ElevenLabs) | Studio, Code Scout |
-| Video generation (LumaLab) | Studio |
+| Image generation (DALL-E) | Media Lab |
+| Image-to-image (FAL) | Media Lab |
+| Text-to-speech (ElevenLabs) | Media Lab, Code Scout |
+| Video generation (LumaLab) | Media Lab |
 | Multi-model (Gemini) | Investment |
 | YFinance tools | Investment |
 | Session state + agentic state | Planner |
@@ -316,10 +316,10 @@ python -m app.main
 | `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
 | `EXA_API_KEY` | No | - | Web search for Researcher, Research, Investment |
 | `PARALLEL_API_KEY` | No | - | Parallel web search |
-| `ELEVEN_LABS_API_KEY` | No | - | TTS for Studio, Code Scout |
-| `FAL_KEY` | No | - | Image-to-image for Studio |
-| `LUMAAI_API_KEY` | No | - | Video generation for Studio |
-| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Studio |
+| `ELEVEN_LABS_API_KEY` | No | - | TTS for Media Lab, Code Scout |
+| `FAL_KEY` | No | - | Image-to-image for Media Lab |
+| `LUMAAI_API_KEY` | No | - | Video generation for Media Lab |
+| `ANTHROPIC_API_KEY` | No | - | Claude registry models for Media Lab |
 | `SLACK_TOKEN` | No | - | Slack interface + team leader tools ([setup guide](docs/SLACK_CONNECT.md)) |
 | `SLACK_SIGNING_SECRET` | No | - | Slack webhook verification ([setup guide](docs/SLACK_CONNECT.md)) |
 | `RUNTIME_ENV` | No | `prd` | Set to `dev` for auto-reload |
