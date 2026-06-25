@@ -144,7 +144,7 @@ def run_accuracy_cases(
                 )
                 eval_result = eval_obj.run_with_output(output=run_result.content)
 
-                passed = eval_result is not None and eval_result.avg_score >= 7.0
+                passed = eval_result is not None and eval_result.avg_score is not None and eval_result.avg_score >= 7.0
                 result = {
                     "entity_id": entity_id,
                     "question": question,

@@ -28,8 +28,8 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Agents (6)
     # -------------------------------------------------------------------------
-    "sage": Entity(
-        id="sage",
+    "docs": Entity(
+        id="docs",
         type="agent",
         instruction_file="agents/mcp/instructions.py",
         definition_file="agents/mcp/agent.py",
@@ -40,11 +40,11 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="agents/travel/instructions.py",
         definition_file="agents/travel/agent.py",
     ),
-    "ledger": Entity(
-        id="ledger",
+    "operator": Entity(
+        id="operator",
         type="agent",
-        instruction_file="agents/approvals/instructions.py",
-        definition_file="agents/approvals/agent.py",
+        instruction_file="agents/infra/instructions.py",
+        definition_file="agents/infra/agent.py",
     ),
     "researcher": Entity(
         id="researcher",
@@ -122,11 +122,11 @@ ENTITIES: dict[str, Entity] = {
         instruction_file="workflows/repo_walkthrough/instructions.py",
         definition_file="workflows/repo_walkthrough/workflow.py",
     ),
-    "support-triage": Entity(
-        id="support-triage",
+    "classifier": Entity(
+        id="classifier",
         type="workflow",
-        instruction_file="workflows/support_triage/instructions.py",
-        definition_file="workflows/support_triage/workflow.py",
+        instruction_file="workflows/classifier/instructions.py",
+        definition_file="workflows/classifier/workflow.py",
     ),
     "troubleshooter": Entity(
         id="troubleshooter",

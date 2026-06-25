@@ -51,12 +51,13 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 
 | Agent | What it does | Features |
 |-------|-------------|----------|
-| [**Sage**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
+| [**Docs**](agents/mcp/) | Answers questions about Agno via live docs over MCP | MCPTools, Model Context Protocol |
 | [**Voyager**](agents/travel/) | Travel booking concierge with safety guardrails | HITL (confirmation, user input, external execution), PII + injection guardrails, pre/post hooks |
-| [**Ledger**](agents/approvals/) | Compliance agent gating sensitive operations | @approval decorator, blocking confirmation, audit trail |
+| [**Operator**](agents/infra/) | Infrastructure change agent — drafts a typed, risk-scored plan, gets human approval, then executes | @approval decorator (blocking), Skills (LocalSkills), structured output (Pydantic ChangePlan) |
 | [**Researcher**](agents/reporter/) | Web research + report generator | Exa research tools (search, company, crawl, fetch), FileGenerationTools (HTML) |
 | [**Studio**](agents/studio/) | Multimodal media generation and analysis | DalleTools, FalTools, ElevenLabsTools, LumaLabTools, conditional tool loading |
 | [**Planner**](agents/taskboard/) | Task management with persistent session state | Session state, agentic state, CRUD tools |
+| [**Builder**](agents/builder/) | Builds you a personalized assistant from a conversation | StudioTool (list/create/run/edit/publish agents against the registry), HITL (UserControlFlow + UserFeedback), blocking confirmation |
 
 ### Teams
 
@@ -76,7 +77,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | [**AI Digest**](workflows/ai_research/) | Daily 7am UTC | 4 parallel researchers then synthesize | Workflow, Parallel, Exa MCP |
 | [**Scribe**](workflows/content_pipeline/) | On demand | Research + outline, then draft/review loop (max 3 iterations) | Workflow, Parallel, Loop, end condition |
 | [**Code Scout**](workflows/repo_walkthrough/) | On demand | Analyze code -> write script -> narrate with TTS | Workflow, CodingTools, ElevenLabsTools, cross-modal chaining |
-| [**Support Triage**](workflows/support_triage/) | On demand | Classify tickets, route to specialist, escalate if critical | Workflow, Router, Condition, escalation |
+| [**Classifier**](workflows/classifier/) | On demand | Classify any source (paper, PDF, video, article, topic), route to a real-tool specialist, deep-dive dense ones | Workflow, Router, Condition, Docling, real read-only tools |
 | [**Support Bot**](workflows/support_bot/) | On demand | Take an error, collect environment via step-level HITL, search docs/web/GitHub for a fix | Workflow, step-level HITL (user input), HITL output review, MCP + web search |
 
 ### Feature Coverage
@@ -84,17 +85,18 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash |
-| MCP tools | Sage, Dash, AI Digest |
-| HITL — confirmation | Voyager, Ledger |
-| HITL — user input | Voyager |
+| MCP tools | Docs, Dash, AI Digest |
+| HITL — confirmation | Voyager, Operator |
+| HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
 | Guardrails (PII, injection) | Voyager |
 | Pre/post hooks | Voyager |
-| User feedback (ask_user) | Voyager |
-| Approval — blocking | Ledger |
-| Approval — audit trail | Ledger |
+| User feedback (ask_user) | Voyager, Builder |
+| Approval — blocking | Operator, Builder |
+| Skills (LocalSkills, SKILL.md) | Operator |
+| Agent composition (StudioTool) | Builder |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Researcher |
+| Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |
 | Web research (Exa: search, company, crawl, fetch) | Researcher |
 | Learning (LearningMachine) | Dash, Investment, Mentor |
@@ -118,8 +120,9 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Fallback models | Clinic |
 | Workflow — parallel | Daily Brief, AI Digest, Scribe |
 | Workflow — loop | Scribe |
-| Workflow — router | Support Triage |
-| Workflow — condition | Support Triage |
+| Workflow — router | Classifier |
+| Workflow — condition | Classifier |
+| Document parsing (Docling) | Classifier |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
 | Scheduling (cron) | Daily Brief, AI Digest |
@@ -334,7 +337,7 @@ The eval framework tests all 30 entities across multiple dimensions: basic funct
 # Smoke tests (fast, free)
 python -m evals smoke                          # All entities
 python -m evals smoke --group agents           # By group
-python -m evals smoke --entity sage       # Single entity
+python -m evals smoke --entity docs       # Single entity
 
 # Tool call validation (fast, free)
 python -m evals reliability
@@ -348,7 +351,7 @@ python -m evals perf --update-baselines        # Establish baselines
 python -m evals perf                           # Compare against baselines
 
 # Improvement loop
-python -m evals improve --entity sage     # Debug a failing entity
+python -m evals improve --entity docs     # Debug a failing entity
 python -m evals improve --failures             # Debug all failures
 ```
 

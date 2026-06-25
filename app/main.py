@@ -14,8 +14,9 @@ from pathlib import Path
 from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
 
-from agents.approvals import approvals
+from agents.builder import builder
 from agents.dash import dash, dash_knowledge, dash_learnings
+from agents.infra import infra
 from agents.mcp import mcp_agent
 from agents.reporter import reporter
 from agents.studio import studio
@@ -35,11 +36,10 @@ from teams.investment import (
 )
 from teams.research import research_coordinate
 from workflows.ai_research import ai_research
+from workflows.classifier import classifier
 from workflows.content_pipeline import content_pipeline
-from workflows.morning_brief import morning_brief
 from workflows.repo_walkthrough import repo_walkthrough
 from workflows.support_bot import support_bot
-from workflows.support_triage import support_triage
 
 # ---------------------------------------------------------------------------
 # Interfaces
@@ -83,7 +83,8 @@ agent_os = AgentOS(
     agents=[
         mcp_agent,
         travel,
-        approvals,
+        infra,
+        builder,
         reporter,
         studio,
         taskboard,
@@ -99,11 +100,10 @@ agent_os = AgentOS(
         research_coordinate,
     ],
     workflows=[
-        morning_brief,
         ai_research,
         content_pipeline,
         repo_walkthrough,
-        support_triage,
+        classifier,
         support_bot,
     ],
     knowledge=[
@@ -130,15 +130,6 @@ def _register_schedules() -> None:
     from agno.scheduler import ScheduleManager
 
     mgr = ScheduleManager(agent_db)
-    mgr.create(
-        name="daily-brief",
-        cron="0 8 * * 1-5",
-        endpoint="/workflows/daily-brief/runs",
-        payload={"message": "Generate my morning briefing."},
-        timezone="America/New_York",
-        description="Weekday morning briefing",
-        if_exists="update",
-    )
     mgr.create(
         name="ai-digest",
         cron="0 7 * * *",

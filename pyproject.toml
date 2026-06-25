@@ -7,12 +7,14 @@ license = { file = "LICENSE" }
 authors = [{ name = "Agno", email = "hello@agno.com" }]
 
 dependencies = [
-  "agno[os]",
+  "agno[os]==2.6.19",
   "anthropic",
   "arxiv",
   "claude-agent-sdk",
   "ddgs",
+  "docling",
   "dspy",
+  "easyocr",
   "elevenlabs",
   "exa-py",
   "fal-client",
@@ -31,7 +33,10 @@ dependencies = [
   "psycopg[binary]",
   "PyGithub",
   "pypdf",
+  "python-docx",
   "reportlab",
+  "requests",
+  "resend",
   "slack-sdk",
   "sqlalchemy",
   "wikipedia",
@@ -64,8 +69,17 @@ plugins = ["pydantic.mypy"]
 exclude = [".venv*"]
 
 [[tool.mypy.overrides]]
-module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "yaml.*", "parallel.*", "sqlalchemy.*", "dspy.*"]
+module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "requests.*", "yaml.*", "parallel.*", "sqlalchemy.*", "dspy.*"]
 ignore_missing_imports = true
 
 [tool.uv.pip]
 no-annotate = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

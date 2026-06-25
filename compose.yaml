@@ -48,6 +48,10 @@ services:
       - ELEVEN_LABS_API_KEY=${ELEVEN_LABS_API_KEY:-}
       - FAL_KEY=${FAL_KEY:-}
       - LUMAAI_API_KEY=${LUMAAI_API_KEY:-}
+      # Voyager — flight search (Duffel) + itinerary email (Resend), optional
+      - DUFFEL_API_TOKEN=${DUFFEL_API_TOKEN:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - VOYAGER_FROM_EMAIL=${VOYAGER_FROM_EMAIL:-}
       # Slack (optional)
       - SLACK_TOKEN=${SLACK_TOKEN:-}
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}

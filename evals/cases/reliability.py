@@ -25,29 +25,29 @@ CASES: list[dict] = [
     {
         "entity_type": "agent",
         "entity_id": "voyager",
-        "input": "Charge booking BK-04821 for USD 420 to issue the ticket",
-        "expected_tools": ["charge_payment"],
+        "input": "Email the confirmed itinerary for booking BK-04821 to jordan@example.com",
+        "expected_tools": ["send_email"],
     },
     # -------------------------------------------------------------------------
-    # Approvals — approval gates
+    # Operator — plan-then-apply approval gates
     # -------------------------------------------------------------------------
     {
         "entity_type": "agent",
-        "entity_id": "ledger",
-        "input": "Process a $200 refund for order C-5001",
-        "expected_tools": ["process_refund"],
+        "entity_id": "operator",
+        "input": "Scale web-cluster from 4 to 8 replicas in production",
+        "expected_tools": ["draft_plan"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "ledger",
-        "input": "Delete account for user U-1234",
-        "expected_tools": ["delete_user_account"],
+        "entity_id": "operator",
+        "input": "Destroy the orders-db Postgres instance",
+        "expected_tools": ["draft_plan"],
     },
     {
         "entity_type": "agent",
-        "entity_id": "ledger",
-        "input": "Export all customer data for compliance review",
-        "expected_tools": ["export_customer_data"],
+        "entity_id": "operator",
+        "input": "Rotate the payments-api-key credential in production",
+        "expected_tools": ["draft_plan"],
     },
     # -------------------------------------------------------------------------
     # Taskboard — task management

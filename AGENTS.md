@@ -10,10 +10,11 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 
 ```
 AgentOS (app/main.py)
-├── Agents (6)
-│   ├── Sage (agents/mcp/)                                        # Agno documentation agent via MCP
+├── Agents (7)
+│   ├── Docs (agents/mcp/)                                        # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
-│   ├── Ledger (agents/approvals/)                            # Approval flows + audit trail
+│   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
+│   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
 │   ├── Researcher (agents/reporter/)                              # Structured output + file generation
 │   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
@@ -27,7 +28,7 @@ AgentOS (app/main.py)
     ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research
     ├── Scribe (workflows/content_pipeline/)           # Parallel + loop + condition
     ├── Code Scout (workflows/repo_walkthrough/)                 # Code → script → narrated audio
-    ├── Support Triage (workflows/support_triage/)               # Router + condition + escalation
+    ├── Classifier (workflows/classifier/)                       # Router + condition + multi-source intake
     └── Support Bot (workflows/support_bot/)             # Step-level HITL troubleshooting
 ```
 
@@ -44,12 +45,13 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/mcp/agent.py` | Sage - Agno documentation agent via live MCP tools |
+| `agents/mcp/agent.py` | Docs - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
-| `agents/approvals/agent.py` | Ledger - approval flows + audit trail |
+| `agents/infra/agent.py` | Operator - infra change agent (blocking approvals + Skills + structured output) |
 | `agents/reporter/agent.py` | Researcher - structured output + file generation |
 | `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Planner - session state + agentic state demo |
+| `agents/builder/agent.py` | Builder - builds an assistant from a conversation (StudioTool + HITL) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
 | `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
@@ -58,7 +60,7 @@ All agents share:
 | `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Scribe (router, parallel, loop, HITL) |
 | `workflows/repo_walkthrough/workflow.py` | Code Scout (analyze → script → narrate) |
-| `workflows/support_triage/workflow.py` | Support Triage (classify → route → escalate) |
+| `workflows/classifier/workflow.py` | Classifier (classify source → route to specialist → deep-dive) |
 | `workflows/support_bot/workflow.py` | Support Bot (capture error → step-level HITL env → search docs/web/GitHub) |
 | `db/session.py` | `get_postgres_db()` and `create_knowledge()` helpers |
 | `db/url.py` | Builds database URL from environment |
@@ -277,7 +279,7 @@ from db import db_url, get_postgres_db, create_knowledge
 # Agents
 from agents.mcp import mcp_agent
 from agents.travel import travel
-from agents.approvals import approvals
+from agents.infra import infra
 from agents.reporter import reporter
 from agents.studio import studio
 from agents.taskboard import taskboard
@@ -293,7 +295,7 @@ from workflows.morning_brief import morning_brief
 from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.repo_walkthrough import repo_walkthrough
-from workflows.support_triage import support_triage
+from workflows.classifier import classifier
 from workflows.support_bot import support_bot
 ```
 
@@ -337,7 +339,7 @@ python -m evals smoke
 python -m evals smoke --group agents
 python -m evals smoke --group security
 python -m evals smoke --group hitl
-python -m evals smoke --entity sage
+python -m evals smoke --entity docs
 python -m evals smoke --output --compare
 
 # Run evals — reliability (tool call validation, no LLM cost)
@@ -356,9 +358,9 @@ python -m evals perf --update-baselines
 python -m evals perf
 
 # Auto-improvement loop (see docs/EVALS.md for full workflow)
-python -m evals improve --entity sage
+python -m evals improve --entity docs
 python -m evals improve --failures
-python -m evals improve --entity sage --json
+python -m evals improve --entity docs --json
 ```
 
 ## Environment Variables
@@ -418,18 +420,19 @@ Optional (tools & integrations):
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
-| MCP tools | Sage, Dash, AI Digest, Investment |
-| HITL — confirmation | Voyager, Ledger |
-| HITL — user input | Voyager |
+| MCP tools | Docs, Dash, AI Digest, Investment |
+| HITL — confirmation | Voyager, Operator |
+| HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
 | Guardrails (moderation, PII, injection) | Voyager |
 | Output guardrails | Voyager |
 | Pre/post hooks | Voyager |
-| User feedback (ask_user) | Voyager |
-| Approval — blocking | Ledger |
-| Approval — audit trail | Ledger |
+| User feedback (ask_user) | Voyager, Builder |
+| Approval — blocking | Operator, Builder |
+| Skills (LocalSkills, SKILL.md) | Operator |
+| Agent composition (StudioTool) | Builder |
 | Reasoning tools | Dash |
-| Structured output (Pydantic) | Researcher |
+| Structured output (Pydantic) | Researcher, Operator |
 | File generation (CSV/JSON/PDF) | Researcher |
 | Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
@@ -440,6 +443,7 @@ Optional (tools & integrations):
 | Video generation (LumaLab) | Studio |
 | Sound effects | Studio |
 | YFinance tools | Investment |
+| Session state + agentic state | Planner |
 | Team — coordinate | Dash, Newsroom |
 | Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
@@ -450,8 +454,9 @@ Optional (tools & integrations):
 | Workflow — loop | Scribe |
 | Scheduling (cron) | Daily Brief, AI Digest |
 | Parallel execution | Daily Brief, AI Digest, Scribe |
-| Workflow — router | Support Triage |
-| Workflow — condition | Support Triage |
+| Workflow — router | Classifier |
+| Workflow — condition | Classifier |
+| Document parsing (Docling) | Classifier |
 | Workflow — step-level HITL (user input) | Support Bot |
 | Workflow — HITL output review | Support Bot |
 | Session state + agentic state | Planner |
