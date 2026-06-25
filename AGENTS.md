@@ -16,7 +16,7 @@ AgentOS (app/main.py)
 │   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
 │   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
 │   ├── Researcher (agents/reporter/)                              # Structured output + file generation
-│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
+│   ├── Media Lab (agents/studio/)                               # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
 ├── Teams (4)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
@@ -49,7 +49,7 @@ All agents share:
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/infra/agent.py` | Operator - infra change agent (blocking approvals + Skills + structured output) |
 | `agents/reporter/agent.py` | Researcher - structured output + file generation |
-| `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
+| `agents/studio/agent.py` | Media Lab - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Planner - session state + agentic state demo |
 | `agents/builder/agent.py` | Builder - builds an assistant from a conversation (StudioTool + HITL) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
@@ -379,9 +379,9 @@ Optional (model providers — each enables registry models in Studio):
 Optional (tools & integrations):
 - `EXA_API_KEY` - Web search for Researcher, AI Digest, Investment
 - `PARALLEL_API_KEY` - Parallel web search
-- `ELEVEN_LABS_API_KEY` - TTS for Studio, Code Scout
-- `FAL_KEY` - Image-to-image for Studio
-- `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
+- `ELEVEN_LABS_API_KEY` - TTS for Media Lab, Code Scout
+- `FAL_KEY` - Image-to-image for Media Lab
+- `LUMAAI_API_KEY` - Video generation for Media Lab (LumaLab)
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
@@ -437,11 +437,11 @@ Optional (tools & integrations):
 | Learning (LearningMachine) | Dash, Investment |
 | SQL tools | Dash |
 | Coding tools | Code Scout |
-| Image generation (DALL-E) | Studio |
-| Image-to-image (FAL) | Studio |
-| Text-to-speech (ElevenLabs) | Studio, Code Scout |
-| Video generation (LumaLab) | Studio |
-| Sound effects | Studio |
+| Image generation (DALL-E) | Media Lab |
+| Image-to-image (FAL) | Media Lab |
+| Text-to-speech (ElevenLabs) | Media Lab, Code Scout |
+| Video generation (LumaLab) | Media Lab |
+| Sound effects | Media Lab |
 | YFinance tools | Investment |
 | Session state + agentic state | Planner |
 | Team — coordinate | Dash, Newsroom |

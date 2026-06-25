@@ -16,7 +16,7 @@ AgentOS (app/main.py)
 │   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
 │   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
 │   ├── Researcher (agents/reporter/)                              # Web research + HTML report generation
-│   ├── Studio (agents/studio/)                                  # Multimodal media (DALL-E, TTS, FAL, Luma)
+│   ├── Media Lab (agents/studio/)                               # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
 ├── Multi-Framework Agents (3)
 │   ├── Repo Explainer (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
@@ -55,7 +55,7 @@ All agents share:
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/infra/agent.py` | Operator - infra change agent (blocking approvals + Skills + structured output) |
 | `agents/reporter/agent.py` | Researcher - web research (Exa) + HTML report generation |
-| `agents/studio/agent.py` | Studio - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
+| `agents/studio/agent.py` | Media Lab - multimodal media generation (DALL-E, FAL, ElevenLabs, Luma) |
 | `agents/taskboard/agent.py` | Planner - session state + agentic state demo |
 | `frameworks/claude_repo/agent.py` | Repo Explainer - Claude Agent SDK with WebSearch/WebFetch |
 | `frameworks/langgraph_debate/graph.py` | Forum - LangGraph graph with parallel branches |
@@ -391,9 +391,9 @@ Optional (model providers — each enables registry models in Studio):
 Optional (tools & integrations):
 - `EXA_API_KEY` - Web search for Researcher, AI Digest, Investment
 - `PARALLEL_API_KEY` - Parallel web search
-- `ELEVEN_LABS_API_KEY` - TTS for Studio, Code Scout
-- `FAL_KEY` - Image-to-image for Studio
-- `LUMAAI_API_KEY` - Video generation for Studio (LumaLab)
+- `ELEVEN_LABS_API_KEY` - TTS for Media Lab, Code Scout
+- `FAL_KEY` - Image-to-image for Media Lab
+- `LUMAAI_API_KEY` - Video generation for Media Lab (LumaLab)
 - `DUFFEL_API_TOKEN` - Live flight search for Voyager (falls back to sample data if unset)
 - `RESEND_API_KEY` - Itinerary email for Voyager
 - `VOYAGER_FROM_EMAIL` - Sender address for Voyager's itinerary email (verified Resend domain; default `onboarding@resend.dev`)
@@ -457,12 +457,12 @@ Optional (tools & integrations):
 | Learning — decision log | Mentor |
 | SQL tools | Dash |
 | Coding tools | Code Scout |
-| Image generation (DALL-E) | Studio |
+| Image generation (DALL-E) | Media Lab |
 | Image generation (Gemini NanoBanana) | Registry |
-| Image-to-image (FAL) | Studio |
-| Text-to-speech (ElevenLabs) | Studio, Code Scout |
-| Video generation (LumaLab) | Studio |
-| Sound effects | Studio |
+| Image-to-image (FAL) | Media Lab |
+| Text-to-speech (ElevenLabs) | Media Lab, Code Scout |
+| Video generation (LumaLab) | Media Lab |
+| Sound effects | Media Lab |
 | YFinance tools | Investment |
 | Flight search (Duffel) | Voyager |
 | Email (Resend) | Voyager |
