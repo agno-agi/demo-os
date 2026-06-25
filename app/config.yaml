@@ -118,7 +118,7 @@ manifest:
       - "Write a competitive analysis report on the AI agent framework market"
 
   mentor:
-    description: "A coach that learns your profile, memories, and playbooks over time via the LearningMachine."
+    description: "A coach that learns your profile, memories, and playbooks over time via the Learning Machine."
     labels: ["learning-machine", "memory", "followups"]
     quick_prompts:
       - "I'm a backend engineer new to Rust. I prefer concise, example-first answers. Where should I start?"
