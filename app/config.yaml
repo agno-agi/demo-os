@@ -46,8 +46,8 @@ manifest:
     labels: ["session-state", "agentic-memory"]
     quick_prompts:
       - "Add: finish the Q2 roadmap deck (deep work, due today) and reply to the vendor email"
-      - "What's overdue or due today?"
       - "Plan my day. Remember I like deep work in the morning and batch admin at the end."
+      - "Add 'submit the expense report' due today, then show me what's overdue or due today."
 
   builder:
     description: "Describe your job and Builder composes a personalized assistant — interviewed, built behind approval, trial-run, and published live in the OS."

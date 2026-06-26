@@ -81,13 +81,13 @@ agent_os = AgentOS(
     lifespan=lifespan,
     db=agent_db,
     agents=[
-        mcp_agent,
-        travel,
-        infra,
         builder,
         reporter,
+        mcp_agent,
+        infra,
         studio,
         taskboard,
+        travel,
         claude_repo,  # type: ignore[list-item]
         langgraph_debate,  # type: ignore[list-item]
         dspy_math,  # type: ignore[list-item]
@@ -100,11 +100,11 @@ agent_os = AgentOS(
         research_coordinate,
     ],
     workflows=[
-        ai_research,
+        classifier,
         content_pipeline,
         repo_walkthrough,
-        classifier,
         support_bot,
+        ai_research,
     ],
     knowledge=[
         dash_knowledge,
