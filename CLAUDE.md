@@ -11,7 +11,7 @@ AgentOS - A multi-agent demo system built by Agno showcasing Agno framework feat
 ```
 AgentOS (app/main.py)
 ├── Agents (7)
-│   ├── Docs (agents/mcp/)                                        # Agno documentation agent via MCP
+│   ├── Agno Expert (agents/mcp/)                                 # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
 │   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
@@ -51,7 +51,7 @@ All agents share:
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
 | `app/registry.py` | Shared tools, models, and database connections |
-| `agents/mcp/agent.py` | Docs - Agno documentation agent via live MCP tools |
+| `agents/mcp/agent.py` | Agno Expert - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
 | `agents/infra/agent.py` | Operator - infra change agent (blocking approvals + Skills + structured output) |
 | `agents/reporter/agent.py` | Researcher - web research (Exa) + HTML report generation |
@@ -435,7 +435,7 @@ Optional (tools & integrations):
 | Feature | Where |
 |---------|-------|
 | RAG / hybrid search | Dash, Investment |
-| MCP tools | Docs, Dash, AI Digest, Investment |
+| MCP tools | Agno Expert, Dash, AI Digest, Investment |
 | HITL — confirmation | Voyager, Operator |
 | HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
