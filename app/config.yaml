@@ -1,7 +1,7 @@
 manifest:
   # --- Agents ---
 
-  docs:
+  agno-expert:
     description: "Answers Agno questions from the live documentation using MCP tools."
     labels: ["mcp", "documentation"]
     quick_prompts:
@@ -33,7 +33,7 @@ manifest:
       - "Find the latest AI agent platform market size and CAGR, and put it in a short HTML report"
       - "Quick HTML one-pager comparing LangChain and CrewAI on 3 dimensions"
 
-  studio:
+  media-lab:
     description: "Generates images, audio and video from one multimodal media agent."
     labels: ["multimodal", "media-generation"]
     quick_prompts:

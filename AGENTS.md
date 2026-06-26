@@ -339,7 +339,7 @@ python -m evals smoke
 python -m evals smoke --group agents
 python -m evals smoke --group security
 python -m evals smoke --group hitl
-python -m evals smoke --entity docs
+python -m evals smoke --entity agno-expert
 python -m evals smoke --output --compare
 
 # Run evals — reliability (tool call validation, no LLM cost)
@@ -358,9 +358,9 @@ python -m evals perf --update-baselines
 python -m evals perf
 
 # Auto-improvement loop (see docs/EVALS.md for full workflow)
-python -m evals improve --entity docs
+python -m evals improve --entity agno-expert
 python -m evals improve --failures
-python -m evals improve --entity docs --json
+python -m evals improve --entity agno-expert --json
 ```
 
 ## Environment Variables

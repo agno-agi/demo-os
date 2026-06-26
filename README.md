@@ -337,7 +337,7 @@ The eval framework tests all 30 entities across multiple dimensions: basic funct
 # Smoke tests (fast, free)
 python -m evals smoke                          # All entities
 python -m evals smoke --group agents           # By group
-python -m evals smoke --entity docs       # Single entity
+python -m evals smoke --entity agno-expert       # Single entity
 
 # Tool call validation (fast, free)
 python -m evals reliability
@@ -351,7 +351,7 @@ python -m evals perf --update-baselines        # Establish baselines
 python -m evals perf                           # Compare against baselines
 
 # Improvement loop
-python -m evals improve --entity docs     # Debug a failing entity
+python -m evals improve --entity agno-expert     # Debug a failing entity
 python -m evals improve --failures             # Debug all failures
 ```
 
