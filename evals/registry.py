@@ -28,8 +28,8 @@ ENTITIES: dict[str, Entity] = {
     # -------------------------------------------------------------------------
     # Agents (6)
     # -------------------------------------------------------------------------
-    "docs": Entity(
-        id="docs",
+    "agno-expert": Entity(
+        id="agno-expert",
         type="agent",
         instruction_file="agents/mcp/instructions.py",
         definition_file="agents/mcp/agent.py",
@@ -53,8 +53,8 @@ ENTITIES: dict[str, Entity] = {
         definition_file="agents/reporter/agent.py",
         requires=["EXA_API_KEY"],
     ),
-    "studio": Entity(
-        id="studio",
+    "media-lab": Entity(
+        id="media-lab",
         type="agent",
         instruction_file="agents/studio/instructions.py",
         definition_file="agents/studio/agent.py",
