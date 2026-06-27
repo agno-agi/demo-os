@@ -46,7 +46,7 @@ manifest:
     labels: ["session-state", "agentic-memory"]
     quick_prompts:
       - "Add: finish the Q2 roadmap deck (deep work, due today) and reply to the vendor email"
-      - "Plan my day. Remember I like deep work in the morning and batch admin at the end."
+      - "Add three tasks for today — finish the quarterly report (deep), reply to two client emails, and submit my timesheet — then plan my day around deep work first, admin last."
       - "Add 'submit the expense report' due today, then show me what's overdue or due today."
 
   builder:
