@@ -18,14 +18,14 @@ AgentOS (app/main.py)
 │   ├── Researcher (agents/reporter/)                              # Structured output + file generation
 │   ├── Media Lab (agents/studio/)                               # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
-├── Teams (4)
+├── Teams (5)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
 │   ├── Newsroom (teams/research/)                    # Research team (coordinate mode)
 │   ├── Investment Committee (teams/investment/)                 # Investment committee (broadcast mode)
-│   └── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
+│   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
+│   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
-    ├── Daily Brief (workflows/morning_brief/)                 # Daily parallel briefing
-    ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research
+    ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research (scheduled)
     ├── Scribe (workflows/content_pipeline/)           # Parallel + loop + condition
     ├── Code Scout (workflows/repo_walkthrough/)                 # Code → script → narrated audio
     ├── Classifier (workflows/classifier/)                       # Router + condition + multi-source intake
@@ -55,8 +55,8 @@ All agents share:
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
 | `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
-| `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, followups, fallback) |
-| `workflows/morning_brief/workflow.py` | Daily Brief (parallel gather → synthesize) |
+| `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
+| `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
 | `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Scribe (router, parallel, loop, HITL) |
 | `workflows/repo_walkthrough/workflow.py` | Code Scout (analyze → script → narrate) |
@@ -291,7 +291,6 @@ from teams.investment import investment_broadcast
 from teams.clinic import clinic
 
 # Workflows
-from workflows.morning_brief import morning_brief
 from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.repo_walkthrough import repo_walkthrough
@@ -382,6 +381,8 @@ Optional (tools & integrations):
 - `ELEVEN_LABS_API_KEY` - TTS for Media Lab, Code Scout
 - `FAL_KEY` - Image-to-image for Media Lab
 - `LUMAAI_API_KEY` - Video generation for Media Lab (LumaLab)
+- `DUFFEL_API_TOKEN` - Live flight search for Voyager
+- `RESEND_API_KEY`, `VOYAGER_FROM_EMAIL` - Itinerary email for Voyager
 - `DB_DRIVER` - Database driver (default: `postgresql+psycopg`)
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
@@ -448,12 +449,12 @@ Optional (tools & integrations):
 | Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
-| Followups (suggested questions) | Clinic |
+| Followups (suggested questions) | Mentor |
 | Fallback models | Clinic |
-| Workflow — parallel | Daily Brief, AI Digest, Scribe |
+| Workflow — parallel | AI Digest, Scribe |
 | Workflow — loop | Scribe |
-| Scheduling (cron) | Daily Brief, AI Digest |
-| Parallel execution | Daily Brief, AI Digest, Scribe |
+| Scheduling (cron) | AI Digest |
+| Parallel execution | AI Digest, Scribe |
 | Workflow — router | Classifier |
 | Workflow — condition | Classifier |
 | Document parsing (Docling) | Classifier |

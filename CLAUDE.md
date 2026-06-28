@@ -24,14 +24,12 @@ AgentOS (app/main.py)
 │   └── Abacus (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
 ├── Teams (5)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
-│   ├── Builder (teams/builder/)                    # Builds you an assistant from a conversation (StudioTool + HITL + session state)
 │   ├── Newsroom (teams/research/)                    # Research team (coordinate mode)
 │   ├── Investment Committee (teams/investment/)                 # Investment committee (broadcast mode)
 │   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
 │   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
-    ├── Daily Brief (workflows/morning_brief/)                 # Daily parallel briefing
-    ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research
+    ├── AI Digest (workflows/ai_research/)                     # Daily parallel AI research (scheduled)
     ├── Scribe (workflows/content_pipeline/)           # Parallel + loop + condition
     ├── Code Scout (workflows/repo_walkthrough/)                 # Code → script → narrated audio
     ├── Classifier (workflows/classifier/)                       # Router + condition + multi-source intake
@@ -62,12 +60,10 @@ All agents share:
 | `frameworks/langgraph_debate/agent.py` | Forum - LangGraphAgent wrapper |
 | `frameworks/dspy_math/agent.py` | Abacus - DSPyAgent with typed ChainOfThought signature |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
-| `teams/builder/team.py` | Builder — builds an assistant from a conversation (StudioTool, HITL, session state) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
 | `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
 | `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
-| `workflows/morning_brief/workflow.py` | Daily Brief (parallel gather → synthesize) |
 | `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
 | `workflows/content_pipeline/workflow.py` | Scribe (router, parallel, loop, HITL) |
 | `workflows/repo_walkthrough/workflow.py` | Code Scout (analyze → script → narrate) |
@@ -303,7 +299,6 @@ from teams.clinic import clinic
 from teams.coach import coach_team
 
 # Workflows
-from workflows.morning_brief import morning_brief
 from workflows.ai_research import ai_research
 from workflows.content_pipeline import content_pipeline
 from workflows.repo_walkthrough import repo_walkthrough
@@ -472,10 +467,10 @@ Optional (tools & integrations):
 | Knowledge filtering (per-patient) | Clinic |
 | Followups (suggested questions) | Mentor |
 | Fallback models | Clinic |
-| Workflow — parallel | Daily Brief, AI Digest, Scribe |
+| Workflow — parallel | AI Digest, Scribe |
 | Workflow — loop | Scribe |
-| Scheduling (cron) | Daily Brief, AI Digest |
-| Parallel execution | Daily Brief, AI Digest, Scribe |
+| Scheduling (cron) | AI Digest |
+| Parallel execution | AI Digest, Scribe |
 | Workflow — router | Classifier |
 | Workflow — condition | Classifier |
 | Document parsing (Docling) | Classifier |
