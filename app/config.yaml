@@ -50,7 +50,7 @@ manifest:
       - "Add 'submit the expense report' due today, then show me what's overdue or due today."
 
   builder:
-    description: "Describe your job and Builder composes a personalized assistant — interviewed, built behind approval, trial-run, and published live in the OS."
+    description: "Describe your job and Builder composes a personalized assistant: interviewed, built behind approval, trial-run, and published live in the OS."
     labels: ["studio-tools", "hitl", "agent-builder"]
     quick_prompts:
       - "I'm a financial analyst — build me an assistant that tracks stocks and writes up the numbers"
@@ -160,7 +160,7 @@ manifest:
       - "Generate a narrated overview of the Agno repo"
 
   classifier:
-    description: "Classifies any source — paper, PDF, video, article, or topic — routes it to a specialist that reads it with real tools and deep-dives dense ones."
+    description: "Classifies any source (paper, PDF, video, article, or topic) and routes it to a specialist that reads it with real tools and deep-dives dense ones."
     labels: ["router", "condition", "multi-source"]
     quick_prompts:
       - "Summarize this paper: arxiv.org/abs/1706.03762"
