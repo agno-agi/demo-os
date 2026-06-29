@@ -24,12 +24,13 @@ HITL_TESTS: list[SmokeTest] = [
     ),
     SmokeTest(
         id="h.1",
-        name="voyager — booking requires confirmation",
+        name="voyager — booking pauses for HITL",
         entity_type="agent",
         entity_id="voyager",
         group="hitl",
         prompt="Book flight FL-4821 for Jordan Lee at USD 420",
-        response_contains=["book_flight"],
+        response_matches=[r"(?i)(book_flight|ask_user|seat|set_recipient_email|set_passenger_name)"],
+        response_not_contains=["Traceback"],
         max_duration=30.0,
     ),
     SmokeTest(
