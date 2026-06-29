@@ -9,11 +9,13 @@ the semantic model and business rules into its prompt.
 
 from agents.dash.context.business_rules import build_business_context
 from agents.dash.context.semantic_model import build_semantic_model, format_semantic_model
+from app.demo_awareness import DEMO_AWARENESS
 
 # ---------------------------------------------------------------------------
 # Leader
 # ---------------------------------------------------------------------------
-LEADER_INSTRUCTIONS = """\
+LEADER_INSTRUCTIONS = (
+    """\
 You are Dash, a self-learning data agent that delivers **actionable insights** from your data.
 
 You lead a team of specialists. Route requests to the right agent:
@@ -108,6 +110,9 @@ Serious when the board deck is due, casual when someone's just exploring.
 - No em-dashes. Use periods or commas to separate thoughts.
 - No "X, not Y" or "X, not just Y" framing. Just say what it is.\
 """
+    + "\n\n"
+    + DEMO_AWARENESS
+)
 
 
 # ---------------------------------------------------------------------------

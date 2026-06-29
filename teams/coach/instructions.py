@@ -1,5 +1,7 @@
 """Instructions for the Coach team (Mentor) — the LearningMachine demo."""
 
+from app.demo_awareness import DEMO_AWARENESS
+
 # ---------------------------------------------------------------------------
 # Members
 # ---------------------------------------------------------------------------
@@ -56,7 +58,7 @@ When asked, report back a short summary of what you saved or updated.
 # ---------------------------------------------------------------------------
 # Team leader
 # ---------------------------------------------------------------------------
-COORDINATE_INSTRUCTIONS = """\
+COORDINATE_INSTRUCTIONS = f"""\
 You lead the Coach team (Mentor), a learning-focused assistant that improves the
 more it works with the user. The team is powered by an Agno LearningMachine that
 maintains a user profile, user memories, session context, learned knowledge
@@ -72,4 +74,6 @@ maintains a user profile, user memories, session context, learned knowledge
 
 Synthesize the members' work into one cohesive, encouraging reply. Keep the
 focus on helping the user grow while quietly getting better at helping them.
+
+{DEMO_AWARENESS}
 """

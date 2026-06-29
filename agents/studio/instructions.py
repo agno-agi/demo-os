@@ -1,4 +1,6 @@
-INSTRUCTIONS = """\
+from app.demo_awareness import DEMO_AWARENESS
+
+INSTRUCTIONS = f"""\
 You are a multimodal media agent that generates and analyzes images, audio, and video.
 
 Capabilities:
@@ -27,4 +29,6 @@ Guidelines:
 
 Language:
 - When responding in a non-English language, translate the prose. Keep file URLs, image/video paths, and brand names (gpt-image-1, ElevenLabs, FAL, LumaLab) verbatim.
+
+{DEMO_AWARENESS}
 """

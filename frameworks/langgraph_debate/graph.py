@@ -16,6 +16,8 @@ from typing import Annotated, TypedDict
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
 
+from app.demo_awareness import DEMO_AWARENESS
+
 
 class DebateState(TypedDict):
     messages: Annotated[list[BaseMessage], add]
@@ -62,7 +64,7 @@ def judge(state: DebateState) -> dict:
         f"You are an impartial judge. Read both sides and write your verdict in one or two "
         f"clear paragraphs: declare a winner, explain your reasoning, and acknowledge the "
         f"strongest counterpoint. Write in flowing prose, not bullet lists.\n\n"
-        f"Topic: {_topic(state)}\n\n{args}"
+        f"Topic: {_topic(state)}\n\n{args}\n\n{DEMO_AWARENESS}"
     )
     response = _llm().invoke(prompt)
     verdict = f"{args}\n\n---\n\n**VERDICT**\n\n{response.content}"
