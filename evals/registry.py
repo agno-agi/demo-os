@@ -87,13 +87,6 @@ ENTITIES: dict[str, Entity] = {
         definition_file="teams/research/team.py",
         requires=["EXA_API_KEY"],
     ),
-    "investment-committee": Entity(
-        id="investment-committee",
-        type="team",
-        instruction_file="teams/investment/instructions.py",
-        definition_file="teams/investment/team.py",
-        requires=["EXA_API_KEY"],
-    ),
     # -------------------------------------------------------------------------
     # Workflows (5)
     # -------------------------------------------------------------------------

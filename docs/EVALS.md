@@ -58,7 +58,7 @@ Tests are organized into groups:
 | Group | Tests | What it covers |
 |-------|------:|----------------|
 | `agents` | 24 | One or more tests per agent — happy path, edge cases, tool routing |
-| `teams` | 12 | Team behavior, mode differentiation (coordinate vs route vs broadcast vs tasks) |
+| `teams` | 7 | Team behavior, mode differentiation (coordinate vs route vs tasks) |
 | `workflows` | 6 | End-to-end workflow execution (morning brief, content pipeline, support triage, etc.) |
 | `security` | 60 | Secret leakage checks — 21 patterns across representative entities + spot checks |
 | `hitl` | 6 | HITL pause/resume — verifies agents pause with the correct tool (book_flight, ask_user, process_refund, etc.) |

@@ -40,7 +40,6 @@ dependencies = [
   "slack-sdk",
   "sqlalchemy",
   "wikipedia",
-  "yfinance",
   "youtube-transcript-api",
 ]
 

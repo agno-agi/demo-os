@@ -22,10 +22,9 @@ AgentOS (app/main.py)
 │   ├── Repo Explainer (frameworks/claude_repo/)                 # Claude Agent SDK — explains GitHub repos
 │   ├── Forum (frameworks/langgraph_debate/)                # LangGraph — parallel Pro/Con + Judge
 │   └── Abacus (frameworks/dspy_math/)                      # DSPy — ChainOfThought word problems
-├── Teams (5)
+├── Teams (4)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
 │   ├── Newsroom (teams/research/)                    # Research team (coordinate mode)
-│   ├── Investment Committee (teams/investment/)                 # Investment committee (broadcast mode)
 │   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
 │   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
@@ -61,7 +60,6 @@ All agents share:
 | `frameworks/dspy_math/agent.py` | Abacus - DSPyAgent with typed ChainOfThought signature |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
-| `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
 | `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
 | `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
@@ -294,7 +292,6 @@ from agents.taskboard import taskboard
 # Teams
 from agents.dash import dash
 from teams.research import research_coordinate
-from teams.investment import investment_broadcast
 from teams.clinic import clinic
 from teams.coach import coach_team
 
@@ -384,7 +381,7 @@ Optional (model providers — each enables registry models in Studio):
 - `MISTRAL_API_KEY` - Mistral Large
 
 Optional (tools & integrations):
-- `EXA_API_KEY` - Web search for Researcher, AI Digest, Investment
+- `EXA_API_KEY` - Web search for Researcher, AI Digest
 - `PARALLEL_API_KEY` - Parallel web search
 - `ELEVEN_LABS_API_KEY` - TTS for Media Lab, Code Scout
 - `FAL_KEY` - Image-to-image for Media Lab
@@ -429,8 +426,8 @@ Optional (tools & integrations):
 
 | Feature | Where |
 |---------|-------|
-| RAG / hybrid search | Dash, Investment |
-| MCP tools | Agno Expert, Dash, AI Digest, Investment |
+| RAG / hybrid search | Dash |
+| MCP tools | Agno Expert, Dash, AI Digest |
 | HITL — confirmation | Voyager, Operator |
 | HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
@@ -445,10 +442,10 @@ Optional (tools & integrations):
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |
 | Web research (Exa: search, company, crawl, fetch) | Researcher |
-| Learning (LearningMachine) | Dash, Investment, Mentor |
+| Learning (LearningMachine) | Dash, Mentor |
 | Learning — user profile + memory | Mentor |
 | Learning — session context | Mentor |
-| Learning — learned knowledge (playbooks) | Mentor, Dash, Investment |
+| Learning — learned knowledge (playbooks) | Mentor, Dash |
 | Learning — decision log | Mentor |
 | SQL tools | Dash |
 | Coding tools | Code Scout |
@@ -458,11 +455,9 @@ Optional (tools & integrations):
 | Text-to-speech (ElevenLabs) | Media Lab, Code Scout |
 | Video generation (LumaLab) | Media Lab |
 | Sound effects | Media Lab |
-| YFinance tools | Investment |
 | Flight search (Duffel) | Voyager |
 | Email (Resend) | Voyager |
 | Team — coordinate | Dash, Newsroom, Builder |
-| Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
 | Followups (suggested questions) | Mentor |

@@ -10,7 +10,7 @@ manifest:
       - "Summarize the key features of Agno"
 
   voyager:
-    description: "Books flights with human-in-the-loop steps and safety guardrails."
+    description: "Books flights with human feedback steps and safety guardrails."
     labels: ["hitl", "guardrails", "email", "flight-search"]
     quick_prompts:
       - "Help me book a flight from San Francisco to New York for tomorrow"
@@ -93,14 +93,6 @@ manifest:
       - "Break down our MRR by plan"
       - "Show me the revenue trend by month"
 
-  investment-committee:
-    description: "Analysts assess one stock in parallel using YFinance and web search."
-    labels: ["broadcast", "finance", "investment-analysis"]
-    quick_prompts:
-      - "Full committee review: evaluate TSLA for $2M"
-      - "All analysts: assess NVDA for our portfolio"
-      - "Committee vote: should we invest in META?"
-
   clinic:
     description: "Patient assistant for your appointments and medical records."
     labels: ["context-provider", "knowledge-filtering", "fallback-models"]
@@ -118,7 +110,7 @@ manifest:
       - "Write a competitive analysis report on the AI agent framework market"
 
   mentor:
-    description: "A coach that learns about you over time via the Learning Machine."
+    description: "A coach that learns about you over time the more you interact."
     labels: ["learning-machine", "memory", "followups"]
     quick_prompts:
       - "I'm a backend engineer new to Rust. I prefer concise, example-first answers. Where should I start?"

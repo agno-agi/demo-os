@@ -62,8 +62,5 @@ Thumbs.db
 tmp
 evals/.results/
 
-# Runtime-generated content (created by agents/teams at runtime)
-teams/investment/memos/
-
 # Optional: local PyPI creds (uncomment if you ever create it)
 # .pypirc

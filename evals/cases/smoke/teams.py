@@ -55,21 +55,6 @@ TEAM_TESTS: list[SmokeTest] = [
         max_duration=360.0,
     ),
     # -------------------------------------------------------------------------
-    # Investment — broadcast mode
-    # -------------------------------------------------------------------------
-    SmokeTest(
-        id="t.10",
-        name="investment-broadcast — assess NVDA",
-        entity_type="team",
-        entity_id="investment-committee",
-        group="teams",
-        prompt="All analysts: assess NVDA",
-        response_matches=[r"(?i)(nvda|nvidia|analy|risk|technical|fundamental)"],
-        response_not_contains=["Traceback"],
-        requires=["EXA_API_KEY"],
-        max_duration=110.0,
-    ),
-    # -------------------------------------------------------------------------
     # Clinic (context provider + filtered records)
     # -------------------------------------------------------------------------
     SmokeTest(

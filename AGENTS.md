@@ -18,10 +18,9 @@ AgentOS (app/main.py)
 │   ├── Researcher (agents/reporter/)                              # Structured output + file generation
 │   ├── Media Lab (agents/studio/)                               # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
-├── Teams (5)
+├── Teams (4)
 │   ├── Dash (agents/dash/)                                      # Data analyst (team, coordinate)
 │   ├── Newsroom (teams/research/)                    # Research team (coordinate mode)
-│   ├── Investment Committee (teams/investment/)                 # Investment committee (broadcast mode)
 │   ├── Clinic (teams/clinic/)                     # Patient assistant (context provider + filtered records)
 │   └── Mentor (teams/coach/)                      # Learning coach (LearningMachine: profile, memory, session context, knowledge, decisions; followups)
 └── Workflows (6)
@@ -54,7 +53,6 @@ All agents share:
 | `agents/builder/agent.py` | Builder - builds an assistant from a conversation (StudioTool + HITL) |
 | `agents/dash/team.py` | Dash team (Analyst, Engineer) |
 | `teams/research/team.py` | Newsroom (coordinate mode) |
-| `teams/investment/team.py` | Investment Committee — investment committee (broadcast mode, 4 analysts, YFinance) |
 | `teams/clinic/team.py` | Clinic — patient assistant (context provider + filtered records, fallback) |
 | `teams/coach/team.py` | Mentor — learning coach (LearningMachine: user profile, memory, session context, learned knowledge, decision log; followups) |
 | `workflows/ai_research/workflow.py` | AI Digest (4 parallel researchers → synthesize) |
@@ -287,7 +285,6 @@ from agents.taskboard import taskboard
 # Teams
 from agents.dash import dash
 from teams.research import research_coordinate
-from teams.investment import investment_broadcast
 from teams.clinic import clinic
 
 # Workflows
@@ -376,7 +373,7 @@ Optional (model providers — each enables registry models in Studio):
 - `MISTRAL_API_KEY` - Mistral Large
 
 Optional (tools & integrations):
-- `EXA_API_KEY` - Web search for Researcher, AI Digest, Investment
+- `EXA_API_KEY` - Web search for Researcher, AI Digest
 - `PARALLEL_API_KEY` - Parallel web search
 - `ELEVEN_LABS_API_KEY` - TTS for Media Lab, Code Scout
 - `FAL_KEY` - Image-to-image for Media Lab
@@ -420,8 +417,8 @@ Optional (tools & integrations):
 
 | Feature | Where |
 |---------|-------|
-| RAG / hybrid search | Dash, Investment |
-| MCP tools | Agno Expert, Dash, AI Digest, Investment |
+| RAG / hybrid search | Dash |
+| MCP tools | Agno Expert, Dash, AI Digest |
 | HITL — confirmation | Voyager, Operator |
 | HITL — user input | Voyager, Builder |
 | HITL — external execution | Voyager |
@@ -435,7 +432,7 @@ Optional (tools & integrations):
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (CSV/JSON/PDF) | Researcher |
-| Learning (LearningMachine) | Dash, Investment |
+| Learning (LearningMachine) | Dash |
 | SQL tools | Dash |
 | Coding tools | Code Scout |
 | Image generation (DALL-E) | Media Lab |
@@ -443,10 +440,8 @@ Optional (tools & integrations):
 | Text-to-speech (ElevenLabs) | Media Lab, Code Scout |
 | Video generation (LumaLab) | Media Lab |
 | Sound effects | Media Lab |
-| YFinance tools | Investment |
 | Session state + agentic state | Planner |
 | Team — coordinate | Dash, Newsroom |
-| Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
 | Followups (suggested questions) | Mentor |
