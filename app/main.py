@@ -29,11 +29,6 @@ from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
 from teams.clinic import clinic, clinic_knowledge
 from teams.coach import coach_learnings, coach_team
-from teams.investment import (
-    investment_broadcast,
-    investment_knowledge,
-    investment_learnings,
-)
 from teams.research import research_coordinate
 from workflows.ai_research import ai_research
 from workflows.classifier import classifier
@@ -96,7 +91,6 @@ agent_os = AgentOS(
         dash,
         coach_team,
         clinic,
-        investment_broadcast,
         research_coordinate,
     ],
     workflows=[
@@ -109,8 +103,6 @@ agent_os = AgentOS(
     knowledge=[
         dash_knowledge,
         dash_learnings,
-        investment_knowledge,
-        investment_learnings,
         clinic_knowledge,
         coach_learnings,
     ],
