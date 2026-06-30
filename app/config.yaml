@@ -93,14 +93,6 @@ manifest:
       - "Break down our MRR by plan"
       - "Show me the revenue trend by month"
 
-  investment-committee:
-    description: "Analysts assess one stock in parallel using YFinance and web search."
-    labels: ["broadcast", "finance", "investment-analysis"]
-    quick_prompts:
-      - "Full committee review: evaluate TSLA for $2M"
-      - "All analysts: assess NVDA for our portfolio"
-      - "Committee vote: should we invest in META?"
-
   clinic:
     description: "Patient assistant for your appointments and medical records."
     labels: ["context-provider", "knowledge-filtering", "fallback-models"]

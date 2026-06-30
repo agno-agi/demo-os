@@ -28,7 +28,6 @@ from agno.workflow.types import StepInput, StepOutput
 from agents.dash.settings import dash_knowledge, dash_learnings
 from app.settings import MODEL, agent_db, get_parallel_tools
 from teams.coach.team import coach_learnings
-from teams.investment.team import investment_knowledge, investment_learnings
 
 
 # ---------------------------------------------------------------------------
@@ -82,7 +81,6 @@ def _get_tools() -> list:
     from agno.tools.openai import OpenAITools
     from agno.tools.pubmed import PubmedTools
     from agno.tools.reasoning import ReasoningTools
-    from agno.tools.yfinance import YFinanceTools
     from agno.tools.youtube import YouTubeTools
 
     tools: list = [
@@ -91,7 +89,6 @@ def _get_tools() -> list:
         CalculatorTools(),
         FileTools(),
         FileGenerationTools(),
-        YFinanceTools(),
         # Code & reasoning
         CodingTools(),
         ReasoningTools(add_instructions=True),
@@ -284,8 +281,6 @@ registry = Registry(
     knowledge=[
         dash_knowledge,
         dash_learnings,
-        investment_knowledge,
-        investment_learnings,
         coach_learnings,
     ],
     functions=[

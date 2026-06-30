@@ -65,7 +65,6 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 |------|------|-------------|----------|
 | [**Dash**](agents/dash/) | coordinate | Self-learning data analyst (Analyst + Engineer) | Dual schema, write guard, read-only engine, LearningMachine |
 | [**Newsroom**](teams/research/) | coordinate | Research team (Analyst + Investigator + Writer) | ParallelTools, Exa MCP, multi-specialist synthesis |
-| [**Investment Committee**](teams/investment/) | broadcast | Investment committee — 4 analysts assess a target in parallel | YFinanceTools, Exa MCP, LearningMachine |
 | [**Clinic**](teams/clinic/) | coordinate | Patient assistant — live schedule + patient-scoped records | Context provider (live DB), knowledge filtering, fallback models |
 | [**Mentor**](teams/coach/) | coordinate | Learning coach (Mentor + Curator) that gets better at helping you over time | LearningMachine (user profile, memory, session context, learned knowledge, decision log), followups |
 
@@ -99,7 +98,7 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |
 | Web research (Exa: search, company, crawl, fetch) | Researcher |
-| Learning (LearningMachine) | Dash, Investment, Mentor |
+| Learning (LearningMachine) | Dash, Mentor |
 | Learning — user profile + memory | Mentor |
 | Learning — session context | Mentor |
 | Learning — decision log | Mentor |
@@ -109,11 +108,8 @@ Confirm the system is running at [http://localhost:8000/docs](http://localhost:8
 | Image-to-image (FAL) | Media Lab |
 | Text-to-speech (ElevenLabs) | Media Lab, Code Scout |
 | Video generation (LumaLab) | Media Lab |
-| Multi-model (Gemini) | Investment |
-| YFinance tools | Investment |
 | Session state + agentic state | Planner |
 | Team — coordinate | Dash, Newsroom, Mentor |
-| Team — broadcast | Investment Committee |
 | Context provider (live DB) | Clinic |
 | Knowledge filtering (per-patient) | Clinic |
 | Followups (suggested questions) | Mentor |
@@ -313,8 +309,8 @@ python -m app.main
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `OPENAI_API_KEY` | Yes | - | OpenAI API key (GPT-5.4) |
-| `GOOGLE_API_KEY` | No | - | Gemini models for Investment Team |
-| `EXA_API_KEY` | No | - | Web search for Researcher, Research, Investment |
+| `GOOGLE_API_KEY` | No | - | Gemini models (Clinic fallback, Studio registry) |
+| `EXA_API_KEY` | No | - | Web search for Researcher, Research |
 | `PARALLEL_API_KEY` | No | - | Parallel web search |
 | `ELEVEN_LABS_API_KEY` | No | - | TTS for Media Lab, Code Scout |
 | `FAL_KEY` | No | - | Image-to-image for Media Lab |
