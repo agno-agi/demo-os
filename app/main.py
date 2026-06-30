@@ -81,9 +81,9 @@ agent_os = AgentOS(
     lifespan=lifespan,
     db=agent_db,
     agents=[
-        builder,
-        reporter,
         mcp_agent,
+        reporter,
+        builder,
         infra,
         studio,
         taskboard,
