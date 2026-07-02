@@ -7,7 +7,7 @@ license = { file = "LICENSE" }
 authors = [{ name = "Agno", email = "hello@agno.com" }]
 
 dependencies = [
-  "agno[os]==2.6.20",
+  "agno[os]==2.6.21",
   "anthropic",
   "arxiv",
   "claude-agent-sdk",
@@ -70,6 +70,13 @@ exclude = [".venv*"]
 [[tool.mypy.overrides]]
 module = ["pgvector.*", "agno.*", "httpx.*", "mcp.*", "pandas.*", "openai.*", "requests.*", "yaml.*", "parallel.*", "sqlalchemy.*", "dspy.*"]
 ignore_missing_imports = true
+
+[tool.uv]
+# Force resolution to produce wheels usable on CI (Linux x86_64) as well as the
+# macOS dev machines. Without this, uv may pick a version of a transitive dep
+# (e.g. opencv-python-headless, pulled in by docling) that only ships macOS/Windows
+# wheels, which then fails `uv sync` on the Linux CI runners.
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
 
 [tool.uv.pip]
 no-annotate = true
