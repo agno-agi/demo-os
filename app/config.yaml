@@ -29,7 +29,7 @@ manifest:
     description: "Searches the web with Exa and generates self-contained HTML reports."
     labels: ["web-search", "file-generation"]
     quick_prompts:
-      - "Write a one-page HTML brief on Anthropic — what they do and recent funding"
+      - "Write a one-page HTML brief on Anthropic: what they do and recent funding"
       - "Find the latest AI agent platform market size and CAGR, and put it in a short HTML report"
       - "Quick HTML one-pager comparing LangChain and CrewAI on 3 dimensions"
 
@@ -46,16 +46,16 @@ manifest:
     labels: ["session-state", "agentic-memory"]
     quick_prompts:
       - "Add: finish the Q2 roadmap deck (deep work, due today) and reply to the vendor email"
-      - "Add three tasks for today — finish the quarterly report (deep), reply to two client emails, and submit my timesheet — then plan my day around deep work first, admin last."
+      - "Add three tasks for today: finish the quarterly report (deep), reply to two client emails, and submit my timesheet, then plan my day around deep work first, admin last."
       - "Add 'submit the expense report' due today, then show me what's overdue or due today."
 
   builder:
     description: "Builds a personalized assistant from a conversation and publishes it live."
     labels: ["studio-tools", "hitl", "agent-builder"]
     quick_prompts:
-      - "I'm a financial analyst — build me an assistant that tracks stocks and writes up the numbers"
-      - "I review research papers all day — build me an assistant that finds and summarizes them"
-      - "I turn YouTube talks into written briefs — build me an assistant for that"
+      - "I'm a financial analyst, build me an assistant that tracks stocks and writes up the numbers"
+      - "I review research papers all day, build me an assistant that finds and summarizes them"
+      - "I turn YouTube talks into written briefs, build me an assistant for that"
 
   # --- Multi-Framework Agents ---
 
@@ -114,7 +114,7 @@ manifest:
     labels: ["learning-machine", "memory", "followups"]
     quick_prompts:
       - "I'm a backend engineer new to Rust. I prefer concise, example-first answers. Where should I start?"
-      - "We decided to use Postgres over SQLite for the new service — remember that and the reasoning."
+      - "We decided to use Postgres over SQLite for the new service: remember that and the reasoning."
       - "Based on what you know about me, suggest my next learning goal."
 
   # --- Workflows ---
