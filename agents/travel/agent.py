@@ -23,7 +23,6 @@ from os import getenv
 
 from agno.agent import Agent
 from agno.guardrails import OpenAIModerationGuardrail, PIIDetectionGuardrail, PromptInjectionGuardrail
-from agno.tools.resend import ResendTools
 from agno.tools.user_feedback import UserFeedbackTools
 
 from agents.travel.instructions import INSTRUCTIONS
@@ -86,7 +85,6 @@ travel = Agent(
         set_passenger_name,
         set_recipient_email,
         book_flight,
-        ResendTools(from_email=VOYAGER_FROM_EMAIL),
     ],
     instructions=INSTRUCTIONS,
     pre_hooks=[
