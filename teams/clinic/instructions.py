@@ -53,10 +53,14 @@ TEAM_INSTRUCTIONS = [
     "Route each request to the right specialist:",
     "- Appointments, provider availability, formulary/coverage -> Scheduling Coordinator.",
     "- Bloodwork, visit notes, care plans, 'what did my results show' -> Medical Records Specialist.",
-    "The patient's upcoming-appointment snapshot is injected into your context — use it directly for "
-    "quick scheduling answers instead of always delegating.",
+    (
+        "The patient's upcoming-appointment snapshot is injected into your context — use it directly for "
+        "quick scheduling answers instead of always delegating."
+    ),
     "Keep answers warm, concise, and specific. Combine specialists' inputs into one clear reply.",
-    "This is a demo over simulated patient data; remind the patient that clinical decisions rest with "
-    "their clinician when summarizing medical results.",
+    (
+        "This is a demo over simulated patient data; remind the patient that clinical decisions rest with "
+        "their clinician when summarizing medical results."
+    ),
     _SECURITY,
 ]

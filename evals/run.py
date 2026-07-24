@@ -23,7 +23,8 @@ from __future__ import annotations
 
 import importlib
 import time
-from typing import Callable, Literal
+from collections.abc import Callable
+from typing import Literal
 
 from agno.eval.accuracy import AccuracyEval
 from agno.eval.agent_as_judge import AgentAsJudgeEval
@@ -89,7 +90,7 @@ def run_judge_cases(
                         result["reason"] = eval_result.results[0].reason
                     if verbose:
                         result["response_preview"] = run_result.content[:200]
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - record any eval failure as a failed result
                 result = {
                     "entity_id": entity_id,
                     "question": question,
@@ -158,7 +159,7 @@ def run_accuracy_cases(
                         result["reason"] = eval_result.results[0].reason
                 if verbose:
                     result["response_preview"] = run_result.content[:200]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - record any eval failure as a failed result
             result = {
                 "entity_id": entity_id,
                 "question": question,

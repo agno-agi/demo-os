@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import subprocess
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 @dataclass
@@ -41,7 +41,7 @@ class DockerLogCapture:
 
     def mark(self) -> str:
         """Capture current timestamp as anchor for log slicing."""
-        return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def capture_since(self, since: str) -> DockerLogs:
         """Get container logs since the given timestamp."""
@@ -60,6 +60,7 @@ class DockerLogCapture:
                 text=True,
                 timeout=10,
                 cwd=self.project_root,
+                check=False,
             )
             return DockerLogs(
                 stdout=result.stdout,
