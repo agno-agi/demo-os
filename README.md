@@ -264,7 +264,7 @@ my_agent = Agent(
 ```python
 from agno.models.anthropic import Claude
 
-model=Claude(id="claude-sonnet-4-6")
+model = Claude(id="claude-sonnet-4-6")
 ```
 3. Add dependency: `anthropic` in `pyproject.toml`
 
