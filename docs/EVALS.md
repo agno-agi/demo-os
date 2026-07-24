@@ -89,17 +89,17 @@ Edit the appropriate file in `evals/cases/smoke/`:
 ```python
 # evals/cases/smoke/agents.py
 SmokeTest(
-    id="a.15",                                # Unique ID
-    name="my-agent — what it tests",          # Human-readable name
-    entity_type="agent",                      # "agent" | "team" | "workflow"
-    entity_id="my-agent",                     # Must match the registered ID
-    group="agents",                           # Determines which --group filter includes it
+    id="a.15",  # Unique ID
+    name="my-agent — what it tests",  # Human-readable name
+    entity_type="agent",  # "agent" | "team" | "workflow"
+    entity_id="my-agent",  # Must match the registered ID
+    group="agents",  # Determines which --group filter includes it
     prompt="The prompt to send",
-    response_contains=["expected", "terms"],   # Case-insensitive substring checks
-    response_not_contains=["Traceback"],       # Forbidden patterns
-    response_matches=[r"(?i)\bregex\b"],       # Regex patterns
-    requires=["SOME_API_KEY"],                 # Skip if env var missing
-    max_duration=30.0,                         # Fail if slower than this
+    response_contains=["expected", "terms"],  # Case-insensitive substring checks
+    response_not_contains=["Traceback"],  # Forbidden patterns
+    response_matches=[r"(?i)\bregex\b"],  # Regex patterns
+    requires=["SOME_API_KEY"],  # Skip if env var missing
+    max_duration=30.0,  # Fail if slower than this
 )
 ```
 
