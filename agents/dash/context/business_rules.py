@@ -23,9 +23,9 @@ def load_business_rules(business_dir: Path | None = None) -> dict[str, list[Any]
         try:
             with open(filepath) as f:
                 data = json.load(f)
-            for key in business:
+            for key, values in business.items():
                 if key in data:
-                    business[key].extend(data[key])
+                    values.extend(data[key])
         except (json.JSONDecodeError, OSError) as e:
             logger.error(f"Failed to load {filepath}: {e}")
 

@@ -1,6 +1,6 @@
 """Taskboard tools — session state manipulation for a personal work planner."""
 
-from datetime import date, datetime
+from datetime import date
 
 from agno.run import RunContext
 from agno.tools import tool
@@ -28,7 +28,7 @@ def _parse_due(due_date: str) -> date | None:
     if not due_date:
         return None
     try:
-        return datetime.strptime(due_date, "%Y-%m-%d").date()
+        return date.fromisoformat(due_date)
     except ValueError:
         return None
 
@@ -160,7 +160,7 @@ def agenda(run_context: RunContext) -> str:
     Uses the system's current date as the reference, so it is always accurate.
     """
     tasks = _state(run_context)["tasks"]
-    ref = date.today()
+    ref = date.today()  # noqa: DTZ011 - local calendar date is the intended reference for due dates
 
     overdue, due_today = [], []
     for t in tasks:

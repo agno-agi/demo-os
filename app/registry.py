@@ -18,7 +18,6 @@ keys are configured.
 """
 
 from os import getenv
-from typing import List
 
 from agno.models.openai import OpenAIResponses
 from agno.registry import Registry
@@ -182,7 +181,7 @@ def needs_fact_checking(step_input: StepInput) -> bool:
     return any(token in content for token in indicators)
 
 
-def approved_end_condition(outputs: List[StepOutput]) -> bool:
+def approved_end_condition(outputs: list[StepOutput]) -> bool:
     """Loop end_condition: stop once the last output ends with ``APPROVED``."""
     if not outputs:
         return False
@@ -193,7 +192,7 @@ def approved_end_condition(outputs: List[StepOutput]) -> bool:
     return last_line.strip(" \t*_`.!?,:;").upper() == "APPROVED"
 
 
-def substantial_content_end_condition(outputs: List[StepOutput]) -> bool:
+def substantial_content_end_condition(outputs: list[StepOutput]) -> bool:
     """Loop end_condition: stop once any iteration produces substantial content."""
     if not outputs:
         return False

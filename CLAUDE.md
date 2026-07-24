@@ -266,6 +266,7 @@ team = Team(
 ```python
 # Agent WITH a Knowledge base
 from db import create_knowledge
+
 knowledge = create_knowledge("My Knowledge", "my_vectors")
 
 # Agent WITHOUT a Knowledge base
@@ -482,12 +483,15 @@ Optional (tools & integrations):
 
 ```python
 from agno.models.openai import OpenAIResponses
+
 model = OpenAIResponses(id="gpt-5.5")
 
 from agno.models.anthropic import Claude
+
 model = Claude(id="claude-sonnet-4-6")
 
 from agno.models.google import Gemini
+
 model = Gemini(id="gemini-3-flash-preview")
 ```
 

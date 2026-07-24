@@ -15,7 +15,7 @@ Usage:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 RESULTS_DIR = Path(__file__).parent / ".results"
@@ -24,7 +24,7 @@ RESULTS_DIR = Path(__file__).parent / ".results"
 def save_results(results: list[dict], suite: str) -> Path:
     """Save results to timestamped JSON file. Returns the file path."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     path = RESULTS_DIR / f"{suite}_{ts}.json"
     path.write_text(
         json.dumps(

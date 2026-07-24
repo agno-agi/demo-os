@@ -13,7 +13,7 @@ All cloud operations are mocked — nothing leaves the process. The agent reason
 simulated inventory to ground each plan's blast radius and risk.
 """
 
-from typing import List, Literal
+from typing import Literal
 
 from agno.approval import approval
 from agno.tools import tool
@@ -39,10 +39,10 @@ class ChangePlan(BaseModel):
     resource: str = Field(..., description="The resource the change targets, e.g. 'web-cluster'.")
     action: Action = Field(..., description="The kind of change being made.")
     blast_radius: BlastRadius = Field(..., description="What is affected if the change goes wrong.")
-    affected_services: List[str] = Field(
+    affected_services: list[str] = Field(
         default_factory=list, description="Downstream services impacted by the change."
     )
-    rollback_steps: List[str] = Field(default_factory=list, description="Ordered steps to undo the change if needed.")
+    rollback_steps: list[str] = Field(default_factory=list, description="Ordered steps to undo the change if needed.")
     risk: Literal["low", "medium", "high"] = Field(
         ..., description="Overall risk. 'high' drives the destructive/audit approval path."
     )

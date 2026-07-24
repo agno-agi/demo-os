@@ -16,7 +16,7 @@ questions are grounded in accumulated learnings, so they stay answerable and get
 richer the longer the conversation runs.
 """
 
-from typing import Any  # noqa: UP035 — used for dict[str, Any] unpacking
+from typing import Any
 
 from agno.agent import Agent
 from agno.learn import (
@@ -61,15 +61,15 @@ _learning = LearningMachine(
     decision_log=DecisionLogConfig(mode=LearningMode.ALWAYS),
 )
 
-_common: dict[str, Any] = dict(
-    db=agent_db,
-    learning=_learning,
-    add_learnings_to_context=True,
-    add_datetime_to_context=True,
-    add_history_to_context=True,
-    num_history_runs=5,
-    markdown=True,
-)
+_common: dict[str, Any] = {
+    "db": agent_db,
+    "learning": _learning,
+    "add_learnings_to_context": True,
+    "add_datetime_to_context": True,
+    "add_history_to_context": True,
+    "num_history_runs": 5,
+    "markdown": True,
+}
 
 # ---------------------------------------------------------------------------
 # Members

@@ -16,6 +16,7 @@ Usage (called BY Claude Code):
 from __future__ import annotations
 
 import json as json_mod
+from datetime import UTC
 from pathlib import Path
 
 from evals.client import AgentOSClient
@@ -86,9 +87,9 @@ def collect_improvement_data(
         smoke_lines.append(line)
 
     # Build output
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     sections = [
         "=== IMPROVEMENT DATA ===",

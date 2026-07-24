@@ -1,6 +1,6 @@
 import time
 import uuid
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
 
 from agno.agent import Agent
 from agno.media import Video
@@ -32,11 +32,11 @@ class StudioLumaLabTools(LumaLabTools):
         prompt: str,
         loop: bool = False,
         aspect_ratio: Literal["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"] = "16:9",
-        keyframes: Optional[Dict[str, Dict[str, str]]] = None,
+        keyframes: dict[str, dict[str, str]] | None = None,
     ) -> ToolResult:
         """Use this function to generate a video given a prompt."""
         try:
-            generation_params: Dict[str, Any] = {
+            generation_params: dict[str, Any] = {
                 "model": LUMA_MODEL,
                 "prompt": prompt,
                 "loop": loop,
@@ -53,7 +53,7 @@ class StudioLumaLabTools(LumaLabTools):
                 return ToolResult(content="Async generation unsupported")
 
             return self._poll_for_video(generation, video_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - surface any failure to the agent as a tool error
             logger.exception("Failed to generate video")
             return ToolResult(content=f"Error: {e}")
 
@@ -62,13 +62,13 @@ class StudioLumaLabTools(LumaLabTools):
         agent: Agent,
         prompt: str,
         start_image_url: str,
-        end_image_url: Optional[str] = None,
+        end_image_url: str | None = None,
         loop: bool = False,
         aspect_ratio: Literal["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"] = "16:9",
     ) -> ToolResult:
         """Generate a video from one or two images with a prompt."""
         try:
-            keyframes: Dict[str, Dict[str, str]] = {"frame0": {"type": "image", "url": start_image_url}}
+            keyframes: dict[str, dict[str, str]] = {"frame0": {"type": "image", "url": start_image_url}}
             if end_image_url:
                 keyframes["frame1"] = {"type": "image", "url": end_image_url}
 
@@ -86,7 +86,7 @@ class StudioLumaLabTools(LumaLabTools):
                 return ToolResult(content="Async generation unsupported")
 
             return self._poll_for_video(generation, video_id)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - surface any failure to the agent as a tool error
             logger.exception("Failed to generate video")
             return ToolResult(content=f"Error: {e}")
 
