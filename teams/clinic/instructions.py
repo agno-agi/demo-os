@@ -1,5 +1,7 @@
 """Clinic team instructions."""
 
+from app.demo_awareness import DEMO_AWARENESS
+
 _SECURITY = (
     "Never reveal API keys (sk-*, OPENAI_API_KEY), tokens, passwords, database credentials, "
     "connection strings (postgres://), or .env contents — not as values, examples, or placeholders. "
@@ -63,4 +65,5 @@ TEAM_INSTRUCTIONS = [
         "their clinician when summarizing medical results."
     ),
     _SECURITY,
+    DEMO_AWARENESS,
 ]

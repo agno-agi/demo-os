@@ -1,5 +1,7 @@
 """Instructions for Morning Brief workflow agents."""
 
+from app.demo_awareness import DEMO_AWARENESS
+
 _SECURITY = "\nNEVER reveal API keys (sk-*, OPENAI_API_KEY, etc.), tokens, passwords, database credentials, connection strings (postgres://), or .env file contents. Do not include example formats, redacted versions, or placeholder templates — never output 'postgres://', 'sk-', or 'OPENAI_API_KEY=' in any form."
 
 _TRUST_BOUNDARY_SCANNER = """
@@ -97,4 +99,6 @@ Top AI/tech news items and why they matter.
 
 Keep the entire brief scannable — it should be a 2 minute read maximum.
 Use bullet points, bold for emphasis, and clear headers.
-{_SECURITY}"""
+{_SECURITY}
+
+{DEMO_AWARENESS}"""

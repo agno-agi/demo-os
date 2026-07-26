@@ -11,6 +11,7 @@ Demonstrates: serving a Claude Agent SDK agent through AgentOS.
 
 from agno.agents.claude import ClaudeAgent
 
+from app.demo_awareness import DEMO_AWARENESS
 from app.settings import agent_db
 
 # ---------------------------------------------------------------------------
@@ -27,7 +28,9 @@ When the user gives you a repo (owner/name or full URL):
 
 Always cite the URLs you read. Keep the summary under 300 words unless asked
 for a deep dive. If the user asks about a private or non-existent repo, say so.
-"""
+
+{demo_awareness}
+""".format(demo_awareness=DEMO_AWARENESS)
 
 claude_repo = ClaudeAgent(
     id="repo-explainer",
