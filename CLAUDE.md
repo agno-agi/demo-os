@@ -47,6 +47,7 @@ All agents share:
 | `app/main.py` | AgentOS entry point, registers all agents, teams, workflows |
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
+| `app/usage.py` | Per-user usage limits (burst rate limit + daily run quota) on run endpoints |
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/mcp/agent.py` | Agno Expert - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
@@ -394,6 +395,9 @@ Optional (tools & integrations):
 - `PORT` - API server port (default: `8000`)
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_DATABASE`
 - `RUNTIME_ENV` - Set to `dev` for auto-reload, `prd` for RBAC auth
+- `USAGE_LIMITS_ENABLED` - Per-user usage limits on run endpoints (default: `true`)
+- `USER_RATE_LIMIT_RPM` - Max run requests per user per minute (default: `10`)
+- `USER_DAILY_RUN_LIMIT` - Max runs per user per UTC day, persisted in Postgres (default: `50`)
 - `AGENTOS_URL` - Scheduler callback URL (default: `http://127.0.0.1:8000`)
 - `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface (see `docs/SLACK_CONNECT.md`)
 

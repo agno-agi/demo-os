@@ -31,6 +31,13 @@ SLACK_TOKEN = getenv("SLACK_TOKEN", "")
 SLACK_SIGNING_SECRET = getenv("SLACK_SIGNING_SECRET", "")
 
 # ---------------------------------------------------------------------------
+# Usage limits
+# ---------------------------------------------------------------------------
+USAGE_LIMITS_ENABLED = getenv("USAGE_LIMITS_ENABLED", "true").lower() in ("1", "true", "yes")
+USER_RATE_LIMIT_RPM = int(getenv("USER_RATE_LIMIT_RPM", "10"))
+USER_DAILY_RUN_LIMIT = int(getenv("USER_DAILY_RUN_LIMIT", "50"))
+
+# ---------------------------------------------------------------------------
 # Optional tools
 # ---------------------------------------------------------------------------
 PARALLEL_API_KEY = getenv("PARALLEL_API_KEY", "")
