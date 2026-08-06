@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import logging
 import math
-import re
 import threading
 import time
 from collections import defaultdict, deque
@@ -32,12 +31,32 @@ from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.routing import compile_path
 
 logger = logging.getLogger(__name__)
 
-# POST endpoints that trigger model execution: run create, continue, resume.
-# Cancel is deliberately excluded — a limited user must be able to stop a run.
-RUN_PATH = re.compile(r"^/(agents|teams|workflows)/[^/]+/runs(/[^/]+/(continue|resume))?/?$")
+# The POST routes that trigger model execution, as AgentOS mounts them.
+# Cancel routes are deliberately absent — a limited user must be able to
+# stop a run. Trailing slashes are already stripped by AgentOS's outermost
+# TrailingSlashMiddleware before this middleware sees the path.
+RUN_ROUTES = [
+    "/agents/{agent_id}/runs",
+    "/agents/{agent_id}/runs/{run_id}/continue",
+    "/agents/{agent_id}/runs/{run_id}/resume",
+    "/teams/{team_id}/runs",
+    "/teams/{team_id}/runs/{run_id}/continue",
+    "/teams/{team_id}/runs/{run_id}/resume",
+    "/workflows/{workflow_id}/runs",
+    "/workflows/{workflow_id}/runs/{run_id}/continue",
+    "/workflows/{workflow_id}/runs/{run_id}/resume",
+]
+
+_RUN_ROUTE_PATTERNS = [compile_path(route)[0] for route in RUN_ROUTES]
+
+
+def is_run_route(path: str) -> bool:
+    return any(pattern.match(path) for pattern in _RUN_ROUTE_PATTERNS)
+
 
 USAGE_TABLE = "demo_user_usage"
 
@@ -175,7 +194,7 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
         return self._quota
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        if request.method != "POST" or not RUN_PATH.match(request.url.path):
+        if request.method != "POST" or not is_run_route(request.url.path):
             return await call_next(request)
 
         user_id = getattr(request.state, "user_id", None)
