@@ -25,6 +25,8 @@ from agents.taskboard import taskboard
 from agents.travel import travel
 from app.registry import registry
 from app.settings import (
+    POSTHOG_API_KEY,
+    POSTHOG_HOST,
     RUNTIME_ENV,
     SCHEDULER_BASE_URL,
     SLACK_SIGNING_SECRET,
@@ -32,9 +34,10 @@ from app.settings import (
     USAGE_LIMITS_ENABLED,
     USER_DAILY_RUN_LIMIT,
     USER_RATE_LIMIT_RPM,
+    USER_TOTAL_RUN_LIMIT,
     agent_db,
 )
-from app.usage import UsageLimitMiddleware
+from app.usage import UsageLimitMiddleware, UsageLimits
 from frameworks.claude_repo import claude_repo
 from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
@@ -84,8 +87,13 @@ base_app = FastAPI()
 if USAGE_LIMITS_ENABLED:
     base_app.add_middleware(
         UsageLimitMiddleware,
-        rate_limit_rpm=USER_RATE_LIMIT_RPM,
-        daily_run_limit=USER_DAILY_RUN_LIMIT,
+        limits=UsageLimits(
+            rpm=USER_RATE_LIMIT_RPM,
+            daily=USER_DAILY_RUN_LIMIT,
+            total=USER_TOTAL_RUN_LIMIT,
+        ),
+        posthog_api_key=POSTHOG_API_KEY,
+        posthog_host=POSTHOG_HOST,
     )
 
 

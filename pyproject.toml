@@ -30,6 +30,7 @@ dependencies = [
   "parallel-web",
   "pgvector",
   "pillow",
+  "posthog",
   "psycopg[binary]",
   "PyGithub",
   "pypdf",

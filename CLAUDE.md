@@ -47,7 +47,7 @@ All agents share:
 | `app/main.py` | AgentOS entry point, registers all agents, teams, workflows |
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
-| `app/usage.py` | Per-user usage limits (burst rate limit + daily run quota) on run endpoints |
+| `app/usage.py` | Per-user usage limits (burst rate limit, daily quota, absolute cap; PostHog flag overrides) on run endpoints |
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/mcp/agent.py` | Agno Expert - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |
@@ -397,7 +397,9 @@ Optional (tools & integrations):
 - `RUNTIME_ENV` - Set to `dev` for auto-reload, `prd` for RBAC auth
 - `USAGE_LIMITS_ENABLED` - Per-user usage limits on run endpoints (default: `true`)
 - `USER_RATE_LIMIT_RPM` - Max run requests per user per minute (default: `10`)
-- `USER_DAILY_RUN_LIMIT` - Max runs per user per UTC day, persisted in Postgres (default: `50`)
+- `USER_DAILY_RUN_LIMIT` - Max runs per user per UTC day, persisted in Postgres (default: `20`)
+- `USER_TOTAL_RUN_LIMIT` - Absolute cap on runs per user, ever (default: `200`)
+- `POSTHOG_API_KEY`, `POSTHOG_HOST` - PostHog `usage-limits` feature flag: per-user JSON payload overrides for the limits (e.g. `{"daily": 100}`, `{"enabled": false}`)
 - `AGENTOS_URL` - Scheduler callback URL (default: `http://127.0.0.1:8000`)
 - `SLACK_TOKEN`, `SLACK_SIGNING_SECRET` - Optional Slack interface (see `docs/SLACK_CONNECT.md`)
 
