@@ -2,26 +2,37 @@
 Usage Limits
 ============
 
-Per-user usage limiting for the run endpoints (agents/teams/workflows).
+Per-user usage limiting for run execution (agents/teams/workflows).
 Protects model spend from abuse with three layers:
 
 - Burst: a sliding-window cap on run requests per minute, in memory
 - Daily: a cap on runs per user per UTC day, persisted in Postgres
 - Total: an absolute cap on runs per user, ever (sum over all days)
 
-Users are identified by the authenticated ``request.state.user_id`` (set by
-the AgentOS JWT middleware when RBAC is on); unauthenticated requests fall
-back to the client IP. The internal scheduler, service accounts, and admin
-callers are exempt.
+Runs arrive on two surfaces, each with its own middleware sharing one
+``UsageGate`` so both drain the same counters:
 
-Limits come from env defaults, overridable per user through the PostHog
-``usage-limits`` feature flag (see ``PostHogLimits``). Over-limit requests
-get a 429 with a machine-readable body (``error_code``, ``limit_type``,
-``retry_after``, ``resets_at``) that the AgentOS UI can key a modal off.
+- REST ``POST`` run routes → ``UsageLimitMiddleware``. Users are identified
+  by the authenticated ``request.state.user_id`` (set by the AgentOS JWT
+  middleware when RBAC is on); unauthenticated requests fall back to the
+  client IP. Over-limit requests get a 429 with a machine-readable body
+  (``error_code``, ``limit_type``, ``retry_after``, ``resets_at``) that the
+  AgentOS UI can key a modal off.
+- The workflow WebSocket (``/workflows/ws``), where runs are in-band
+  ``start-workflow`` / ``continue-workflow`` messages →
+  ``WebSocketUsageLimitMiddleware``. Over-limit messages are answered with
+  an ``event: "error"`` frame carrying the same machine-readable fields.
+
+The internal scheduler, service accounts, and admin callers are exempt on
+both surfaces. Limits come from env defaults, overridable per user through
+the PostHog ``usage-limits`` feature flag (see ``PostHogLimits``).
 """
 
 from __future__ import annotations
 
+import base64
+import binascii
+import json
 import logging
 import math
 import threading
@@ -31,6 +42,8 @@ from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 
 from agno.os.middleware.jwt import INTERNAL_SCHEDULER_USER_ID, is_reserved_principal
+from agno.os.scopes import AgentOSScope
+from agno.os.utils import resolve_ws_jwt_config
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -38,6 +51,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.routing import compile_path
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 logger = logging.getLogger(__name__)
 
@@ -247,26 +261,45 @@ def next_utc_midnight() -> datetime:
 
 
 # ---------------------------------------------------------------------------
-# Middleware
+# Shared enforcement core
 # ---------------------------------------------------------------------------
-class UsageLimitMiddleware(BaseHTTPMiddleware):
-    """Enforce per-user usage limits on run endpoints.
+@dataclass(frozen=True)
+class LimitVerdict:
+    """Outcome of a limit check.
 
-    Must run inside (after) the AgentOS JWT middleware so ``request.state.user_id``
-    is populated — pre-add it to the ``base_app`` passed to AgentOS, which stacks
-    its own middleware on top.
+    Denials carry the fields both surfaces serialize for the client
+    (``limit_type`` is "rate", "daily", or "total"; a "total" denial has no
+    ``retry_after``/``resets_at`` — that usage never replenishes). Allowed
+    verdicts carry remaining counts when the quota was consulted, for the
+    HTTP response headers.
+    """
+
+    allowed: bool
+    detail: str = ""
+    limit_type: str = ""
+    limit: int = 0
+    retry_after: int | None = None
+    resets_at: datetime | None = None
+    daily_limit: int | None = None
+    daily_remaining: int | None = None
+    total_limit: int | None = None
+    total_remaining: int | None = None
+
+
+class UsageGate:
+    """Shared limit enforcement: PostHog-resolved limits, burst window, and
+    Postgres quotas. One instance backs both the HTTP middleware and the
+    WebSocket middleware so runs on either surface drain the same counters.
     """
 
     def __init__(
         self,
-        app,
         limits: UsageLimits | None = None,
         posthog_api_key: str = "",
         posthog_host: str = "",
         engine: Engine | None = None,
         resolver: PostHogLimits | None = None,
     ):
-        super().__init__(app)
         self.resolver = resolver or PostHogLimits(limits or UsageLimits(), api_key=posthog_api_key, host=posthog_host)
         self.burst = SlidingWindowLimiter()
         self._engine = engine
@@ -283,6 +316,69 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
             self._quota = RunQuota(self._engine)
         return self._quota
 
+    def check(self, key: str) -> LimitVerdict:
+        """Record one run attempt for ``key`` and decide whether it may proceed."""
+        limits = self.resolver.resolve(key)
+        if not limits.enabled:
+            return LimitVerdict(allowed=True)
+
+        # Burst — checked first so throttled requests never consume quota
+        retry_after = self.burst.hit(key, limits.rpm)
+        if retry_after > 0:
+            return LimitVerdict(
+                allowed=False,
+                detail=f"Rate limit exceeded: max {limits.rpm} run requests per minute.",
+                limit_type="rate",
+                limit=limits.rpm,
+                retry_after=math.ceil(retry_after),
+            )
+
+        # Quotas — the absolute cap wins over the daily one
+        counts = self.quota.hit(key) if self.quota else None
+        if counts is None:
+            return LimitVerdict(allowed=True)
+        daily_count, total_count = counts
+        if total_count > limits.total:
+            return LimitVerdict(
+                allowed=False,
+                detail=f"Usage exhausted: the limit of {limits.total} total runs has been reached.",
+                limit_type="total",
+                limit=limits.total,
+            )
+        if daily_count > limits.daily:
+            resets_at = next_utc_midnight()
+            return LimitVerdict(
+                allowed=False,
+                detail=f"Daily usage limit reached ({limits.daily} runs per day). Resets at midnight UTC.",
+                limit_type="daily",
+                limit=limits.daily,
+                retry_after=max(1, int((resets_at - datetime.now(UTC)).total_seconds())),
+                resets_at=resets_at,
+            )
+        return LimitVerdict(
+            allowed=True,
+            daily_limit=limits.daily,
+            daily_remaining=max(0, limits.daily - daily_count),
+            total_limit=limits.total,
+            total_remaining=max(0, limits.total - total_count),
+        )
+
+
+# ---------------------------------------------------------------------------
+# HTTP middleware (REST run routes)
+# ---------------------------------------------------------------------------
+class UsageLimitMiddleware(BaseHTTPMiddleware):
+    """Enforce per-user usage limits on the REST run endpoints.
+
+    Must run inside (after) the AgentOS JWT middleware so ``request.state.user_id``
+    is populated — pre-add it to the ``base_app`` passed to AgentOS, which stacks
+    its own middleware on top.
+    """
+
+    def __init__(self, app: ASGIApp, gate: UsageGate):
+        super().__init__(app)
+        self.gate = gate
+
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         if request.method != "POST" or not is_run_route(request.url.path):
             return await call_next(request)
@@ -292,47 +388,16 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         key = user_id or f"ip:{self._client_ip(request)}"
-        limits = self.resolver.resolve(key)
-        if not limits.enabled:
-            return await call_next(request)
-
-        # Burst — checked first so throttled requests never consume quota
-        retry_after = self.burst.hit(key, limits.rpm)
-        if retry_after > 0:
-            return self._limited(
-                f"Rate limit exceeded: max {limits.rpm} run requests per minute.",
-                limit_type="rate",
-                limit=limits.rpm,
-                retry_after=math.ceil(retry_after),
-            )
-
-        # Quotas — the absolute cap wins over the daily one
-        counts = self.quota.hit(key) if self.quota else None
-        if counts is not None:
-            daily_count, total_count = counts
-            if total_count > limits.total:
-                return self._limited(
-                    f"Usage exhausted: the limit of {limits.total} total runs has been reached.",
-                    limit_type="total",
-                    limit=limits.total,
-                )
-            if daily_count > limits.daily:
-                resets_at = next_utc_midnight()
-                return self._limited(
-                    f"Daily usage limit reached ({limits.daily} runs per day). Resets at midnight UTC.",
-                    limit_type="daily",
-                    limit=limits.daily,
-                    retry_after=max(1, int((resets_at - datetime.now(UTC)).total_seconds())),
-                    resets_at=resets_at,
-                )
+        verdict = self.gate.check(key)
+        if not verdict.allowed:
+            return self._limited(verdict)
 
         response = await call_next(request)
-        if counts is not None:
-            daily_count, total_count = counts
-            response.headers["X-Usage-Daily-Limit"] = str(limits.daily)
-            response.headers["X-Usage-Daily-Remaining"] = str(max(0, limits.daily - daily_count))
-            response.headers["X-Usage-Total-Limit"] = str(limits.total)
-            response.headers["X-Usage-Total-Remaining"] = str(max(0, limits.total - total_count))
+        if verdict.daily_limit is not None:
+            response.headers["X-Usage-Daily-Limit"] = str(verdict.daily_limit)
+            response.headers["X-Usage-Daily-Remaining"] = str(verdict.daily_remaining)
+            response.headers["X-Usage-Total-Limit"] = str(verdict.total_limit)
+            response.headers["X-Usage-Total-Remaining"] = str(verdict.total_remaining)
         return response
 
     @staticmethod
@@ -353,28 +418,226 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
         return request.client.host if request.client else "unknown"
 
     @staticmethod
-    def _limited(
-        detail: str,
-        limit_type: str,
-        limit: int,
-        retry_after: int | None = None,
-        resets_at: datetime | None = None,
-    ) -> JSONResponse:
-        """429 with a machine-readable body the AgentOS UI can key a modal off.
-
-        ``limit_type`` is "rate", "daily", or "total"; a "total" response has no
-        ``retry_after``/``resets_at`` — that usage never replenishes.
-        """
+    def _limited(verdict: LimitVerdict) -> JSONResponse:
+        """429 with a machine-readable body the AgentOS UI can key a modal off."""
         body: dict = {
-            "detail": detail,
+            "detail": verdict.detail,
             "error_code": "usage_limit_exceeded",
-            "limit_type": limit_type,
-            "limit": limit,
+            "limit_type": verdict.limit_type,
+            "limit": verdict.limit,
         }
         headers = {}
-        if retry_after is not None:
-            body["retry_after"] = retry_after
-            headers["Retry-After"] = str(retry_after)
-        if resets_at is not None:
-            body["resets_at"] = resets_at.isoformat()
+        if verdict.retry_after is not None:
+            body["retry_after"] = verdict.retry_after
+            headers["Retry-After"] = str(verdict.retry_after)
+        if verdict.resets_at is not None:
+            body["resets_at"] = verdict.resets_at.isoformat()
         return JSONResponse(status_code=429, content=body, headers=headers)
+
+
+# ---------------------------------------------------------------------------
+# WebSocket middleware (workflow runs over /workflows/ws)
+# ---------------------------------------------------------------------------
+WORKFLOW_WS_PATH = "/workflows/ws"
+
+# The in-band actions that trigger model execution. `reconnect` is absent —
+# subscribing to an existing run's events spends nothing — and there is no
+# cancel over the socket to worry about.
+WS_RUN_ACTIONS = frozenset({"start-workflow", "continue-workflow"})
+
+
+@dataclass
+class _WsConnectionState:
+    """Per-connection identity learned from the in-band auth handshake."""
+
+    client_ip: str
+    user_id: str | None = None
+    exempt: bool = False
+    awaiting_auth: bool = False
+    pending_token: str | None = None
+    requires_auth: bool | None = None  # resolved lazily on first run action
+
+
+class WebSocketUsageLimitMiddleware:
+    """Enforce the same usage limits on workflow runs arriving over the socket.
+
+    ``BaseHTTPMiddleware`` never sees websocket scopes, and the socket carries
+    runs as in-band messages, so this is a pure ASGI middleware that wraps the
+    ``receive``/``send`` pair of ``/workflows/ws`` connections:
+
+    - Outbound ``authenticated`` events are observed to learn the verified
+      identity — the app only emits that event after validating the token, so
+      no token verification is duplicated here. Reserved principals (internal
+      scheduler, service accounts) and admin-scoped callers are exempt,
+      mirroring the HTTP middleware.
+    - Inbound ``start-workflow`` / ``continue-workflow`` frames are checked
+      against the shared ``UsageGate``. An over-limit frame is swallowed (the
+      run never reaches the app) and answered with an ``event: "error"`` frame
+      carrying the same machine-readable fields as the HTTP 429 body.
+
+    Unauthenticated run frames on auth-required connections pass through
+    uncounted: the app rejects them itself, and rejected attempts must not
+    drain the per-IP counters. Legacy ``os_security_key`` auth attaches no
+    identity, so runs on such connections are not limited (demo-os does not
+    use that mode).
+    """
+
+    def __init__(self, app: ASGIApp, gate: UsageGate):
+        self.app = app
+        self.gate = gate
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "websocket" or scope["path"].rstrip("/") != WORKFLOW_WS_PATH:
+            await self.app(scope, receive, send)
+            return
+        state = _WsConnectionState(client_ip=self._client_ip(scope))
+        await self.app(
+            scope, self._guarded_receive(scope, receive, send, state), self._observing_send(scope, send, state)
+        )
+
+    def _guarded_receive(self, scope: Scope, receive: Receive, send: Send, state: _WsConnectionState) -> Receive:
+        async def guarded() -> Message:
+            while True:
+                message = await receive()
+                if message["type"] != "websocket.receive":
+                    return message
+                frame = self._parse_frame(message.get("text"))
+                if frame is None:
+                    return message
+                action = frame.get("action")
+                if action == "authenticate":
+                    # Remember the token so scopes can be read once the app
+                    # confirms it (see _identify); watch for that confirmation.
+                    state.awaiting_auth = True
+                    token = frame.get("token")
+                    state.pending_token = token if isinstance(token, str) else None
+                    return message
+                if action not in WS_RUN_ACTIONS or state.exempt:
+                    return message
+                if state.user_id is None:
+                    if state.requires_auth is None:
+                        state.requires_auth = self._auth_required(scope)
+                    if state.requires_auth:
+                        return message  # app rejects unauthenticated runs itself
+                key = state.user_id or f"ip:{state.client_ip}"
+                verdict = self.gate.check(key)
+                if verdict.allowed:
+                    return message
+                await send({"type": "websocket.send", "text": json.dumps(self._limit_event(verdict))})
+                # Swallow the frame and wait for the client's next message
+
+        return guarded
+
+    def _observing_send(self, scope: Scope, send: Send, state: _WsConnectionState) -> Send:
+        async def observing(message: Message) -> None:
+            # Only frames of the auth handshake are inspected; once it settles,
+            # streamed run events pass through without parsing overhead.
+            if state.awaiting_auth and message["type"] == "websocket.send":
+                frame = self._parse_frame(message.get("text"))
+                if frame is not None:
+                    event = frame.get("event")
+                    if event == "authenticated":
+                        state.awaiting_auth = False
+                        self._identify(scope, state, frame.get("user_id"))
+                    elif event == "auth_error":
+                        state.awaiting_auth = False
+                        state.pending_token = None
+            await send(message)
+
+        return observing
+
+    def _identify(self, scope: Scope, state: _WsConnectionState, user_id: object) -> None:
+        """Record the app-verified identity and resolve exemptions."""
+        if isinstance(user_id, str) and user_id:
+            state.user_id = user_id
+        token, state.pending_token = state.pending_token, None
+        if state.user_id is None:
+            return
+        # Internal scheduler and service-account / MCP principals
+        if state.user_id == INTERNAL_SCHEDULER_USER_ID or is_reserved_principal(state.user_id):
+            state.exempt = True
+            return
+        # Admin-scoped callers (os.agno.com operators)
+        scopes = self._token_scopes(scope, token)
+        app_state = getattr(scope.get("app"), "state", None)
+        admin_scope = getattr(app_state, "admin_scope", None) or AgentOSScope.ADMIN.value
+        state.exempt = admin_scope in scopes
+
+    @staticmethod
+    def _token_scopes(scope: Scope, token: str | None) -> list[str]:
+        """Scopes from the JWT the app just verified.
+
+        Decoded without verification — ``_identify`` only runs after the app
+        emitted ``authenticated`` for this exact token. The validator's claim
+        mapping is used when available so a custom ``scopes_claim`` is honored.
+        """
+        if not token or token.count(".") != 2:
+            return []
+        segment = token.split(".")[1]
+        try:
+            payload = json.loads(base64.urlsafe_b64decode(segment + "=" * (-len(segment) % 4)))
+        except (ValueError, TypeError, binascii.Error):
+            return []
+        if not isinstance(payload, dict):
+            return []
+        app = scope.get("app")
+        if app is not None:
+            try:
+                validator = resolve_ws_jwt_config(app).get("validator")
+                if validator is not None:
+                    return list(validator.extract_claims(payload).get("scopes") or [])
+            except Exception as e:  # noqa: BLE001 — exemption is best-effort, limits stay on
+                logger.warning(f"WS scope extraction via validator failed, using raw claim: {e}")
+        scopes = payload.get("scopes")
+        return list(scopes) if isinstance(scopes, list) else []
+
+    @staticmethod
+    def _auth_required(scope: Scope) -> bool:
+        """Whether the app will reject unauthenticated run actions on this socket."""
+        app = scope.get("app")
+        if app is None:
+            return False
+        try:
+            cfg = resolve_ws_jwt_config(app)
+        except Exception as e:  # noqa: BLE001
+            logger.warning(f"WS auth config resolution failed, treating socket as unauthenticated: {e}")
+            return False
+        if cfg.get("validator") is not None or cfg.get("auth_required"):
+            return True
+        from agno.os.settings import AgnoAPISettings
+
+        return bool(AgnoAPISettings().os_security_key)
+
+    @staticmethod
+    def _parse_frame(text: object) -> dict | None:
+        if not isinstance(text, str) or not text:
+            return None
+        try:
+            frame = json.loads(text)
+        except ValueError:
+            return None
+        return frame if isinstance(frame, dict) else None
+
+    @staticmethod
+    def _client_ip(scope: Scope) -> str:
+        for name, value in scope.get("headers") or []:
+            if name == b"x-forwarded-for":
+                return value.decode("latin-1").split(",")[0].strip()
+        client = scope.get("client")
+        return client[0] if client else "unknown"
+
+    @staticmethod
+    def _limit_event(verdict: LimitVerdict) -> dict:
+        """The socket-shaped mirror of the HTTP 429 body."""
+        event: dict = {
+            "event": "error",
+            "error": verdict.detail,
+            "error_code": "usage_limit_exceeded",
+            "limit_type": verdict.limit_type,
+            "limit": verdict.limit,
+        }
+        if verdict.retry_after is not None:
+            event["retry_after"] = verdict.retry_after
+        if verdict.resets_at is not None:
+            event["resets_at"] = verdict.resets_at.isoformat()
+        return event

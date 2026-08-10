@@ -37,7 +37,7 @@ from app.settings import (
     USER_TOTAL_RUN_LIMIT,
     agent_db,
 )
-from app.usage import UsageLimitMiddleware, UsageLimits
+from app.usage import UsageGate, UsageLimitMiddleware, UsageLimits, WebSocketUsageLimitMiddleware
 from frameworks.claude_repo import claude_repo
 from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
@@ -80,13 +80,15 @@ async def lifespan(app):  # type: ignore[no-untyped-def]
 # ---------------------------------------------------------------------------
 # Base App
 # ---------------------------------------------------------------------------
-# Per-user usage limits on the run endpoints. The middleware must run after
+# Per-user usage limits on run execution. The HTTP middleware must run after
 # the JWT middleware (which sets request.state.user_id) — AgentOS stacks its
 # own middleware on top of base_app, so pre-adding it here gives that order.
+# Workflow runs from the UI arrive as messages on /workflows/ws, which HTTP
+# middleware never sees — the WebSocket middleware covers that surface with
+# the same gate so both drain the same counters.
 base_app = FastAPI()
 if USAGE_LIMITS_ENABLED:
-    base_app.add_middleware(
-        UsageLimitMiddleware,
+    usage_gate = UsageGate(
         limits=UsageLimits(
             rpm=USER_RATE_LIMIT_RPM,
             daily=USER_DAILY_RUN_LIMIT,
@@ -95,6 +97,8 @@ if USAGE_LIMITS_ENABLED:
         posthog_api_key=POSTHOG_API_KEY,
         posthog_host=POSTHOG_HOST,
     )
+    base_app.add_middleware(UsageLimitMiddleware, gate=usage_gate)
+    base_app.add_middleware(WebSocketUsageLimitMiddleware, gate=usage_gate)
 
 
 # ---------------------------------------------------------------------------
