@@ -5,9 +5,12 @@ Usage Limits
 Per-user usage limiting for run execution (agents/teams/workflows).
 Protects model spend from abuse with three layers:
 
-- Burst: a sliding-window cap on run requests per minute, in memory
-- Daily: a cap on runs per user per UTC day, persisted in Postgres
+- Burst: a cap on run requests per minute (fixed one-minute windows)
+- Daily: a cap on runs per user per UTC day
 - Total: an absolute cap on runs per user, ever (sum over all days)
+
+All three counters live in Postgres, so limits hold across restarts and are
+shared by every container and worker process.
 
 Runs arrive on two surfaces, each with its own middleware sharing one
 ``UsageGate`` so both drain the same counters:
@@ -32,12 +35,11 @@ from __future__ import annotations
 
 import base64
 import binascii
+import ipaddress
 import json
 import logging
-import math
 import threading
 import time
-from collections import defaultdict, deque
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 
@@ -49,6 +51,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.concurrency import run_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.routing import compile_path
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
@@ -79,6 +82,41 @@ def is_run_route(path: str) -> bool:
 
 
 USAGE_TABLE = "demo_user_usage"
+USAGE_MINUTE_TABLE = "demo_user_usage_minute"
+
+
+def forwarded_client_ip(forwarded: str | None) -> str | None:
+    """The rightmost ``X-Forwarded-For`` entry — the one our edge proxy appended.
+
+    Leftmost entries are client-controlled (clients can send their own header
+    and proxies append after it), so trusting them would let a caller mint a
+    fresh limit bucket per request. Junk that doesn't parse as an IP is
+    rejected so it can't become a DB key; callers fall back to the socket peer.
+    """
+    if not forwarded:
+        return None
+    candidate = forwarded.split(",")[-1].strip()
+    try:
+        ipaddress.ip_address(candidate)
+    except ValueError:
+        return None
+    return candidate
+
+
+def socket_peer_ip(host: str | None) -> str:
+    """The socket peer as a limit key, or ``"unknown"`` if it isn't an IP.
+
+    Uvicorn's proxy-headers mode can rewrite the ASGI ``client`` tuple from the
+    same client-controlled ``X-Forwarded-For`` header, so junk here is collapsed
+    into one shared bucket rather than minting a per-request key.
+    """
+    if not host:
+        return "unknown"
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        return "unknown"
+    return host
 
 
 # ---------------------------------------------------------------------------
@@ -157,61 +195,54 @@ class PostHogLimits:
 
 
 # ---------------------------------------------------------------------------
-# Burst limit (sliding window, in memory)
-# ---------------------------------------------------------------------------
-class SlidingWindowLimiter:
-    """Per-key sliding-window counter. In-memory, so per-process — fine for
-    burst protection; the persistent quotas are the backstop."""
-
-    def __init__(self, window_seconds: float = 60.0):
-        self.window = window_seconds
-        self._hits: dict[str, deque[float]] = defaultdict(deque)
-        self._lock = threading.Lock()
-        self._last_prune = time.monotonic()
-
-    def hit(self, key: str, limit: int) -> float:
-        """Record a request. Returns 0.0 if allowed, else seconds until a slot frees."""
-        now = time.monotonic()
-        with self._lock:
-            self._prune(now)
-            hits = self._hits[key]
-            while hits and now - hits[0] >= self.window:
-                hits.popleft()
-            if len(hits) >= limit:
-                return self.window - (now - hits[0])
-            hits.append(now)
-            return 0.0
-
-    def _prune(self, now: float) -> None:
-        """Drop idle keys so the map doesn't grow unbounded. Called under the lock."""
-        if now - self._last_prune < self.window:
-            return
-        self._last_prune = now
-        idle = [key for key, hits in self._hits.items() if not hits or now - hits[-1] >= self.window]
-        for key in idle:
-            del self._hits[key]
-
-
-# ---------------------------------------------------------------------------
-# Run quotas (Postgres)
+# Run counters (Postgres)
 # ---------------------------------------------------------------------------
 class RunQuota:
-    """Per-user run counters backed by Postgres, keyed on (user_id, UTC day)."""
+    """Per-user run counters backed by Postgres.
+
+    Two tables: ``USAGE_TABLE`` keyed on (user_id, UTC day) for the daily and
+    all-time quotas, and ``USAGE_MINUTE_TABLE`` keyed on (user_id, epoch
+    minute) for the burst window. Postgres is the single source of truth, so
+    every container and worker process drains the same counters — a fixed
+    one-minute window can briefly admit up to 2x the per-minute limit across
+    a boundary, which the persistent quotas cap anyway.
+    """
 
     def __init__(self, engine: Engine):
         self.engine = engine
         self._table_ready = False
         self._lock = threading.Lock()
 
-    def hit(self, user_id: str) -> tuple[int, int] | None:
-        """Increment today's counter. Returns (today's count, all-time count).
+    def hit(self, user_id: str, rpm: int) -> tuple[int, int | None, int | None] | None:
+        """Record one attempt. Returns (this minute's count, today's count, all-time count).
 
-        Returns None if the database is unavailable — callers fail open, since
-        the run itself would surface the database error anyway.
+        A burst-limited attempt (minute count above ``rpm``) does not consume
+        the daily/total quotas — those come back as None. Returns None if the
+        database is unavailable; callers fail open, since the run itself would
+        surface the database error anyway.
         """
         try:
             self._ensure_table()
+            minute = int(time.time()) // 60
             with self.engine.begin() as conn:
+                burst = conn.execute(
+                    text(
+                        f"""
+                        INSERT INTO {USAGE_MINUTE_TABLE} (user_id, minute, runs)
+                        VALUES (:user_id, :minute, 1)
+                        ON CONFLICT (user_id, minute)
+                        DO UPDATE SET runs = {USAGE_MINUTE_TABLE}.runs + 1
+                        RETURNING runs
+                        """
+                    ),
+                    {"user_id": user_id, "minute": minute},
+                ).scalar_one()
+                conn.execute(
+                    text(f"DELETE FROM {USAGE_MINUTE_TABLE} WHERE user_id = :user_id AND minute < :cutoff"),
+                    {"user_id": user_id, "cutoff": minute - 1},
+                )
+                if int(burst) > rpm:
+                    return int(burst), None, None
                 daily = conn.execute(
                     text(
                         f"""
@@ -228,7 +259,7 @@ class RunQuota:
                     text(f"SELECT COALESCE(SUM(runs), 0) FROM {USAGE_TABLE} WHERE user_id = :user_id"),
                     {"user_id": user_id},
                 ).scalar_one()
-            return int(daily), int(total)
+            return int(burst), int(daily), int(total)
         except SQLAlchemyError as e:
             logger.warning(f"Usage quota check failed, allowing request: {e}")
             return None
@@ -248,6 +279,18 @@ class RunQuota:
                             day DATE NOT NULL,
                             runs INTEGER NOT NULL DEFAULT 0,
                             PRIMARY KEY (user_id, day)
+                        )
+                        """
+                    )
+                )
+                conn.execute(
+                    text(
+                        f"""
+                        CREATE TABLE IF NOT EXISTS {USAGE_MINUTE_TABLE} (
+                            user_id TEXT NOT NULL,
+                            minute BIGINT NOT NULL,
+                            runs INTEGER NOT NULL DEFAULT 0,
+                            PRIMARY KEY (user_id, minute)
                         )
                         """
                     )
@@ -287,9 +330,9 @@ class LimitVerdict:
 
 
 class UsageGate:
-    """Shared limit enforcement: PostHog-resolved limits, burst window, and
-    Postgres quotas. One instance backs both the HTTP middleware and the
-    WebSocket middleware so runs on either surface drain the same counters.
+    """Shared limit enforcement: PostHog-resolved limits over Postgres-backed
+    counters. One instance backs both the HTTP middleware and the WebSocket
+    middleware so runs on either surface drain the same counters.
     """
 
     def __init__(
@@ -301,7 +344,6 @@ class UsageGate:
         resolver: PostHogLimits | None = None,
     ):
         self.resolver = resolver or PostHogLimits(limits or UsageLimits(), api_key=posthog_api_key, host=posthog_host)
-        self.burst = SlidingWindowLimiter()
         self._engine = engine
         self._quota: RunQuota | None = None
 
@@ -317,27 +359,32 @@ class UsageGate:
         return self._quota
 
     def check(self, key: str) -> LimitVerdict:
-        """Record one run attempt for ``key`` and decide whether it may proceed."""
+        """Record one run attempt for ``key`` and decide whether it may proceed.
+
+        Synchronous (DB round-trips plus, on cache miss, a PostHog HTTP call) —
+        async callers must dispatch via ``run_in_threadpool`` to keep the event
+        loop free.
+        """
         limits = self.resolver.resolve(key)
         if not limits.enabled:
             return LimitVerdict(allowed=True)
 
-        # Burst — checked first so throttled requests never consume quota
-        retry_after = self.burst.hit(key, limits.rpm)
-        if retry_after > 0:
+        counts = self.quota.hit(key, limits.rpm) if self.quota else None
+        if counts is None:
+            return LimitVerdict(allowed=True)
+        _, daily_count, total_count = counts
+
+        # Burst — checked first; throttled attempts never consume quota
+        if daily_count is None or total_count is None:
             return LimitVerdict(
                 allowed=False,
                 detail=f"Rate limit exceeded: max {limits.rpm} run requests per minute.",
                 limit_type="rate",
                 limit=limits.rpm,
-                retry_after=math.ceil(retry_after),
+                retry_after=max(1, 60 - int(time.time()) % 60),
             )
 
         # Quotas — the absolute cap wins over the daily one
-        counts = self.quota.hit(key) if self.quota else None
-        if counts is None:
-            return LimitVerdict(allowed=True)
-        daily_count, total_count = counts
         if total_count > limits.total:
             return LimitVerdict(
                 allowed=False,
@@ -388,7 +435,8 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         key = user_id or f"ip:{self._client_ip(request)}"
-        verdict = self.gate.check(key)
+        # Threadpool: the gate does blocking DB and PostHog I/O
+        verdict = await run_in_threadpool(self.gate.check, key)
         if not verdict.allowed:
             return self._limited(verdict)
 
@@ -412,10 +460,10 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
 
     @staticmethod
     def _client_ip(request: Request) -> str:
-        forwarded = request.headers.get("x-forwarded-for")
+        forwarded = forwarded_client_ip(request.headers.get("x-forwarded-for"))
         if forwarded:
-            return forwarded.split(",")[0].strip()
-        return request.client.host if request.client else "unknown"
+            return forwarded
+        return socket_peer_ip(request.client.host if request.client else None)
 
     @staticmethod
     def _limited(verdict: LimitVerdict) -> JSONResponse:
@@ -520,7 +568,8 @@ class WebSocketUsageLimitMiddleware:
                     if state.requires_auth:
                         return message  # app rejects unauthenticated runs itself
                 key = state.user_id or f"ip:{state.client_ip}"
-                verdict = self.gate.check(key)
+                # Threadpool: the gate does blocking DB and PostHog I/O
+                verdict = await run_in_threadpool(self.gate.check, key)
                 if verdict.allowed:
                     return message
                 await send({"type": "websocket.send", "text": json.dumps(self._limit_event(verdict))})
@@ -622,9 +671,12 @@ class WebSocketUsageLimitMiddleware:
     def _client_ip(scope: Scope) -> str:
         for name, value in scope.get("headers") or []:
             if name == b"x-forwarded-for":
-                return value.decode("latin-1").split(",")[0].strip()
+                forwarded = forwarded_client_ip(value.decode("latin-1"))
+                if forwarded:
+                    return forwarded
+                break
         client = scope.get("client")
-        return client[0] if client else "unknown"
+        return socket_peer_ip(client[0] if client else None)
 
     @staticmethod
     def _limit_event(verdict: LimitVerdict) -> dict:
