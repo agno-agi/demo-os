@@ -14,7 +14,7 @@ AgentOS (app/main.py)
 │   ├── Agno Expert (agents/mcp/)                                 # Agno documentation agent via MCP
 │   ├── Voyager (agents/travel/)                            # Travel booking — HITL + guardrails
 │   ├── Operator (agents/infra/)                            # Approvals + Skills + structured output
-│   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTool + HITL)
+│   ├── Builder (agents/builder/)                            # Builds you an assistant from a conversation (StudioTools + HITL)
 │   ├── Researcher (agents/reporter/)                              # Web research + HTML report generation
 │   ├── Media Lab (agents/studio/)                               # Multimodal media (DALL-E, TTS, FAL, Luma)
 │   └── Planner (agents/taskboard/)                            # Session state + agentic state
@@ -328,6 +328,10 @@ source .venv/bin/activate
 # Local development with Docker
 docker compose up -d --build
 
+# Agno v2 -> v3 database migration (run once per environment before serving on 3.0)
+# Covers agno-managed tables AND the PgVector user_id column.
+python -m scripts.migrate_v2_to_v3
+
 # Load knowledge for Dash
 python -m agents.dash.scripts.load_knowledge
 
@@ -438,7 +442,7 @@ Optional (tools & integrations):
 | User feedback (ask_user) | Voyager, Builder |
 | Approval — blocking | Operator, Builder |
 | Skills (LocalSkills, SKILL.md) | Operator |
-| Agent composition (StudioTool) | Builder |
+| Agent composition (StudioTools) | Builder |
 | Reasoning tools | Dash |
 | Structured output (Pydantic) | Researcher, Operator |
 | File generation (HTML) | Researcher |

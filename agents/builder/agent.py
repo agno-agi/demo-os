@@ -1,15 +1,15 @@
 """
-Builder - Agent-Building Agent (StudioTool + HITL)
-==================================================
+Builder - Agent-Building Agent (StudioTools + HITL)
+===================================================
 
 "Describe your job and I'll build your assistant."
 
-Builder composes a personalized agent from a conversation, using Agno's StudioTool against the
+Builder composes a personalized agent from a conversation, using Agno's StudioTools against the
 live AgentOS registry: it interviews the user, discovers the right tools/model from the registry,
 creates the assistant behind a confirmation gate, trial-runs it, refines it on feedback, and
 publishes it live in this AgentOS.
 
-- StudioTool          — list/create/run/edit/publish agents against the registry. Destructive ops
+- StudioTools         — list/create/run/edit/publish agents against the registry. Destructive ops
   (create/edit/delete/publish) are gated by ``requires_confirmation_tools``; ``versions=True`` keeps
   edits as drafts until published.
 - Human-in-the-loop   — UserControlFlowTools (free-text) and UserFeedbackTools (multiple-choice) to
@@ -20,7 +20,7 @@ pause/resume, orphaning the paused tool call. A single agent resumes cleanly acr
 """
 
 from agno.agent import Agent
-from agno.tools.studio import StudioTool
+from agno.tools.studio import StudioTools
 from agno.tools.user_control_flow import UserControlFlowTools
 from agno.tools.user_feedback import UserFeedbackTools
 
@@ -38,10 +38,12 @@ builder = Agent(
     model=MODEL,
     db=agent_db,
     tools=[
-        StudioTool(
+        StudioTools(
             registry=registry,
             db=agent_db,
-            agents=True,
+            create_agents=True,
+            create_teams=False,
+            create_workflows=False,
             versions=True,
             requires_confirmation_tools=[
                 "create_agent",

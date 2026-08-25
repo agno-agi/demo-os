@@ -95,40 +95,42 @@ support_bot = Workflow(
             name="collect_environment",
             step_id="collect_environment",
             executor=collect_environment,
-            requires_user_input=True,
-            user_input_message="To diagnose this, share a few details about your setup:",
-            user_input_schema=[
-                {
-                    "name": "agno_version",
-                    "field_type": "str",
-                    "description": "Your Agno version (e.g. '2.6.14'). Run `pip show agno` if unsure.",
-                    "required": True,
-                },
-                {
-                    "name": "python_version",
-                    "field_type": "str",
-                    "description": "Your Python version (e.g. '3.12').",
-                    "required": True,
-                },
-                {
-                    "name": "os",
-                    "field_type": "str",
-                    "description": "Operating system (e.g. 'macOS 14', 'Ubuntu 22.04', 'Windows 11').",
-                    "required": False,
-                },
-                {
-                    "name": "install_method",
-                    "field_type": "str",
-                    "description": "How you installed Agno: 'pip', 'uv', 'poetry', or 'docker'.",
-                    "required": False,
-                },
-                {
-                    "name": "details",
-                    "field_type": "str",
-                    "description": "Anything else relevant — full traceback, what you were doing, recent changes.",
-                    "required": False,
-                },
-            ],
+            human_review=HumanReview(
+                requires_user_input=True,
+                user_input_message="To diagnose this, share a few details about your setup:",
+                user_input_schema=[
+                    {
+                        "name": "agno_version",
+                        "field_type": "str",
+                        "description": "Your Agno version (e.g. '3.0.0'). Run `pip show agno` if unsure.",
+                        "required": True,
+                    },
+                    {
+                        "name": "python_version",
+                        "field_type": "str",
+                        "description": "Your Python version (e.g. '3.12').",
+                        "required": True,
+                    },
+                    {
+                        "name": "os",
+                        "field_type": "str",
+                        "description": "Operating system (e.g. 'macOS 14', 'Ubuntu 22.04', 'Windows 11').",
+                        "required": False,
+                    },
+                    {
+                        "name": "install_method",
+                        "field_type": "str",
+                        "description": "How you installed Agno: 'pip', 'uv', 'poetry', or 'docker'.",
+                        "required": False,
+                    },
+                    {
+                        "name": "details",
+                        "field_type": "str",
+                        "description": "Anything else relevant — full traceback, what you were doing, recent changes.",
+                        "required": False,
+                    },
+                ],
+            ),
         ),
         Step(name="search", agent=searcher),
         Step(
