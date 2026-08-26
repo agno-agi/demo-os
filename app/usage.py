@@ -391,19 +391,37 @@ class RunQuota:
             except SQLAlchemyError as e:
                 # Another worker may have won a create race — then the table is there
                 if not self._table_exists():
-                    self._retry_schema_at = now + self.SCHEMA_RETRY_SECONDS
-                    logger.error(
-                        f"Could not create {usage_table.name}, retrying in {self.SCHEMA_RETRY_SECONDS:.0f}s: {e}"
-                    )
-                    return False
+                    return self._schema_failed(now, f"Could not create {usage_table.name}: {e}")
+            try:
+                missing = self._missing_columns()
+            except SQLAlchemyError as e:
+                return self._schema_failed(now, f"Could not inspect {usage_table.name}: {e}")
+            if missing:
+                # A table from an older revision of this module: IF NOT EXISTS kept
+                # it and every upsert would fail on it. Say so once, with the
+                # remedy, rather than 503-ing per request with a raw SQL error.
+                return self._schema_failed(
+                    now,
+                    f"{usage_table.name} exists with an older schema (missing columns {sorted(missing)}); "
+                    f"drop it so it can be recreated: DROP TABLE {usage_table.name}",
+                )
             self._schema_ready = True
             return True
+
+    def _schema_failed(self, now: float, reason: str) -> bool:
+        self._retry_schema_at = now + self.SCHEMA_RETRY_SECONDS
+        logger.error(f"{reason} — retrying in {self.SCHEMA_RETRY_SECONDS:.0f}s")
+        return False
 
     def _table_exists(self) -> bool:
         try:
             return inspect(self.engine).has_table(usage_table.name)
         except SQLAlchemyError:
             return False
+
+    def _missing_columns(self) -> set[str]:
+        present = {col["name"] for col in inspect(self.engine).get_columns(usage_table.name)}
+        return {col.name for col in usage_table.columns} - present
 
 
 def next_utc_midnight() -> datetime:
