@@ -74,6 +74,8 @@ if SLACK_TOKEN and SLACK_SIGNING_SECRET:
 @asynccontextmanager
 async def lifespan(app):  # type: ignore[no-untyped-def]
     _register_schedules()
+    if usage_gate is not None:
+        usage_gate.prepare()
     yield
 
 
@@ -87,6 +89,7 @@ async def lifespan(app):  # type: ignore[no-untyped-def]
 # middleware never sees — the WebSocket middleware covers that surface with
 # the same gate so both drain the same counters.
 base_app = FastAPI()
+usage_gate: UsageGate | None = None
 if USAGE_LIMITS_ENABLED:
     usage_gate = UsageGate(
         limits=UsageLimits(

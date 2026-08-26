@@ -5,12 +5,16 @@ Usage Limits
 Per-user usage limiting for run execution (agents/teams/workflows).
 Protects model spend from abuse with three layers:
 
-- Burst: a cap on run requests per minute (fixed one-minute windows)
+- Burst: a cap on runs per minute (fixed one-minute windows)
 - Daily: a cap on runs per user per UTC day
-- Total: an absolute cap on runs per user, ever (sum over all days)
+- Total: an absolute cap on runs per user, ever
 
-All three counters live in Postgres, so limits hold across restarts and are
-shared by every container and worker process.
+All three counters live on one Postgres row per user, so limits hold across
+restarts and are shared by every container and worker process. A single
+atomic upsert both checks and consumes quota: denied attempts never advance
+a counter, and no counter can exceed its limit. If Postgres is unreachable
+the gate fails closed (503) — a spend guard that fails open would hand out
+unlimited free runs for the length of the outage.
 
 Runs arrive on two surfaces, each with its own middleware sharing one
 ``UsageGate`` so both drain the same counters:
@@ -20,7 +24,8 @@ Runs arrive on two surfaces, each with its own middleware sharing one
   middleware when RBAC is on); unauthenticated requests fall back to the
   client IP. Over-limit requests get a 429 with a machine-readable body
   (``error_code``, ``limit_type``, ``retry_after``, ``resets_at``) that the
-  AgentOS UI can key a modal off.
+  AgentOS UI can key a modal off. A run the app rejects before executing
+  (4xx: unknown id, malformed body, missing scope) is refunded.
 - The workflow WebSocket (``/workflows/ws``), where runs are in-band
   ``start-workflow`` / ``continue-workflow`` messages →
   ``WebSocketUsageLimitMiddleware``. Over-limit messages are answered with
@@ -41,16 +46,33 @@ import logging
 import threading
 import time
 from dataclasses import dataclass, replace
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from agno.os.middleware.jwt import INTERNAL_SCHEDULER_USER_ID, is_reserved_principal
 from agno.os.scopes import AgentOSScope
 from agno.os.utils import resolve_ws_jwt_config
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
-from sqlalchemy import text
+from sqlalchemy import (
+    BigInteger,
+    Column,
+    Date,
+    DateTime,
+    Integer,
+    MetaData,
+    Table,
+    Text,
+    and_,
+    case,
+    func,
+    inspect,
+    select,
+    update,
+)
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.schema import CreateTable
 from starlette.concurrency import run_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.routing import compile_path
@@ -79,10 +101,6 @@ _RUN_ROUTE_PATTERNS = [compile_path(route)[0] for route in RUN_ROUTES]
 
 def is_run_route(path: str) -> bool:
     return any(pattern.match(path) for pattern in _RUN_ROUTE_PATTERNS)
-
-
-USAGE_TABLE = "demo_user_usage"
-USAGE_MINUTE_TABLE = "demo_user_usage_minute"
 
 
 def forwarded_client_ip(forwarded: str | None) -> str | None:
@@ -127,7 +145,7 @@ class UsageLimits:
     """Effective limits for one user."""
 
     enabled: bool = True
-    rpm: int = 10  # run requests per minute (burst)
+    rpm: int = 10  # runs per minute (burst)
     daily: int = 20  # runs per UTC day
     total: int = 200  # runs ever (absolute cap)
 
@@ -137,10 +155,11 @@ class PostHogLimits:
 
     The env-configured limits are the baseline. When PostHog is configured and
     the flag matches a user, its JSON payload overrides individual fields, e.g.
-    ``{"daily": 100}`` to raise one user's quota or ``{"enabled": false}`` to
-    lift limits entirely. A non-matching flag or any evaluation failure falls
-    back to the baseline, so limits stay on if PostHog is down or the flag
-    isn't rolled out. Results are cached per user for ``cache_ttl`` seconds.
+    ``{"daily": 100}`` to raise one user's quota, ``{"daily": 0}`` to block
+    them, or ``{"enabled": false}`` to lift limits entirely. A non-matching
+    flag or any evaluation failure falls back to the baseline, so limits stay
+    on if PostHog is down or the flag isn't rolled out. Results are cached per
+    user for ``cache_ttl`` seconds.
     """
 
     FLAG_KEY = "usage-limits"
@@ -183,119 +202,208 @@ class PostHogLimits:
             payload = self._client.get_feature_flag_payload(self.FLAG_KEY, user_key, match_value=match)
             if not isinstance(payload, dict):
                 return self.defaults
-            overrides = {
-                field: payload[field]
-                for field in ("enabled", "rpm", "daily", "total")
-                if isinstance(payload.get(field), (bool, int))
-            }
+            overrides = self._overrides(payload, user_key)
+            if overrides:
+                logger.info(f"usage-limits flag overrides for {user_key}: {overrides}")
             return replace(self.defaults, **overrides)
         except Exception as e:  # noqa: BLE001 — flag evaluation must never block a run
             logger.warning(f"PostHog usage-limits flag evaluation failed, using defaults: {e}")
             return self.defaults
 
+    @staticmethod
+    def _overrides(payload: dict, user_key: str) -> dict:
+        """Validate the flag payload field by field.
+
+        The payload is hand-edited in the PostHog UI, so each field is checked
+        strictly — ``enabled`` must be a bool (not a truthy int), the counts
+        must be non-negative ints (``bool`` is an ``int`` subclass, so
+        ``true`` is rejected explicitly). Anything invalid is logged and
+        skipped, leaving that field on the env baseline.
+        """
+        overrides: dict = {}
+        for field, value in payload.items():
+            if field == "enabled":
+                valid = type(value) is bool
+            elif field in ("rpm", "daily", "total"):
+                valid = type(value) is int and value >= 0
+            else:
+                valid = False
+            if valid:
+                overrides[field] = value
+            else:
+                logger.warning(f"Ignoring invalid usage-limits override for {user_key}: {field}={value!r}")
+        return overrides
+
 
 # ---------------------------------------------------------------------------
 # Run counters (Postgres)
 # ---------------------------------------------------------------------------
+# One row per user carries all three windows. The minute and day columns
+# record which window the counter next to them belongs to; a counter whose
+# window has rolled over is treated as zero and reset by the next admitted
+# run. Rows are never pruned: total_runs is the absolute cap's only memory,
+# so the table is bounded by the number of distinct principals (JWT users
+# under RBAC, IPs otherwise), not by time.
+metadata = MetaData()
+usage_table = Table(
+    "demo_user_usage",
+    metadata,
+    Column("user_id", Text, primary_key=True),
+    Column("minute", BigInteger, nullable=False),  # epoch minute of the burst window
+    Column("minute_runs", Integer, nullable=False),  # runs admitted in that minute
+    Column("day", Date, nullable=False),  # UTC day of the daily window
+    Column("day_runs", Integer, nullable=False),  # runs admitted that day
+    Column("total_runs", Integer, nullable=False),  # runs admitted, ever
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+
+@dataclass(frozen=True)
+class QuotaHit:
+    """Outcome of recording one run attempt."""
+
+    admitted: bool
+    limit_type: str = ""  # "rate" | "daily" | "total" when not admitted
+    day_runs: int = 0
+    total_runs: int = 0
+
+
 class RunQuota:
     """Per-user run counters backed by Postgres.
 
-    Two tables: ``USAGE_TABLE`` keyed on (user_id, UTC day) for the daily and
-    all-time quotas, and ``USAGE_MINUTE_TABLE`` keyed on (user_id, epoch
-    minute) for the burst window. Postgres is the single source of truth, so
-    every container and worker process drains the same counters — a fixed
-    one-minute window can briefly admit up to 2x the per-minute limit across
-    a boundary, which the persistent quotas cap anyway.
+    Postgres is the single source of truth, so every container and worker
+    process drains the same counters. The burst window is a fixed minute, so
+    it can briefly admit up to 2x the per-minute limit across a boundary,
+    which the persistent quotas cap anyway.
     """
+
+    SCHEMA_RETRY_SECONDS = 30.0
 
     def __init__(self, engine: Engine):
         self.engine = engine
-        self._table_ready = False
+        self._schema_ready = False
+        self._retry_schema_at = 0.0
         self._lock = threading.Lock()
 
-    def hit(self, user_id: str, rpm: int) -> tuple[int, int | None, int | None] | None:
-        """Record one attempt. Returns (this minute's count, today's count, all-time count).
+    def prepare(self) -> bool:
+        """Create the usage table if it doesn't exist. Safe to call at startup and again lazily."""
+        return self._ensure_schema()
 
-        A burst-limited attempt (minute count above ``rpm``) does not consume
-        the daily/total quotas — those come back as None. Returns None if the
-        database is unavailable; callers fail open, since the run itself would
-        surface the database error anyway.
+    def hit(self, user_id: str, limits: UsageLimits, day: date, minute: int) -> QuotaHit | None:
+        """Admit one run for ``user_id`` if every limit still has headroom.
+
+        A single upsert checks and consumes atomically: windows that have
+        rolled over are reset, and the counters only advance when the row's
+        current values are all below their limits — so a denied attempt
+        changes nothing and no counter can exceed its limit. Returns None if
+        the database is unavailable; callers fail closed.
         """
-        try:
-            self._ensure_table()
-            minute = int(time.time()) // 60
-            with self.engine.begin() as conn:
-                burst = conn.execute(
-                    text(
-                        f"""
-                        INSERT INTO {USAGE_MINUTE_TABLE} (user_id, minute, runs)
-                        VALUES (:user_id, :minute, 1)
-                        ON CONFLICT (user_id, minute)
-                        DO UPDATE SET runs = {USAGE_MINUTE_TABLE}.runs + 1
-                        RETURNING runs
-                        """
-                    ),
-                    {"user_id": user_id, "minute": minute},
-                ).scalar_one()
-                conn.execute(
-                    text(f"DELETE FROM {USAGE_MINUTE_TABLE} WHERE user_id = :user_id AND minute < :cutoff"),
-                    {"user_id": user_id, "cutoff": minute - 1},
-                )
-                if int(burst) > rpm:
-                    return int(burst), None, None
-                daily = conn.execute(
-                    text(
-                        f"""
-                        INSERT INTO {USAGE_TABLE} (user_id, day, runs)
-                        VALUES (:user_id, :day, 1)
-                        ON CONFLICT (user_id, day)
-                        DO UPDATE SET runs = {USAGE_TABLE}.runs + 1
-                        RETURNING runs
-                        """
-                    ),
-                    {"user_id": user_id, "day": datetime.now(UTC).date()},
-                ).scalar_one()
-                total = conn.execute(
-                    text(f"SELECT COALESCE(SUM(runs), 0) FROM {USAGE_TABLE} WHERE user_id = :user_id"),
-                    {"user_id": user_id},
-                ).scalar_one()
-            return int(burst), int(daily), int(total)
-        except SQLAlchemyError as e:
-            logger.warning(f"Usage quota check failed, allowing request: {e}")
+        # A zero limit admits nothing, and the insert path below has no check
+        if limits.rpm < 1:
+            return QuotaHit(admitted=False, limit_type="rate")
+        if limits.total < 1:
+            return QuotaHit(admitted=False, limit_type="total")
+        if limits.daily < 1:
+            return QuotaHit(admitted=False, limit_type="daily")
+        if not self._ensure_schema():
             return None
 
-    def _ensure_table(self) -> None:
-        if self._table_ready:
-            return
-        with self._lock:
-            if self._table_ready:
-                return
+        u = usage_table.c
+        in_minute = case((u.minute == minute, u.minute_runs), else_=0)
+        in_day = case((u.day == day, u.day_runs), else_=0)
+        stmt = (
+            pg_insert(usage_table)
+            .values(
+                user_id=user_id, minute=minute, minute_runs=1, day=day, day_runs=1, total_runs=1, updated_at=func.now()
+            )
+            .on_conflict_do_update(
+                index_elements=[u.user_id],
+                set_={
+                    "minute": minute,
+                    "minute_runs": in_minute + 1,
+                    "day": day,
+                    "day_runs": in_day + 1,
+                    "total_runs": u.total_runs + 1,
+                    "updated_at": func.now(),
+                },
+                where=and_(in_minute < limits.rpm, in_day < limits.daily, u.total_runs < limits.total),
+            )
+            .returning(u.day_runs, u.total_runs)
+        )
+        try:
             with self.engine.begin() as conn:
-                conn.execute(
-                    text(
-                        f"""
-                        CREATE TABLE IF NOT EXISTS {USAGE_TABLE} (
-                            user_id TEXT NOT NULL,
-                            day DATE NOT NULL,
-                            runs INTEGER NOT NULL DEFAULT 0,
-                            PRIMARY KEY (user_id, day)
-                        )
-                        """
+                row = conn.execute(stmt).one_or_none()
+                if row is not None:
+                    return QuotaHit(admitted=True, day_runs=row.day_runs, total_runs=row.total_runs)
+                # Nothing updated — the row exists and some limit has no headroom
+                current = conn.execute(
+                    select(u.minute, u.minute_runs, u.day, u.day_runs, u.total_runs).where(u.user_id == user_id)
+                ).one()
+        except SQLAlchemyError as e:
+            logger.error(f"Usage quota check failed for {user_id}: {e}")
+            return None
+
+        minute_runs = current.minute_runs if current.minute == minute else 0
+        day_runs = current.day_runs if current.day == day else 0
+        if minute_runs >= limits.rpm:
+            limit_type = "rate"
+        elif current.total_runs >= limits.total:
+            limit_type = "total"
+        else:
+            limit_type = "daily"
+        return QuotaHit(admitted=False, limit_type=limit_type, day_runs=day_runs, total_runs=current.total_runs)
+
+    def refund(self, user_id: str, day: date) -> None:
+        """Give back one admitted run that never executed.
+
+        Restores the daily and absolute quotas (the daily one only if the
+        window is still ``day``). The burst counter is deliberately left alone:
+        it bounds request pressure, and a client looping on bad requests
+        should still be throttled.
+        """
+        u = usage_table.c
+        stmt = (
+            update(usage_table)
+            .where(u.user_id == user_id)
+            .values(
+                day_runs=case((u.day == day, func.greatest(u.day_runs - 1, 0)), else_=u.day_runs),
+                total_runs=func.greatest(u.total_runs - 1, 0),
+            )
+        )
+        try:
+            with self.engine.begin() as conn:
+                conn.execute(stmt)
+        except SQLAlchemyError as e:
+            logger.warning(f"Usage quota refund failed for {user_id}: {e}")
+
+    def _ensure_schema(self) -> bool:
+        if self._schema_ready:
+            return True
+        with self._lock:
+            if self._schema_ready:
+                return True
+            now = time.monotonic()
+            if now < self._retry_schema_at:
+                return False
+            try:
+                with self.engine.begin() as conn:
+                    conn.execute(CreateTable(usage_table, if_not_exists=True))
+            except SQLAlchemyError as e:
+                # Another worker may have won a create race — then the table is there
+                if not self._table_exists():
+                    self._retry_schema_at = now + self.SCHEMA_RETRY_SECONDS
+                    logger.error(
+                        f"Could not create {usage_table.name}, retrying in {self.SCHEMA_RETRY_SECONDS:.0f}s: {e}"
                     )
-                )
-                conn.execute(
-                    text(
-                        f"""
-                        CREATE TABLE IF NOT EXISTS {USAGE_MINUTE_TABLE} (
-                            user_id TEXT NOT NULL,
-                            minute BIGINT NOT NULL,
-                            runs INTEGER NOT NULL DEFAULT 0,
-                            PRIMARY KEY (user_id, minute)
-                        )
-                        """
-                    )
-                )
-            self._table_ready = True
+                    return False
+            self._schema_ready = True
+            return True
+
+    def _table_exists(self) -> bool:
+        try:
+            return inspect(self.engine).has_table(usage_table.name)
+        except SQLAlchemyError:
+            return False
 
 
 def next_utc_midnight() -> datetime:
@@ -310,23 +418,39 @@ def next_utc_midnight() -> datetime:
 class LimitVerdict:
     """Outcome of a limit check.
 
-    Denials carry the fields both surfaces serialize for the client
-    (``limit_type`` is "rate", "daily", or "total"; a "total" denial has no
-    ``retry_after``/``resets_at`` — that usage never replenishes). Allowed
-    verdicts carry remaining counts when the quota was consulted, for the
-    HTTP response headers.
+    Denials carry the fields both surfaces serialize for the client via
+    ``payload()`` (``limit_type`` is "rate", "daily", or "total"; a "total"
+    denial has no ``retry_after``/``resets_at`` — that usage never
+    replenishes). A 503 denial means the counters were unreachable. Allowed
+    verdicts that consumed quota carry the ``day`` it was charged to (for
+    refunds) and the remaining counts (for the HTTP response headers).
     """
 
     allowed: bool
     detail: str = ""
+    status_code: int = 429
+    error_code: str = "usage_limit_exceeded"
     limit_type: str = ""
     limit: int = 0
     retry_after: int | None = None
     resets_at: datetime | None = None
+    day: date | None = None
     daily_limit: int | None = None
     daily_remaining: int | None = None
     total_limit: int | None = None
     total_remaining: int | None = None
+
+    def payload(self) -> dict:
+        """The machine-readable denial fields shared by the 429 body and the WS error frame."""
+        body: dict = {"error_code": self.error_code}
+        if self.limit_type:
+            body["limit_type"] = self.limit_type
+            body["limit"] = self.limit
+        if self.retry_after is not None:
+            body["retry_after"] = self.retry_after
+        if self.resets_at is not None:
+            body["resets_at"] = self.resets_at.isoformat()
+        return body
 
 
 class UsageGate:
@@ -348,7 +472,7 @@ class UsageGate:
         self._quota: RunQuota | None = None
 
     @property
-    def quota(self) -> RunQuota | None:
+    def quota(self) -> RunQuota:
         # Resolved lazily so importing this module never forces a DB connection
         if self._quota is None:
             if self._engine is None:
@@ -358,8 +482,15 @@ class UsageGate:
             self._quota = RunQuota(self._engine)
         return self._quota
 
+    def prepare(self) -> None:
+        """Create the counter table at startup so the first user request doesn't pay for DDL."""
+        if self.quota.prepare():
+            logger.info(f"Usage limits ready ({usage_table.name})")
+        else:
+            logger.error("Usage limits could not initialize their table; runs will be refused until it succeeds")
+
     def check(self, key: str) -> LimitVerdict:
-        """Record one run attempt for ``key`` and decide whether it may proceed.
+        """Consume one run for ``key`` if it's within limits and say whether it may proceed.
 
         Synchronous (DB round-trips plus, on cache miss, a PostHog HTTP call) —
         async callers must dispatch via ``run_in_threadpool`` to keep the event
@@ -369,46 +500,55 @@ class UsageGate:
         if not limits.enabled:
             return LimitVerdict(allowed=True)
 
-        counts = self.quota.hit(key, limits.rpm) if self.quota else None
-        if counts is None:
-            return LimitVerdict(allowed=True)
-        _, daily_count, total_count = counts
-
-        # Burst — checked first; throttled attempts never consume quota
-        if daily_count is None or total_count is None:
+        now = datetime.now(UTC)
+        day = now.date()
+        hit = self.quota.hit(key, limits, day=day, minute=int(now.timestamp()) // 60)
+        if hit is None:
+            # Fail closed: an unreachable counter must not mean unlimited free runs
             return LimitVerdict(
                 allowed=False,
-                detail=f"Rate limit exceeded: max {limits.rpm} run requests per minute.",
+                detail="Usage limits are temporarily unavailable. Please retry shortly.",
+                status_code=503,
+                error_code="usage_limit_unavailable",
+                retry_after=5,
+            )
+        if hit.admitted:
+            return LimitVerdict(
+                allowed=True,
+                day=day,
+                daily_limit=limits.daily,
+                daily_remaining=max(0, limits.daily - hit.day_runs),
+                total_limit=limits.total,
+                total_remaining=max(0, limits.total - hit.total_runs),
+            )
+        if hit.limit_type == "rate":
+            return LimitVerdict(
+                allowed=False,
+                detail=f"Rate limit exceeded: max {limits.rpm} runs per minute.",
                 limit_type="rate",
                 limit=limits.rpm,
-                retry_after=max(1, 60 - int(time.time()) % 60),
+                retry_after=max(1, 60 - int(now.timestamp()) % 60),
             )
-
-        # Quotas — the absolute cap wins over the daily one
-        if total_count > limits.total:
+        if hit.limit_type == "total":
             return LimitVerdict(
                 allowed=False,
                 detail=f"Usage exhausted: the limit of {limits.total} total runs has been reached.",
                 limit_type="total",
                 limit=limits.total,
             )
-        if daily_count > limits.daily:
-            resets_at = next_utc_midnight()
-            return LimitVerdict(
-                allowed=False,
-                detail=f"Daily usage limit reached ({limits.daily} runs per day). Resets at midnight UTC.",
-                limit_type="daily",
-                limit=limits.daily,
-                retry_after=max(1, int((resets_at - datetime.now(UTC)).total_seconds())),
-                resets_at=resets_at,
-            )
+        resets_at = next_utc_midnight()
         return LimitVerdict(
-            allowed=True,
-            daily_limit=limits.daily,
-            daily_remaining=max(0, limits.daily - daily_count),
-            total_limit=limits.total,
-            total_remaining=max(0, limits.total - total_count),
+            allowed=False,
+            detail=f"Daily usage limit reached ({limits.daily} runs per day). Resets at midnight UTC.",
+            limit_type="daily",
+            limit=limits.daily,
+            retry_after=max(1, int((resets_at - now).total_seconds())),
+            resets_at=resets_at,
         )
+
+    def refund(self, key: str, day: date) -> None:
+        """Give back a run that ``check`` consumed but the app rejected before executing."""
+        self.quota.refund(key, day)
 
 
 # ---------------------------------------------------------------------------
@@ -441,7 +581,11 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
             return self._limited(verdict)
 
         response = await call_next(request)
-        if verdict.daily_limit is not None:
+        if verdict.day is not None and 400 <= response.status_code < 500:
+            # The app rejected the request before any model call (unknown id,
+            # malformed body, missing scope) — don't let it burn the caps.
+            await run_in_threadpool(self.gate.refund, key, verdict.day)
+        elif verdict.daily_limit is not None:
             response.headers["X-Usage-Daily-Limit"] = str(verdict.daily_limit)
             response.headers["X-Usage-Daily-Remaining"] = str(verdict.daily_remaining)
             response.headers["X-Usage-Total-Limit"] = str(verdict.total_limit)
@@ -467,20 +611,13 @@ class UsageLimitMiddleware(BaseHTTPMiddleware):
 
     @staticmethod
     def _limited(verdict: LimitVerdict) -> JSONResponse:
-        """429 with a machine-readable body the AgentOS UI can key a modal off."""
-        body: dict = {
-            "detail": verdict.detail,
-            "error_code": "usage_limit_exceeded",
-            "limit_type": verdict.limit_type,
-            "limit": verdict.limit,
-        }
+        """429 (or 503 when the counters are unreachable) with a body the AgentOS UI can key a modal off."""
         headers = {}
         if verdict.retry_after is not None:
-            body["retry_after"] = verdict.retry_after
             headers["Retry-After"] = str(verdict.retry_after)
-        if verdict.resets_at is not None:
-            body["resets_at"] = verdict.resets_at.isoformat()
-        return JSONResponse(status_code=429, content=body, headers=headers)
+        return JSONResponse(
+            status_code=verdict.status_code, content={"detail": verdict.detail, **verdict.payload()}, headers=headers
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -528,6 +665,13 @@ class WebSocketUsageLimitMiddleware:
     drain the per-IP counters. Legacy ``os_security_key`` auth attaches no
     identity, so runs on such connections are not limited (demo-os does not
     use that mode).
+
+    Unlike the HTTP surface, a run frame the app rejects (unknown workflow id)
+    is not refunded: the app answers with a plain ``error`` frame that can't be
+    safely attributed to one frame while other runs stream on the same
+    connection, and a client-triggerable refund would be a way to reclaim
+    counted runs. The AgentOS UI only sends ids it listed, so this costs
+    legitimate users nothing.
     """
 
     def __init__(self, app: ASGIApp, gate: UsageGate):
@@ -681,15 +825,4 @@ class WebSocketUsageLimitMiddleware:
     @staticmethod
     def _limit_event(verdict: LimitVerdict) -> dict:
         """The socket-shaped mirror of the HTTP 429 body."""
-        event: dict = {
-            "event": "error",
-            "error": verdict.detail,
-            "error_code": "usage_limit_exceeded",
-            "limit_type": verdict.limit_type,
-            "limit": verdict.limit,
-        }
-        if verdict.retry_after is not None:
-            event["retry_after"] = verdict.retry_after
-        if verdict.resets_at is not None:
-            event["resets_at"] = verdict.resets_at.isoformat()
-        return event
+        return {"event": "error", "error": verdict.detail, **verdict.payload()}
