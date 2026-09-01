@@ -67,6 +67,7 @@ from sqlalchemy import (
     func,
     inspect,
     select,
+    text,
     update,
 )
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -279,8 +280,15 @@ class RunQuota:
 
     SCHEMA_RETRY_SECONDS = 30.0
 
-    def __init__(self, engine: Engine):
+    def __init__(self, engine: Engine, db_schema: str | None = None):
         self.engine = engine
+        self.db_schema = db_schema
+        # A schema-qualified clone of the declared table. Without this the DDL
+        # is unqualified and lands wherever search_path points (public — or the
+        # "$user" schema when the DB user happens to share its name), instead
+        # of next to agno's own tables.
+        meta = MetaData()
+        self.table = usage_table.to_metadata(meta, schema=db_schema) if db_schema else usage_table.to_metadata(meta)
         self._schema_ready = False
         self._retry_schema_at = 0.0
         self._lock = threading.Lock()
@@ -308,11 +316,11 @@ class RunQuota:
         if not self._ensure_schema():
             return None
 
-        u = usage_table.c
+        u = self.table.c
         in_minute = case((u.minute == minute, u.minute_runs), else_=0)
         in_day = case((u.day == day, u.day_runs), else_=0)
         stmt = (
-            pg_insert(usage_table)
+            pg_insert(self.table)
             .values(
                 user_id=user_id, minute=minute, minute_runs=1, day=day, day_runs=1, total_runs=1, updated_at=func.now()
             )
@@ -361,9 +369,9 @@ class RunQuota:
         it bounds request pressure, and a client looping on bad requests
         should still be throttled.
         """
-        u = usage_table.c
+        u = self.table.c
         stmt = (
-            update(usage_table)
+            update(self.table)
             .where(u.user_id == user_id)
             .values(
                 day_runs=case((u.day == day, func.greatest(u.day_runs - 1, 0)), else_=u.day_runs),
@@ -387,23 +395,27 @@ class RunQuota:
                 return False
             try:
                 with self.engine.begin() as conn:
-                    conn.execute(CreateTable(usage_table, if_not_exists=True))
+                    if self.db_schema:
+                        # Same sequence agno's PostgresDb uses for its tables, so
+                        # this works on a fresh database before AgentOS has run
+                        conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{self.db_schema}"'))
+                    conn.execute(CreateTable(self.table, if_not_exists=True))
             except SQLAlchemyError as e:
                 # Another worker may have won a create race — then the table is there
                 if not self._table_exists():
-                    return self._schema_failed(now, f"Could not create {usage_table.name}: {e}")
+                    return self._schema_failed(now, f"Could not create {self.qualified_name}: {e}")
             try:
                 missing = self._missing_columns()
             except SQLAlchemyError as e:
-                return self._schema_failed(now, f"Could not inspect {usage_table.name}: {e}")
+                return self._schema_failed(now, f"Could not inspect {self.qualified_name}: {e}")
             if missing:
                 # A table from an older revision of this module: IF NOT EXISTS kept
                 # it and every upsert would fail on it. Say so once, with the
                 # remedy, rather than 503-ing per request with a raw SQL error.
                 return self._schema_failed(
                     now,
-                    f"{usage_table.name} exists with an older schema (missing columns {sorted(missing)}); "
-                    f"drop it so it can be recreated: DROP TABLE {usage_table.name}",
+                    f"{self.qualified_name} exists with an older schema (missing columns {sorted(missing)}); "
+                    f"drop it so it can be recreated: DROP TABLE {self.qualified_name}",
                 )
             self._schema_ready = True
             return True
@@ -415,13 +427,17 @@ class RunQuota:
 
     def _table_exists(self) -> bool:
         try:
-            return inspect(self.engine).has_table(usage_table.name)
+            return inspect(self.engine).has_table(self.table.name, schema=self.db_schema)
         except SQLAlchemyError:
             return False
 
     def _missing_columns(self) -> set[str]:
-        present = {col["name"] for col in inspect(self.engine).get_columns(usage_table.name)}
-        return {col.name for col in usage_table.columns} - present
+        present = {col["name"] for col in inspect(self.engine).get_columns(self.table.name, schema=self.db_schema)}
+        return {col.name for col in self.table.columns} - present
+
+    @property
+    def qualified_name(self) -> str:
+        return f"{self.db_schema}.{self.table.name}" if self.db_schema else self.table.name
 
 
 def next_utc_midnight() -> datetime:
@@ -483,29 +499,42 @@ class UsageGate:
         posthog_api_key: str = "",
         posthog_host: str = "",
         engine: Engine | None = None,
+        db_schema: str | None = None,
         resolver: PostHogLimits | None = None,
     ):
         self.resolver = resolver or PostHogLimits(limits or UsageLimits(), api_key=posthog_api_key, host=posthog_host)
         self._engine = engine
+        self._db_schema = db_schema
         self._quota: RunQuota | None = None
 
     @property
     def quota(self) -> RunQuota:
-        # Resolved lazily so importing this module never forces a DB connection
+        # Resolved lazily so importing this module never forces a DB connection.
+        # When no engine is given, both it and the schema come from agent_db so
+        # the counter table lands next to agno's own tables.
         if self._quota is None:
             if self._engine is None:
                 from app.settings import agent_db
 
                 self._engine = agent_db.db_engine
-            self._quota = RunQuota(self._engine)
+                self._db_schema = self._db_schema or agent_db.db_schema
+            self._quota = RunQuota(self._engine, db_schema=self._db_schema)
         return self._quota
 
     def prepare(self) -> None:
-        """Create the counter table at startup so the first user request doesn't pay for DDL."""
-        if self.quota.prepare():
-            logger.info(f"Usage limits ready ({usage_table.name})")
-        else:
-            logger.error("Usage limits could not initialize their table; runs will be refused until it succeeds")
+        """Create the counter table at startup so the first user request doesn't pay for DDL.
+
+        Raises on failure: a stale table or missing privilege is a deploy-time
+        problem, and failing the rollout beats booting an app whose every run
+        503s until someone reads the log. Runtime DB blips are still handled
+        by the lazy 30s-backoff path.
+        """
+        if not self.quota.prepare():
+            raise RuntimeError(
+                f"Usage limits could not initialize {self.quota.qualified_name} (see log above); "
+                "refusing to start rather than serve runs that all fail closed"
+            )
+        logger.info(f"Usage limits ready ({self.quota.qualified_name})")
 
     def check(self, key: str) -> LimitVerdict:
         """Consume one run for ``key`` if it's within limits and say whether it may proceed.

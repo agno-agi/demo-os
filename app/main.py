@@ -99,6 +99,8 @@ if USAGE_LIMITS_ENABLED:
         ),
         posthog_api_key=POSTHOG_API_KEY,
         posthog_host=POSTHOG_HOST,
+        engine=agent_db.db_engine,
+        db_schema=agent_db.db_schema,
     )
     base_app.add_middleware(UsageLimitMiddleware, gate=usage_gate)
     base_app.add_middleware(WebSocketUsageLimitMiddleware, gate=usage_gate)
