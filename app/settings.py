@@ -31,6 +31,18 @@ SLACK_TOKEN = getenv("SLACK_TOKEN", "")
 SLACK_SIGNING_SECRET = getenv("SLACK_SIGNING_SECRET", "")
 
 # ---------------------------------------------------------------------------
+# Usage limits
+# ---------------------------------------------------------------------------
+USAGE_LIMITS_ENABLED = getenv("USAGE_LIMITS_ENABLED", "true").lower() in ("1", "true", "yes")
+USER_RATE_LIMIT_RPM = int(getenv("USER_RATE_LIMIT_RPM", "10"))
+USER_DAILY_RUN_LIMIT = int(getenv("USER_DAILY_RUN_LIMIT", "20"))
+USER_TOTAL_RUN_LIMIT = int(getenv("USER_TOTAL_RUN_LIMIT", "200"))
+
+# PostHog feature flags — per-user overrides for the usage limits
+POSTHOG_API_KEY = getenv("POSTHOG_API_KEY", "")
+POSTHOG_HOST = getenv("POSTHOG_HOST", "https://us.i.posthog.com")
+
+# ---------------------------------------------------------------------------
 # Optional tools
 # ---------------------------------------------------------------------------
 PARALLEL_API_KEY = getenv("PARALLEL_API_KEY", "")

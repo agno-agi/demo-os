@@ -13,6 +13,7 @@ from pathlib import Path
 
 from agno.os import AgentOS
 from agno.os.config import AuthorizationConfig
+from fastapi import FastAPI
 
 from agents.builder import builder
 from agents.dash import dash, dash_knowledge, dash_learnings
@@ -23,7 +24,20 @@ from agents.studio import studio
 from agents.taskboard import taskboard
 from agents.travel import travel
 from app.registry import registry
-from app.settings import RUNTIME_ENV, SCHEDULER_BASE_URL, SLACK_SIGNING_SECRET, SLACK_TOKEN, agent_db
+from app.settings import (
+    POSTHOG_API_KEY,
+    POSTHOG_HOST,
+    RUNTIME_ENV,
+    SCHEDULER_BASE_URL,
+    SLACK_SIGNING_SECRET,
+    SLACK_TOKEN,
+    USAGE_LIMITS_ENABLED,
+    USER_DAILY_RUN_LIMIT,
+    USER_RATE_LIMIT_RPM,
+    USER_TOTAL_RUN_LIMIT,
+    agent_db,
+)
+from app.usage import UsageGate, UsageLimitMiddleware, UsageLimits, WebSocketUsageLimitMiddleware, usage_admin_router
 from frameworks.claude_repo import claude_repo
 from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
@@ -60,7 +74,38 @@ if SLACK_TOKEN and SLACK_SIGNING_SECRET:
 @asynccontextmanager
 async def lifespan(app):  # type: ignore[no-untyped-def]
     _register_schedules()
+    if usage_gate is not None:
+        usage_gate.prepare()
     yield
+
+
+# ---------------------------------------------------------------------------
+# Base App
+# ---------------------------------------------------------------------------
+# Per-user usage limits on run execution. The HTTP middleware must run after
+# the JWT middleware (which sets request.state.user_id) — AgentOS stacks its
+# own middleware on top of base_app, so pre-adding it here gives that order.
+# Workflow runs from the UI arrive as messages on /workflows/ws, which HTTP
+# middleware never sees — the WebSocket middleware covers that surface with
+# the same gate so both drain the same counters.
+base_app = FastAPI()
+usage_gate: UsageGate | None = None
+if USAGE_LIMITS_ENABLED:
+    usage_gate = UsageGate(
+        limits=UsageLimits(
+            rpm=USER_RATE_LIMIT_RPM,
+            daily=USER_DAILY_RUN_LIMIT,
+            total=USER_TOTAL_RUN_LIMIT,
+        ),
+        posthog_api_key=POSTHOG_API_KEY,
+        posthog_host=POSTHOG_HOST,
+        engine=agent_db.db_engine,
+        db_schema=agent_db.db_schema,
+    )
+    base_app.add_middleware(UsageLimitMiddleware, gate=usage_gate)
+    base_app.add_middleware(WebSocketUsageLimitMiddleware, gate=usage_gate)
+    # Admin API: inspect/reset a user's usage without psql or a redeploy
+    base_app.include_router(usage_admin_router(usage_gate, allow_unauthenticated=RUNTIME_ENV == "dev"))
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +119,7 @@ agent_os = AgentOS(
     authorization=RUNTIME_ENV == "prd",
     authorization_config=AuthorizationConfig(user_isolation=True),
     lifespan=lifespan,
+    base_app=base_app,
     db=agent_db,
     agents=[
         mcp_agent,
