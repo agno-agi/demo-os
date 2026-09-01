@@ -51,7 +51,7 @@ from datetime import UTC, date, datetime, timedelta
 from agno.os.middleware.jwt import INTERNAL_SCHEDULER_USER_ID, is_reserved_principal
 from agno.os.scopes import AgentOSScope
 from agno.os.utils import resolve_ws_jwt_config
-from fastapi import Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy import (
     BigInteger,
@@ -64,6 +64,7 @@ from sqlalchemy import (
     Text,
     and_,
     case,
+    delete,
     func,
     inspect,
     select,
@@ -193,6 +194,15 @@ class PostHogLimits:
                 self._cache = {k: v for k, v in self._cache.items() if now - v[0] < self.cache_ttl}
             self._cache[user_key] = (now, limits)
         return limits
+
+    def invalidate(self, user_key: str) -> None:
+        """Drop one user's cached limits so a flag change applies immediately."""
+        with self._lock:
+            self._cache.pop(user_key, None)
+
+    def invalidate_all(self) -> None:
+        with self._lock:
+            self._cache.clear()
 
     def _evaluate(self, user_key: str) -> UsageLimits:
         try:
@@ -383,6 +393,31 @@ class RunQuota:
                 conn.execute(stmt)
         except SQLAlchemyError as e:
             logger.warning(f"Usage quota refund failed for {user_id}: {e}")
+
+    def snapshot(self, user_id: str, day: date, minute: int) -> dict:
+        """Current consumption for one user, with rolled-over windows read as zero."""
+        u = self.table.c
+        with self.engine.begin() as conn:
+            row = conn.execute(
+                select(u.minute, u.minute_runs, u.day, u.day_runs, u.total_runs).where(u.user_id == user_id)
+            ).one_or_none()
+        if row is None:
+            return {"minute_runs": 0, "day_runs": 0, "total_runs": 0}
+        return {
+            "minute_runs": row.minute_runs if row.minute == minute else 0,
+            "day_runs": row.day_runs if row.day == day else 0,
+            "total_runs": row.total_runs,
+        }
+
+    def reset(self, user_id: str) -> bool:
+        """Delete one user's row — resets all three counters, lifetime cap included."""
+        with self.engine.begin() as conn:
+            return conn.execute(delete(self.table).where(self.table.c.user_id == user_id)).rowcount > 0
+
+    def reset_all(self) -> int:
+        """Delete every row. Returns how many users were reset."""
+        with self.engine.begin() as conn:
+            return conn.execute(delete(self.table)).rowcount
 
     def _ensure_schema(self) -> bool:
         if self._schema_ready:
@@ -596,6 +631,31 @@ class UsageGate:
     def refund(self, key: str, day: date) -> None:
         """Give back a run that ``check`` consumed but the app rejected before executing."""
         self.quota.refund(key, day)
+
+    def describe(self, key: str) -> dict:
+        """Effective limits and current consumption for one user key."""
+        limits = self.resolver.resolve(key)
+        now = datetime.now(UTC)
+        usage = self.quota.snapshot(key, day=now.date(), minute=int(now.timestamp()) // 60)
+        return {
+            "user_id": key,
+            "limits": {"enabled": limits.enabled, "rpm": limits.rpm, "daily": limits.daily, "total": limits.total},
+            "usage": usage,
+            "remaining": {
+                "daily": max(0, limits.daily - usage["day_runs"]),
+                "total": max(0, limits.total - usage["total_runs"]),
+            },
+        }
+
+    def reset_usage(self, key: str) -> bool:
+        """Wipe one user's counters (lifetime cap included) and their cached flag limits."""
+        self.resolver.invalidate(key)
+        return self.quota.reset(key)
+
+    def reset_all_usage(self) -> int:
+        """Wipe every user's counters and the whole flag cache. Returns users reset."""
+        self.resolver.invalidate_all()
+        return self.quota.reset_all()
 
 
 # ---------------------------------------------------------------------------
@@ -873,3 +933,62 @@ class WebSocketUsageLimitMiddleware:
     def _limit_event(verdict: LimitVerdict) -> dict:
         """The socket-shaped mirror of the HTTP 429 body."""
         return {"event": "error", "error": verdict.detail, **verdict.payload()}
+
+
+# ---------------------------------------------------------------------------
+# Admin API (inspect and reset usage)
+# ---------------------------------------------------------------------------
+def usage_admin_router(gate: UsageGate, allow_unauthenticated: bool = False) -> APIRouter:
+    """Admin endpoints so support doesn't need psql or a redeploy.
+
+    - ``GET /usage/{user_id}`` — effective limits (env + PostHog flag) and
+      current consumption for one key (``ip:…`` or a JWT user id).
+    - ``DELETE /usage/{user_id}`` — reset one user: deletes their row (all
+      three counters, lifetime cap included) and drops their cached flag
+      limits so a simultaneous flag edit applies immediately.
+    - ``DELETE /usage`` — reset everyone.
+
+    *Changing* limits is not an API concern: per-user values live in the
+    PostHog ``usage-limits`` flag (live within the 60s cache) and the env
+    baseline stays a deploy setting.
+
+    Access: admin-scoped callers only — the same bar as the middleware
+    exemption. With RBAC off there is no admin identity, so the endpoints
+    are locked (403) rather than open; ``allow_unauthenticated=True`` (dev)
+    opens them for local testing. Counter-DB errors surface as 503.
+    """
+
+    def require_admin(request: Request) -> None:
+        if allow_unauthenticated:
+            return
+        scopes = getattr(request.state, "scopes", None)
+        admin_scope = getattr(request.state, "admin_scope", None)
+        if not (admin_scope and scopes and admin_scope in scopes):
+            raise HTTPException(status_code=403, detail="Admin scope required")
+
+    router = APIRouter(prefix="/usage", tags=["Usage"], dependencies=[Depends(require_admin)])
+
+    @router.get("/{user_id}")
+    async def read_usage(user_id: str) -> dict:
+        try:
+            return await run_in_threadpool(gate.describe, user_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=503, detail="Usage counters are temporarily unavailable") from e
+
+    @router.delete("/{user_id}")
+    async def reset_usage(user_id: str) -> dict:
+        try:
+            existed = await run_in_threadpool(gate.reset_usage, user_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=503, detail="Usage counters are temporarily unavailable") from e
+        return {"user_id": user_id, "reset": existed}
+
+    @router.delete("")
+    async def reset_all_usage() -> dict:
+        try:
+            count = await run_in_threadpool(gate.reset_all_usage)
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=503, detail="Usage counters are temporarily unavailable") from e
+        return {"reset_users": count}
+
+    return router

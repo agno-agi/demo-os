@@ -47,7 +47,7 @@ All agents share:
 | `app/main.py` | AgentOS entry point, registers all agents, teams, workflows |
 | `app/config.yaml` | Quick prompts for each agent |
 | `app/settings.py` | Shared MODEL, agent_db, and environment flags |
-| `app/usage.py` | Per-user usage limits (burst rate limit, daily quota, absolute cap; PostHog flag overrides) on REST run endpoints and the workflow WebSocket |
+| `app/usage.py` | Per-user usage limits (burst rate limit, daily quota, absolute cap; PostHog flag overrides) on REST run endpoints and the workflow WebSocket, plus the admin `/usage` inspect/reset API |
 | `app/registry.py` | Shared tools, models, and database connections |
 | `agents/mcp/agent.py` | Agno Expert - Agno documentation agent via live MCP tools |
 | `agents/travel/agent.py` | Voyager - HITL + guardrails (moderation, PII, injection, output) |

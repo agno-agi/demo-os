@@ -37,7 +37,7 @@ from app.settings import (
     USER_TOTAL_RUN_LIMIT,
     agent_db,
 )
-from app.usage import UsageGate, UsageLimitMiddleware, UsageLimits, WebSocketUsageLimitMiddleware
+from app.usage import UsageGate, UsageLimitMiddleware, UsageLimits, WebSocketUsageLimitMiddleware, usage_admin_router
 from frameworks.claude_repo import claude_repo
 from frameworks.dspy_math import dspy_math
 from frameworks.langgraph_debate import langgraph_debate
@@ -104,6 +104,8 @@ if USAGE_LIMITS_ENABLED:
     )
     base_app.add_middleware(UsageLimitMiddleware, gate=usage_gate)
     base_app.add_middleware(WebSocketUsageLimitMiddleware, gate=usage_gate)
+    # Admin API: inspect/reset a user's usage without psql or a redeploy
+    base_app.include_router(usage_admin_router(usage_gate, allow_unauthenticated=RUNTIME_ENV == "dev"))
 
 
 # ---------------------------------------------------------------------------
