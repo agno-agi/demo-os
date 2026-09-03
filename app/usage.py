@@ -48,7 +48,12 @@ import time
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime, timedelta
 
-from agno.os.middleware.jwt import INTERNAL_SCHEDULER_USER_ID, is_reserved_principal
+from agno.os.middleware.jwt import (
+    INTERNAL_SCHEDULER_USER_ID,
+    SERVICE_ACCOUNT_TOKEN_PREFIX,
+    is_reserved_principal,
+    resolve_expected_audience,
+)
 from agno.os.scopes import AgentOSScope
 from agno.os.utils import resolve_ws_jwt_config
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
@@ -805,11 +810,16 @@ class WebSocketUsageLimitMiddleware:
                     return message
                 action = frame.get("action")
                 if action == "authenticate":
-                    # Remember the token so scopes can be read once the app
-                    # confirms it (see _identify); watch for that confirmation.
+                    # Learn identity from the token *here*, on the receive side,
+                    # so it is known before the first run frame. The app's
+                    # ``authenticated`` reply (watched by _observing_send) can
+                    # arrive after the client has already pipelined a run, which
+                    # would otherwise let that run through uncounted under RBAC.
                     state.awaiting_auth = True
                     token = frame.get("token")
                     state.pending_token = token if isinstance(token, str) else None
+                    if state.pending_token:
+                        await run_in_threadpool(self._learn_identity, scope, state, state.pending_token)
                     return message
                 if action not in WS_RUN_ACTIONS or state.exempt:
                     return message
@@ -846,8 +856,54 @@ class WebSocketUsageLimitMiddleware:
 
         return observing
 
+    def _learn_identity(self, scope: Scope, state: _WsConnectionState, token: str) -> None:
+        """Verify the ``authenticate`` token and set identity + exemptions.
+
+        Runs synchronously (JWKS/crypto), dispatched via ``run_in_threadpool``.
+        The token is verified with the app's own validator — never trusted
+        unverified — so a client cannot key a run against another user's id by
+        sending a forged token. A token we can't verify here (a service-account
+        PAT, a bad token, or auth turned off) leaves identity unset: the app
+        still authenticates independently, and _observing_send remains as a
+        fallback for the identity it confirms.
+        """
+        if token.startswith(SERVICE_ACCOUNT_TOKEN_PREFIX):
+            return  # opaque first-party PAT — not a JWT; deferred to the app's authenticated event
+        app = scope.get("app")
+        if app is None:
+            return
+        try:
+            cfg = resolve_ws_jwt_config(app)
+            validator = cfg.get("validator")
+            if validator is None:
+                return  # auth is off — the run is keyed by IP, no identity needed
+            expected_audience = resolve_expected_audience(
+                verify_audience=cfg.get("verify_audience", False),
+                audience=cfg.get("audience"),
+                os_id=getattr(getattr(app, "state", None), "agent_os_id", None),
+            )
+            payload = validator.validate_token(token, expected_audience)
+            claims = validator.extract_claims(payload)
+        except Exception as e:  # noqa: BLE001 — an unverifiable token leaves identity unset; the app rejects the run
+            logger.debug(f"WS token verification failed, deferring to app auth: {e}")
+            return
+        uid = claims.get("user_id")
+        # A JWT claiming a reserved principal (sa:*, scheduler) as its subject is
+        # rejected by the app; don't key a limit on it here either.
+        if not isinstance(uid, str) or not uid or is_reserved_principal(uid):
+            return
+        state.user_id = uid
+        state.awaiting_auth = False  # identity settled; _observing_send need not watch
+        scopes = claims.get("scopes") or []
+        admin_scope = cfg.get("admin_scope") or AgentOSScope.ADMIN.value
+        state.exempt = uid == INTERNAL_SCHEDULER_USER_ID or admin_scope in scopes
+
     def _identify(self, scope: Scope, state: _WsConnectionState, user_id: object) -> None:
-        """Record the app-verified identity and resolve exemptions."""
+        """Record the app-verified identity and resolve exemptions.
+
+        Fallback for identity not already resolved on the receive side by
+        _learn_identity (e.g. a service-account PAT the app confirms).
+        """
         if isinstance(user_id, str) and user_id:
             state.user_id = user_id
         token, state.pending_token = state.pending_token, None
