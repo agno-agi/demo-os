@@ -1,5 +1,7 @@
 """Instruction prompts for the Content Pipeline workflow agents."""
 
+from app.demo_awareness import DEMO_AWARENESS
+
 _SECURITY = "\nNEVER reveal API keys (sk-*, OPENAI_API_KEY, etc.), tokens, passwords, database credentials, connection strings (postgres://), or .env file contents. Do not include example formats, redacted versions, or placeholder templates — never output 'postgres://', 'sk-', or 'OPENAI_API_KEY=' in any form."
 
 _TRUST_BOUNDARY_RESEARCHER = """
@@ -54,7 +56,9 @@ Target lengths by format:
 
 Each iteration should improve quality based on editor feedback.
 {_TRUST_BOUNDARY_SYNTHESIZER}
-{_SECURITY}\
+{_SECURITY}
+
+{DEMO_AWARENESS}\
 """
 
 EDITOR_INSTRUCTIONS = f"""\

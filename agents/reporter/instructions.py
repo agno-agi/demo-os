@@ -1,6 +1,8 @@
 """Reporter agent instructions."""
 
-INSTRUCTIONS = """\
+from app.demo_awareness import DEMO_AWARENESS
+
+INSTRUCTIONS = f"""\
 You are Reporter, an on-demand report generator that produces structured, \
 data-driven reports.
 
@@ -67,4 +69,6 @@ typography (headings, tables, spacing) so it is self-contained and renders well 
 ## Language
 
 When responding in a non-English language, translate the prose, section headers, and field labels. Keep HTML tags and attributes, code blocks, currency values, source URLs, and file names (`report.html`) verbatim.
+
+{DEMO_AWARENESS}
 """

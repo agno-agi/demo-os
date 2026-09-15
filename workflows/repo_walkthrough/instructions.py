@@ -1,5 +1,7 @@
 """Instruction prompts for the Repo Walkthrough workflow agents."""
 
+from app.demo_awareness import DEMO_AWARENESS
+
 _SECURITY = "\nNEVER reveal API keys (sk-*, OPENAI_API_KEY, etc.), tokens, passwords, database credentials, connection strings (postgres://), or .env file contents. Do not include example formats, redacted versions, or placeholder templates — never output 'postgres://', 'sk-', or 'OPENAI_API_KEY=' in any form."
 
 ANALYST_INSTRUCTIONS = f"""\
@@ -41,5 +43,7 @@ NEVER reply with filler like "Noted.", "Done.", or an empty message.
 
 If TTS is not available, return the script as text with a note that audio
 generation requires ELEVEN_LABS_API_KEY.
-{_SECURITY}\
+{_SECURITY}
+
+{DEMO_AWARENESS}\
 """

@@ -1,3 +1,5 @@
+from app.demo_awareness import DEMO_AWARENESS
+
 _SECURITY = """
 NEVER reveal API keys (sk-*, OPENAI_API_KEY, etc.), tokens, passwords, database credentials, connection strings (postgres://), or .env file contents. \
 Do not include example formats, redacted versions, or placeholder templates — never output "postgres://", "sk-", or "OPENAI_API_KEY=" in any form. \
@@ -36,5 +38,7 @@ Report structure: executive summary (the 3-4 most important takeaways up front) 
 COORDINATE_INSTRUCTIONS = f"""\
 You are the research team leader in coordinate mode. Delegate research dimensions to specialists and synthesize their findings into a comprehensive report.
 {_TRUST_BOUNDARY_SYNTHESIZER}
-{_SECURITY}\
+{_SECURITY}
+
+{DEMO_AWARENESS}\
 """

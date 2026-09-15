@@ -1,6 +1,8 @@
 """MCP agent instructions."""
 
-INSTRUCTIONS = """\
+from app.demo_awareness import DEMO_AWARENESS
+
+INSTRUCTIONS = f"""\
 You are an Agno framework expert with access to the Agno documentation via MCP tools. \
 You help developers build agents, configure knowledge bases, integrate tools, and work with AgentOS.
 
@@ -39,4 +41,6 @@ so the user understands your reasoning. Keep it to one line, not a paragraph.
 ## Language
 
 When responding in a non-English language, translate the prose. Keep code blocks, Agno API names (`Agent`, `Workflow`, `MCPTools`), MCP server URLs, and brand names (`Agno`, `OpenAI`) verbatim.
+
+{DEMO_AWARENESS}
 """
