@@ -73,8 +73,6 @@ def _get_tools() -> list:
     """Build the tool list, gating optional tools on API keys or packages."""
     from agno.tools.arxiv import ArxivTools
     from agno.tools.calculator import CalculatorTools
-    from agno.tools.coding import CodingTools
-    from agno.tools.file import FileTools
     from agno.tools.file_generation import FileGenerationTools
     from agno.tools.hackernews import HackerNewsTools
     from agno.tools.openai import OpenAITools
@@ -82,14 +80,22 @@ def _get_tools() -> list:
     from agno.tools.reasoning import ReasoningTools
     from agno.tools.youtube import YouTubeTools
 
+    # NOTE: CodingTools and FileTools are deliberately NOT exposed here.
+    # This registry feeds the Studio/Builder component picker, so any tool
+    # listed can be attached to a user-built agent that runs on this server.
+    # Both give that agent access to the host: CodingTools runs shell commands
+    # and reads/writes/edits files, FileTools reads and writes arbitrary files.
+    # A demo user used CodingTools' shell to dump the process environment and
+    # exfiltrate our API keys. Disabling run_shell is not enough on its own —
+    # read_file/write_file/edit_file stay dangerous — so neither tool belongs
+    # in a public multi-tenant registry. FileGenerationTools (writes generated
+    # artifacts to a managed location) stays.
     tools: list = [
         *get_parallel_tools(),
         # Data & utility
         CalculatorTools(),
-        FileTools(),
         FileGenerationTools(),
-        # Code & reasoning
-        CodingTools(),
+        # Reasoning
         ReasoningTools(add_instructions=True),
         # Media — OPENAI_API_KEY is required, so always available
         OpenAITools(image_model="gpt-image-1.5-2025-12-16"),
