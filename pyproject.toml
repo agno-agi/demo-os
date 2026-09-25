@@ -1,7 +1,7 @@
 [project]
 name = "demo-os"
 version = "1.0.0"
-requires-python = ">=3.12,<4"
+requires-python = ">=3.12,<3.15"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "Agno", email = "hello@agno.com" }]
